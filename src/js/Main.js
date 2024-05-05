@@ -7,7 +7,7 @@ function Main(){
     return (
         <div className={"wrap"}>
             <Header />
-           <MainSlideArea />
+            <MainSlideArea />
             <div className={"contents"}>
                 <div className={"search"}>
                     <h1> 빠른 조건 검색 </h1>

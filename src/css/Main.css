@@ -10,8 +10,9 @@
     padding: 0;
     list-style: none;
     text-decoration: none;
+    color: black;
     box-sizing: border-box;
-    font-family: '프리텐다드', 'pretendard', Pretendard-Regular;
+    font-family: Pretendard-Regular, sans-serif;
 }
 
 .wrap{
@@ -109,7 +110,7 @@ main{
 }
 
 .contents .boards > .boardBox{
-    width: 100%;
+    width: 50%;
     flex: 1;
     padding: 30px;
 }
@@ -117,7 +118,6 @@ main{
 .boards > .boardBox > .boardTitle{
     font-size: 150%;
     font-weight: 600;
-
     margin-bottom: 10px;
 }
 
@@ -126,15 +126,30 @@ main{
 }
 
 .boardBox > hr{
-    margin-bottom: 10px;
+    margin: 8px 0px 10px 0px;
 }
 
 .boardPost{
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     padding: 5px 0;
 }
-.board_date{
-    float: right;
+
+.postTitle{
+    display: block;
+    width: 70%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.postDate{
+    right: 0;
+}
+
+.postSt{
+    color: #58AA52;
+    font-weight: 600;
 }
 
 .search{

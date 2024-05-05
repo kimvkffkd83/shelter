@@ -31,9 +31,28 @@ app.post("/text", (req, res) =>{
 })
 
 app.listen(port, ()=>{
-    // db.query('SELECT * FROM master_post_tb', (error, rows, fields) =>{
+    // db.query('SELECT * FROM master_post_db', (error, rows, fields) =>{
     //     if(error) throw error;
     //     console.log('post info is: ',rows);
     // });
     console.log("돌리랑 도트가 제일 좋아")
+})
+
+app.get("/main/notice",(req,res) =>{
+    db.query('SELECT NTC_TITLE AS title, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db limit 0,6', (error, rows, fields) =>{
+        if(error) throw error;
+
+        res.send(rows);
+        console.log('notice info is: ',rows);
+    });
+})
+
+
+app.get("/main/feedback",(req,res) =>{
+    db.query('SELECT FDB_TITLE AS title, DATE_FORMAT (CAST( FDB_REG_DATE AS date),\'%Y-%m-%d\') AS date, FDB_ST as st FROM master_feedback_db limit 0,6', (error, rows, fields) =>{
+        if(error) throw error;
+
+        res.send(rows);
+        console.log('notice info is: ',rows);
+    });
 })
