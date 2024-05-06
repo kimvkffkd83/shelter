@@ -2,9 +2,6 @@ import express from "express";
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './db.js'
-// const express = require('express');
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
 
 const app = express();
 const port = 4000 //기본 포트 3000에서 변경해주기
