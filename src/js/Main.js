@@ -1,14 +1,12 @@
 import '../css/Main.css';
 import React from "react";
-import Header from "../component/common/Header.jsx";
-import MainSlideArea from "../component/main/MainSlideArea.jsx";
-import MainBoard from "../component/main/MainBoard.jsx";
+import MainSlideArea from "../pages/main/MainSlideArea.jsx";
+import MainBoard from "../pages/main/MainBoard.jsx";
 function Main(){
     return (
-        <div className={"wrap"}>
-            <Header />
-            <MainSlideArea />
-            <div className={"contents"}>
+        <div>
+            <MainSlideArea/>
+            <div className={"MainContentArea"}>
                 <div className={"search"}>
                     <h1> 빠른 조건 검색 </h1>
                 </div>
@@ -20,9 +18,6 @@ function Main(){
             <div className={"statistics"}>
                 <h1> 보호소 통계 </h1>
             </div>
-            <footer>
-                 <h1>푸터</h1>
-            </footer>
         </div>
     );
 }

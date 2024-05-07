@@ -10,7 +10,6 @@ class MainBoard extends Component{
         else titleKR = "입양/임시보호후기"
 
         this.state = {
-            title : props.title,
             titleKR : titleKR,
             boardRows : [],
         }
@@ -26,7 +25,7 @@ class MainBoard extends Component{
                         boardRows.map( (post, index) => (
                             <a className="boardPost" href="#" key={index}>
                                 <span className="postTitle">
-                                    {this.state.title == 'notice' ?
+                                    {this.props.title == 'notice' ?
                                         '' : <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
                                     }{post.title}</span>
                                 <span className="postDate">{post.date}</span>
@@ -45,7 +44,7 @@ class MainBoard extends Component{
     renderMainBoards = async ()=>{
         try {
             const res =
-                await axios.get('http://localhost:4000/main/'+this.state.title)
+                await axios.get('http://localhost:4000/main/'+this.props.title)
                     .then((res) => {
                         this.setState({
                             boardRows : res.data,

@@ -86,22 +86,27 @@ header nav ul > li> ul > li{
     width: 100%;
 }
 
+.content{
+    width: 100%;
+    height: min-content;
+}
+
 main{
     height: 360px;
     background-color: #888;
 }
 
-.contents{
+.MainContentArea{
     height: 360px;
     display: flex;
 }
 
-.contents .search{
+.MainContentArea .search{
     width: 320px;
     height: 100%;
 
 }
-.contents .boards{
+.MainContentArea .boards{
     flex: 1
 ;
     display: flex;
@@ -109,19 +114,21 @@ main{
     height: 100%;
 }
 
-.contents .boards > .boardBox{
+.MainContentArea .boards > .boardBox{
     width: 50%;
     flex: 1;
     padding: 30px;
 }
 
-.boards > .boardBox > .boardTitle{
+.boardTitle{
     font-size: 150%;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
 .boardBox > .boardContents{
+    width: 100%;
+    height: 100%;
     padding: 0 10px;
 }
 
@@ -156,14 +163,30 @@ main{
     background-color: #999;
 }
 
-
-
-
-
 .statistics{
     height: 120px;
     background-color: #444;
 }
+
+.sideBar{
+    width: 250px;
+    height: 700px;
+    background-color: #eee;
+}
+
+.subBox{
+    padding: 30px;
+    flex: 1;
+}
+.subBox > hr{
+    width: 300px;
+    margin: 10px 0px;
+}
+
+.flexContent{
+ display: flex;
+}
+
 
 footer{
     height: 100px;
