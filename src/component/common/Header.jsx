@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 function Header (){
     return (
@@ -6,11 +7,11 @@ function Header (){
             <div className="toolbar"></div>
             <header>
                 <div className={"logo"}>
-                    <a href="#"></a>
+                    {<Link to="/" />}
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="#">센터소개</a>
+                        <li> {<Link to='/info'>센터소개</Link>}
                             <ul>
                                 <li>센터소개</li>
                                 <li>공지사항</li>
