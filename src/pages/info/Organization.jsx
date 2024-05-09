@@ -1,11 +1,11 @@
 import React from "react";
 import "../../css/Main.css"
 
-function Notice() {
+function Organization() {
     return (
         <>
         </>
     )
 }
 
-export default Notice;
+export default Organization;

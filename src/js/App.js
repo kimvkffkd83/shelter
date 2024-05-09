@@ -6,6 +6,8 @@ import InfoLayout from "../pages/info/InfoLayout.jsx";
 import Layout from "../pages/main/Layout.jsx";
 import Notice from "../pages/info/Notice.jsx";
 import Info from "../pages/info/Info.jsx";
+import Organization from "../pages/info/Organization.jsx";
+import Map from "../pages/info/Map.jsx";
 
 function App() {
    return(
@@ -15,6 +17,8 @@ function App() {
                 <Route path="info" element={<InfoLayout/>}>
                     <Route index element={<Info />} />
                     <Route path="notice" element={<Notice />} />
+                    <Route path="orgn" element={<Organization />} />
+                    <Route path="map" element={<Map />} />
                 </Route>
            </Route>
            <Route path="/test" element={<Main />} />
