@@ -9,37 +9,37 @@
           {"addr" : "/info/map","addrKR" :"찾아오시는 길"}
         ]
       },
-      {"addr" : "/info",
-        "addrKR" : "보호공고",
-        "subMenu" : [
-          {"addr" : "/info","addrKR" :"입양절차"},
-          {"addr" : "/info","addrKR" :"입양신청"},
-          {"addr" : "/notice","addrKR" :"임시보호신청"},
-          {"addr" : "/info","addrKR" :"입양/보호후기"}
-        ]
-      },
-      {"addr" : "/info",
+      {"addr" : "/missing",
         "addrKR" : "실종신고",
         "subMenu" : [
-          {"addr" : "/info","addrKR" :"유기동물신고"}
+          {"addr" : "/missing","addrKR" :"유기동물신고"}
         ]
       },
-      {"addr" : "/info",
+      {"addr" : "/protection",
+        "addrKR" : "보호공고",
+        "subMenu" : [
+          {"addr" : "/protection","addrKR" :"전체"},
+          {"addr" : "/protection/dog","addrKR" :"개"},
+          {"addr" : "/protection/cat","addrKR" :"고양이"},
+          {"addr" : "/protection/etc","addrKR" :"기타"}
+        ]
+      },
+      {"addr" : "/adopt",
         "addrKR" : "입양문의",
         "subMenu" : [
-          {"addr" : "/info","addrKR" :"입양절차"},
-          {"addr" : "/info","addrKR" :"입양신청"},
-          {"addr" : "/notice","addrKR" :"임시보호신청"},
-          {"addr" : "/info","addrKR" :"입양/보호후기"}
+          {"addr" : "/adopt/procedure","addrKR" :"입양절차"},
+          {"addr" : "/adopt/application","addrKR" :"입양신청"},
+          {"addr" : "/adopt/temporary","addrKR" :"임시보호신청"},
+          {"addr" : "/adopt/review","addrKR" :"입양/보호후기"}
         ]
       },
-      {"addr" : "/info",
+      {"addr" : "/volunteer",
         "addrKR" : "자원봉사",
         "subMenu" : [
-          {"addr" : "/info","addrKR" :"봉사안내"},
-          {"addr" : "/info","addrKR" :"봉사신청"},
-          {"addr" : "/notice","addrKR" :"연계신청"},
-          {"addr" : "/info","addrKR" :"봉사문의"}
+          {"addr" : "/volunteer/guide","addrKR" :"봉사안내"},
+          {"addr" : "/volunteer/application","addrKR" :"봉사신청"},
+          {"addr" : "/volunteer/proposal","addrKR" :"연계신청"},
+          {"addr" : "/volunteer/inquiry","addrKR" :"봉사문의"}
         ]
       }
   ]
