@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import MenuJson from "../../jsons/Menu.json"
 
 function Header (){
     return (
@@ -10,31 +11,21 @@ function Header (){
                     {<Link to="/" />}
                 </div>
                 <nav>
-                    <ul>
-                        <li> {<Link to='/info'>센터소개</Link>}
-                            <ul>
-                                <li>센터소개</li>
-                                <li>공지사항</li>
-                                <li>찾아오시는 길</li>
-                            </ul>
-                        </li>
-                        <li><a href="#"><>보호공고</></a></li>
-                        <li><a href="#"><>실종신고</></a></li>
-                        <li><a href="#"><>입양문의</></a>
-                            <ul>
-                                <li>입양신청</li>
-                                <li>임시보호신청</li>
-                                <li>입양/보호후기</li>
-                            </ul>
-                        </li>
-                        <li><a href="#"><>자원봉사</></a>
-                            <ul>
-                                <li>봉사안내</li>
-                                <li>봉사신청</li>
-                                <li>연계신청</li>
-                                <li>봉사문의</li>
-                            </ul>
-                        </li>
+                    <ul className="mainMenu">
+                        {
+                            MenuJson.mainMenu.map((menu, mainIndex) => (
+                                <li key={mainIndex}>
+                                    <Link to={menu.addr} state={{index:mainIndex}}>{menu.addrKR}</Link>
+                                    <ul className="subMenu">
+                                        {menu.subMenu.map((subMenu, index) =>(
+                                            <li key={index}>
+                                                <Link to={subMenu.addr} state={{index:mainIndex}}>{subMenu.addrKR}</Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </li>
+                            ))
+                        }
                     </ul>
                 </nav>
             </header>

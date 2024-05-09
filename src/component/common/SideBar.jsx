@@ -1,31 +1,34 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
+import MenuJson from "../../jsons/Menu.json"
 
 function SideBar(){
-    let title ="센터소개";
-    let subTitle =[
-        {addr : '/info', addrKR :"소개하는 글"},
-        {addr : '/info/notice',addrKR : '공지사항'},
-        {addr : '/info/orgn',addrKR : '조직도'},
-        {addr : '/info/map',addrKR : '찾아오시는 길'}
-    ];
-
+    const location= useLocation();
+    const path = location.pathname;
+    const pathArray = path.split("/",3);
+    if(location.state == null){
+        location.state = {};
+        MenuJson.mainMenu.map((menu,index) =>{
+            if(menu.addr == '/'+pathArray[1]) location.state.index = index;
+        });
+    }
+    const target = MenuJson.mainMenu[location.state.index];
+    const title = target.addrKR;
+    const subTitle = target.subMenu;
 
     return (
         <aside className="sideBar" >
             <div>{title}</div>
+            <hr/>
             <ul>
                 { subTitle.map((str, index ) => (
-                    <ul>
-                        <li key={index}><Link to={str.addr}>{str.addrKR}</Link></li>
-                    </ul>))
+                    <li key={index}>
+                        <Link to={str.addr} state={{index:location.state.index}}>{str.addrKR}</Link>
+                    </li>))
                 }
             </ul>
-
-
         </aside>
     )
-
 }
 
 export default SideBar;

@@ -1,0 +1,46 @@
+{
+  "mainMenu" : [
+      {"addr" : "/info",
+        "addrKR" :"센터소개",
+        "subMenu" : [
+          {"addr" : "/info","addrKR" :"소개하는 글"},
+          {"addr" : "/info/notice","addrKR" :"공지사항"},
+          {"addr" : "/info/orgn","addrKR" :"조직도"},
+          {"addr" : "/info/map","addrKR" :"찾아오시는 길"}
+        ]
+      },
+      {"addr" : "/info",
+        "addrKR" : "보호공고",
+        "subMenu" : [
+          {"addr" : "/info","addrKR" :"입양절차"},
+          {"addr" : "/info","addrKR" :"입양신청"},
+          {"addr" : "/notice","addrKR" :"임시보호신청"},
+          {"addr" : "/info","addrKR" :"입양/보호후기"}
+        ]
+      },
+      {"addr" : "/info",
+        "addrKR" : "실종신고",
+        "subMenu" : [
+          {"addr" : "/info","addrKR" :"유기동물신고"}
+        ]
+      },
+      {"addr" : "/info",
+        "addrKR" : "입양문의",
+        "subMenu" : [
+          {"addr" : "/info","addrKR" :"입양절차"},
+          {"addr" : "/info","addrKR" :"입양신청"},
+          {"addr" : "/notice","addrKR" :"임시보호신청"},
+          {"addr" : "/info","addrKR" :"입양/보호후기"}
+        ]
+      },
+      {"addr" : "/info",
+        "addrKR" : "자원봉사",
+        "subMenu" : [
+          {"addr" : "/info","addrKR" :"봉사안내"},
+          {"addr" : "/info","addrKR" :"봉사신청"},
+          {"addr" : "/notice","addrKR" :"연계신청"},
+          {"addr" : "/info","addrKR" :"봉사문의"}
+        ]
+      }
+  ]
+}
