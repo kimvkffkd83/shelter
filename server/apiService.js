@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended:false }));
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/', (req, res) =>{
+app.get('/data', (req, res) =>{
     res.send("Hello World!")
 })
 
@@ -35,21 +35,33 @@ app.listen(port, ()=>{
     console.log("돌리랑 도트가 제일 좋아")
 })
 
-app.get("/main/notice",(req,res) =>{
-    db.query('SELECT NTC_TITLE AS title, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db limit 0,6', (error, rows, fields) =>{
-        if(error) throw error;
+app.get("/data/notice/tcnt", (req, res) =>{
+    db.query('SELECT COUNT(*) AS cnt FROM master_notice_db', (error, tcnt) =>{
+        if (error) throw error;
+        res.send(tcnt);
+    })
+})
 
+// app.get("/main/notice",(req,res) =>{
+//     db.query('SELECT NTC_TITLE AS title, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db limit 0,6', (error, rows, fields) =>{
+//         if(error) throw error;
+//
+//         res.send(rows);
+//         console.log('notice info is: ',rows);
+//     });
+// })
+
+app.get("/data/notice",(req,res) => {
+    db.query('SELECT USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db limit 0,10', (error, rows, fields) =>{
+        if (error) throw error;
         res.send(rows);
-        console.log('notice info is: ',rows);
     });
 })
 
 
-app.get("/main/feedback",(req,res) =>{
+app.get("/data/feedback",(req,res) =>{
     db.query('SELECT FDB_TITLE AS title, DATE_FORMAT (CAST( FDB_REG_DATE AS date),\'%Y-%m-%d\') AS date, FDB_ST as st FROM master_feedback_db limit 0,6', (error, rows, fields) =>{
         if(error) throw error;
-
         res.send(rows);
-        console.log('notice info is: ',rows);
     });
 })

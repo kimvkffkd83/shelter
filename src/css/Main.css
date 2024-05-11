@@ -192,6 +192,18 @@ main{
 }
 
 
+.boardTable{
+    text-align: center;
+}
+
+.boardTable li{
+    display: flex;
+    justify-content: space-around;
+}
+.boardTable li >*{
+    flex: 1;
+}
+
 footer{
     height: 100px;
     background-color: #555;

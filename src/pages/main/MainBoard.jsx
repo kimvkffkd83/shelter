@@ -21,15 +21,20 @@ class MainBoard extends Component{
                 <hr />
                 <div className="boardContents">
                     {
-                        this.state.boardRows?.map( (post, index) => (
-                            <a className="boardPost" href="#" key={index}>
-                                <span className="postTitle">
-                                    {this.props.title == 'notice' ?
-                                        '' : <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
-                                    }{post.title}</span>
-                                <span className="postDate">{post.date}</span>
-                            </a>
-                        ))
+                        this.state.boardRows?.map( (post, index) => {
+                            if(index < 6){
+                                return (
+                                    <a className="boardPost" href="#" key={index}>
+                                    <span className="postTitle">
+                                        {this.props.title == 'notice' ?
+                                            '' : <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
+                                        }{post.title}</span>
+                                            <span className="postDate">{post.date}</span>
+                                        </a>
+                                    );
+                                }
+                            }
+                        )
                     }
                 </div>
             </div>
@@ -39,7 +44,7 @@ class MainBoard extends Component{
     componentDidMount() {
         //공지사항 데이터
         Board.getData(this.props.title)
-            .then((res)=> {
+            .then((res) => {
                 this.setState({boardRows: res.data})
             });
     }
