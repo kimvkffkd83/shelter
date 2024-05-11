@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import axios from "axios";
+import React, {Component, useEffect} from "react";
+import Board from '../../js/board.jsx';
 
 class MainBoard extends Component{
     constructor(props) {
@@ -15,14 +15,13 @@ class MainBoard extends Component{
         }
     }
     render() {
-        let boardRows = this.state.boardRows;
         return (
             <div className="boardBox">
                 <a href="#" className="boardTitle">{this.state.titleKR}</a>
                 <hr />
                 <div className="boardContents">
                     {
-                        boardRows.map( (post, index) => (
+                        this.state.boardRows?.map( (post, index) => (
                             <a className="boardPost" href="#" key={index}>
                                 <span className="postTitle">
                                     {this.props.title == 'notice' ?
@@ -38,21 +37,11 @@ class MainBoard extends Component{
     }
 
     componentDidMount() {
-        this.renderMainBoards();
-    }
-
-    renderMainBoards = async ()=>{
-        try {
-            const res =
-                await axios.get('http://localhost:4000/main/'+this.props.title)
-                    .then((res) => {
-                        this.setState({
-                            boardRows : res.data,
-                        });
-                    });
-        } catch (err){
-            console.log(err);
-        }
+        //공지사항 데이터
+        Board.getData(this.props.title)
+            .then((res)=> {
+                this.setState({boardRows: res.data})
+            });
     }
 }
 
