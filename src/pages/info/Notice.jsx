@@ -4,16 +4,22 @@ import Board from '../../js/board.jsx';
 import write from "./Write.jsx";
 import Write from "./Write.jsx";
 import {Link} from "react-router-dom";
+import View from "./View.jsx";
 
 function Notice() {
     const title = 'notice';
     const [board,setBoard] = useState([]);
     const [totalCnt , setTotalCnt] = useState(0);
+
     const isAdmin = true;
 
+    //type 0 : view
+    //type 1 : write
+    //type 1 : update
     const [isEditable, setIsEditable] = useState(
         {"editable" : false, "type" : 0}
     );
+    const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
 
     useEffect(() => {
         Board.getData(title).then((res)=> {
@@ -22,12 +28,16 @@ function Notice() {
         Board.getCnt(title).then((res) =>{
             setTotalCnt(res.data[0].cnt);
         });
-    }, [isEditable]);
+    }, [isEditable, isVisible]);
 
 
 
     const setEditState = (childState) =>{
         setIsEditable(childState);
+    }
+
+    const setViewable = (childState)=>{
+        setIsVisible(childState);
     }
 
 
@@ -37,6 +47,15 @@ function Notice() {
         setIsEditable({"editable" : true, "type" : 1});
     }
 
+    const [post, setPost] = useState([])
+    const view =(e)=>{
+        const ntcNo = e.currentTarget.dataset.ntcNo;
+        Board.view(title,ntcNo).then((res)=> {
+            setPost(res.data);
+        });
+        setIsVisible({visible : true , ntcNo : ntcNo})
+    }
+
     const update = ()=>{
         setIsEditable({"editable" : true, "type" : 2});
     }
@@ -44,37 +63,43 @@ function Notice() {
     return (
         <>
         {(isEditable.editable) ?
-            <Write data={isEditable} changeEditable={setEditState}/> :
+            <Write data={isEditable} post={post} changeEditable={setEditState}/> :
             <>
-                <div>
-                    <span>전체 : {totalCnt} / 페이지수 : {1}</span>
-                </div>
-                <ul className="boardTable">
-                    <li>
-                        <div className="table th">번호</div>
-                        <div className="table th">제목</div>
-                        <div className="table th">작성자</div>
-                        <div className="table th">등록일</div>
-                        <div className="table th">조회</div>
-                    </li>
-                    {
-                        board.map((post, index)=>(
-                            <li key={index}>
-                                <div className="table tc">{index}</div>
-                                <div className="table tc">{post.title}</div>
-                                <div className="table tc">{post.userId}</div>
-                                <div className="table tc">{post.date}</div>
-                                <div className="table tc">{post.vcnt}</div>
-                            </li>
-                        ))
-                    }
-                </ul>
-                {isAdmin &&
-                    <div className="admin">
-                        <button onClick={write}>등록</button>
-                        {/*<button onClick={update}>수정</button>*/}
-                        <button>삭제</button>
-                    </div>
+                {
+                    (isVisible.visible) ?
+                        <View data={post} changeVisible={setViewable} changeEditable={setEditState}/> :
+                        <>
+                            <div>
+                                <span>전체 : {totalCnt} / 페이지수 : {1}</span>
+                            </div>
+                            <ul className="boardTable">
+                                <li>
+                                    <div className="table th">번호</div>
+                                    <div className="table th">제목</div>
+                                    <div className="table th">작성자</div>
+                                    <div className="table th">등록일</div>
+                                    <div className="table th">조회</div>
+                                </li>
+                                {
+                                    board.map((post, index) => (
+                                        <li key={index} className="view" onClick={view} data-ntc-no={post.ntcNo}>
+                                            <div className="table tc">{index}</div>
+                                            <div className="table tc">{post.title}</div>
+                                            <div className="table tc">{post.userId}</div>
+                                            <div className="table tc">{post.date}</div>
+                                            <div className="table tc">{post.vcnt}</div>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                            {isAdmin &&
+                                <div className="admin">
+                                    <button onClick={write}>등록</button>
+                                    {/*<button onClick={update}>수정</button>*/}
+                                    <button>삭제</button>
+                                </div>
+                            }
+                        </>
                 }
             </>
         }

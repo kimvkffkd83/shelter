@@ -19,10 +19,6 @@ function SubLayout(){
             setIndex(initialState);
         }
     }, [location]);
-    console.log("location",location);
-    console.log("index2",index);
-
-
     const target = MenuJson.mainMenu[index];
     const title = target.addrKR;
     const subMenu = target.subMenu;
@@ -33,14 +29,12 @@ function SubLayout(){
     }
     const subTitle = subMenu[subIndex].addrKR;
 
-
     const data = {
         index ,
         target,
         title,
         subMenu
     }
-    console.log("data",data);
 
     return (
         <div className="flexContent">

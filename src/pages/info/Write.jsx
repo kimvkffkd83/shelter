@@ -1,40 +1,60 @@
 import axios from "axios";
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
+import board from "../../js/board.jsx";
 
 function Write(props){
+    console.log("props:",props);
+    console.log("props:",props.post.at(0).title);
 
     const titleRef = useRef()
     const contentsRef = useRef()
+    const date = new Date();
+    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
+    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+
 
     const action = ()=>{
-        writePost().then((res)=>{
-            console.log(res);
-            alert('공지사항이 등록되었습니다');
-        }).then(()=>{
-            props.changeEditable({"editable" : false, "type" : 0});
-        })
-
-    }
-    const writePost  = async ()=>{
-        const date = new Date();
-        const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+ date.getDate().toString().padStart(2, '0');
-
         const data = {
             "user_no" : 1,
             "user_id" : 'se6651',
             "ntc_title" : titleRef.current.value,
             "ntc_contents" : contentsRef.current.value,
-            "ntc_reg_date" : newDate,
+            "ntc_reg_date" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
             "ntc_udt_date" : newDate,
         }
 
-        console.log("data",data);
-        try {
-            return await axios.post('http://localhost:4000/data/notice/write', data);
-        } catch (err){
-            console.log(err);
+        console.log("data:",data);
+
+        if(props.data.type === 1){
+            board.write('notice', data).then((res)=>{
+                console.log(res);
+                if(res.status === 200){
+                    alert('공지사항이 등록되었습니다');
+                    props.changeEditable({"editable" : false, "type" : 0});
+                }else{
+                    alert('등록실패여요');
+                }
+            })
+        }else if(props.data.type === 2){
+            data.ntc_no = props.post.at(0)?.ntcNo;
+            delete data.ntc_reg_date;
+            board.update('notice', props.post.at(0)?.ntcNo, data).then((res)=>{
+                console.log(res);
+                if(res.status === 200){
+                    alert('공지사항이 수정되었습니다');
+                    props.post.at(0).ntcNo = data.ntc_no;
+                    props.post.at(0).userId = data.user_id;
+                    props.post.at(0).title = data.ntc_title;
+                    props.post.at(0).contents = data.ntc_contents;
+                    props.post.at(0).date = newDateStr;
+                    props.changeEditable({"editable" : false, "type" : 0});
+                }else{
+                    alert('수정실패여요');
+                }
+            })
         }
     }
+
     const undo = ()=>{
         props.changeEditable({"editable" : false, "type" : 0})
     }
@@ -47,7 +67,7 @@ function Write(props){
                         <span>제목 : </span>
                     </div>
                     <div>
-                        <input className="title" ref={titleRef}/>
+                        <input className="title" ref={titleRef} defaultValue={props.post.at(0)?.title}/>
                     </div>
                 </li>
                 <li>
@@ -55,21 +75,28 @@ function Write(props){
                         <span>날짜 : </span>
                     </div>
                     <div>
-                        <label htmlFor="date">현재</label>
-                        <input className="date" type="radio"></input>
-                         <label htmlFor="date">예약</label>
-                        <input className="date" type="radio"></input>
-                    </div>
-                    <div>
-                        날짜 라이브러리
+                        <span>{newDate}</span>
+                        {props.data.type === 1 &&
+                            <>
+                                <div>
+                                    <label htmlFor="date">현재</label>
+                                    <input className="date" type="radio"></input>
+                                    <label htmlFor="date">예약</label>
+                                    <input className="date" type="radio"></input>
+                                </div>
+                                <div>
+                                    날짜 라이브러리
+                                </div>
+                            </>
+                        }
                     </div>
                 </li>
                 <li>
-                    <div>
+                <div>
                         <span>내용 : </span>
                     </div>
                     <div>
-                        <textarea ref={contentsRef}/>
+                        <textarea ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
                     </div>
 
                 </li>

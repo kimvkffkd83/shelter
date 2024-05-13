@@ -52,7 +52,7 @@ app.get("/data/notice/tcnt", (req, res) =>{
 // })
 
 app.get("/data/notice",(req,res) => {
-    db.query('SELECT USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
+    db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
     });
@@ -60,11 +60,57 @@ app.get("/data/notice",(req,res) => {
 
 app.post("/data/notice/write", (req,res) =>{
     let convertedArray = Object.entries(req.body).map(entry => entry[1]);
-    console.log("convertedArray",convertedArray);
+    // console.log("convertedArray",convertedArray);
     db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',convertedArray, (error, rows, fields) =>{
+        console.log("rows",rows);
         if (error) throw error;
         res.send(rows);
     });
+})
+
+app.get("/data/notice/:id/view", (req,res)=>{
+    const id = req.params.id; // request받은 id값
+    if(id) {
+        db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST(NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db WHERE NTC_NO=?',id, (error, rows, fields) =>{
+            console.log("(server)공지사항 1개 : ",rows);
+            if (error) throw error;
+            res.send(rows);
+        });
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
+})
+
+app.post('/data/notice/:id/remove', (req, res) =>{
+    const id = req.params.id; // request받은 id값
+    console.log('(server)지울 no',id);
+
+    if(id) {
+        db.query('DELETE FROM master_notice_db WHERE ntc_no=?', id, (error, rows, fields) =>{
+            console.log("(server)공지사항 지워짐",rows);
+            if (error) throw error;
+            res.send(rows);
+        });
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
+})
+
+app.post('/data/notice/:id/update', (req, res) =>{
+    const id = req.params.id; // request받은 id값
+    let convertedArray = Object.entries(req.body).map(entry => entry[1]);
+    if(id) {
+        db.query('UPDATE master_notice_db SET USER_NO = ?, USER_ID = ?, NTC_TITLE=?, NTC_CONTENTS=?, NTC_UDT_DATE = ? WHERE NTC_NO=?', convertedArray, (error, rows, fields) =>{
+            console.log("(server)공지사항 수정됨",rows);
+            if (error) throw error;
+            res.send(rows);
+        });
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
 })
 
 
