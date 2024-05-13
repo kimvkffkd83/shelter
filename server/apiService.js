@@ -52,7 +52,16 @@ app.get("/data/notice/tcnt", (req, res) =>{
 // })
 
 app.get("/data/notice",(req,res) => {
-    db.query('SELECT USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db limit 0,10', (error, rows, fields) =>{
+    db.query('SELECT USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+app.post("/data/notice/write", (req,res) =>{
+    let convertedArray = Object.entries(req.body).map(entry => entry[1]);
+    console.log("convertedArray",convertedArray);
+    db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',convertedArray, (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
     });
@@ -61,7 +70,7 @@ app.get("/data/notice",(req,res) => {
 
 app.get("/data/feedback",(req,res) =>{
     db.query('SELECT FDB_TITLE AS title, DATE_FORMAT (CAST( FDB_REG_DATE AS date),\'%Y-%m-%d\') AS date, FDB_ST as st FROM master_feedback_db limit 0,6', (error, rows, fields) =>{
-        if(error) throw error;
+        if (error) throw error;
         res.send(rows);
     });
 })
