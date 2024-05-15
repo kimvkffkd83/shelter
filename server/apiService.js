@@ -88,15 +88,10 @@ app.get("/data/notice/list",(req,res) => {
 
 //공지사항 게시글 등록
 app.post("/data/notice/write", (req,res) =>{
-    const userNo = req.body.user_no;
-    const userId = req.body.user_id;
-    const ntcTitle = req.body.ntc_title;
-    const ntcContents = req.body.ntc_contents;
-    const ntcRegDate = req.body.ntc_reg_date;
-    const ntcUdtDate = req.body.ntc_udt_date;
-    const value = [userNo,userId,ntcTitle,ntcContents,ntcRegDate,ntcUdtDate]
+    const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
+    const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_REG_DATE,NTC_UDT_DATE];
     // console.log("convertedArray",convertedArray);
-    db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',value, (error, rows, fields) =>{
+    db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
         if (error) {
             console.error("(server)공지사항 등록 중 에러:", error);
             res.status(500).send("공지사항을 등록하는 도중 에러가 발생했습니다.");
@@ -131,7 +126,7 @@ app.post('/data/notice/:id/remove', (req, res) =>{
             if (error) {
                 console.error("(server)공지사항 삭제 중 에러:", error);
                 res.status(500).send(`${id}번 공지사항을 삭제하는 도중 에러가 발생했습니다.`);
-                return;;
+                return;
             }
             if (res.affectedRows === 0) {
                 res.status(404).send("해당하는 공지사항이 없습니다.");
@@ -149,9 +144,9 @@ app.post('/data/notice/:id/remove', (req, res) =>{
 app.post('/data/notice/:id/update', (req, res) =>{
     const id = req.params.id;
     console.log("req.body",req.body);
+    const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_UDT_DATE} = req.body;
+    const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_UDT_DATE, id];
 
-    const { user_no, user_id, ntc_title, ntc_contents, ntc_udt_date } = req.body;
-    const values = [user_no, user_id, ntc_title, ntc_contents, ntc_udt_date, id];
     if(id) {
         db.query('UPDATE master_notice_db SET USER_NO = ?, USER_ID = ?, NTC_TITLE=?, NTC_CONTENTS=?, NTC_UDT_DATE = ? WHERE NTC_NO=?', values, (error, rows, fields) =>{
             if (error) {
@@ -163,6 +158,7 @@ app.post('/data/notice/:id/update', (req, res) =>{
                 res.status(404).send("해당하는 공지사항이 없습니다.");
                 return;
             }
+            res.send(rows);
         });
     }else{
         console.log(err);

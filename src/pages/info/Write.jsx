@@ -15,12 +15,12 @@ function Write(props){
 
     const action = ()=>{
         const data = {
-            "user_no" : 1,
-            "user_id" : 'se6651',
-            "ntc_title" : titleRef.current.value,
-            "ntc_contents" : contentsRef.current.value,
-            "ntc_reg_date" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
-            "ntc_udt_date" : newDate,
+            "USER_NO" : 1,
+            "USER_ID" : 'se6651',
+            "NTC_TITLE" : titleRef.current.value,
+            "NTC_CONTENTS" : contentsRef.current.value,
+            "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
+            "NTC_UDT_DATE" : newDate,
         }
 
         console.log("data:",data);
@@ -28,28 +28,28 @@ function Write(props){
         if(props.data.type === 1){
             board.write(data).then((res)=>{
                 console.log(res);
-                if(res.status === 200){
+                if(res.status === 500){
+                    alert(res.data);
+                }else {
                     alert('공지사항이 등록되었습니다');
-                    props.changeEditable({"editable" : false, "type" : 0});
-                }else{
-                    alert('등록실패여요');
+                    props.changeEditable({"editable": false, "type": 0});
                 }
             })
         }else if(props.data.type === 2){
-            data.ntc_no = props.post.at(0)?.ntcNo;
-            delete data.ntc_reg_date;
+            data.NTC_NO = props.post.at(0)?.ntcNo;
+            delete data.NTC_REG_DATE;
             board.update(props.post.at(0)?.ntcNo, data).then((res)=>{
                 console.log(res);
-                if(res.status === 200){
+                if(res.status === 500 || res.status === 404 ){
+                    alert(res.data);
+                }else{
                     alert('공지사항이 수정되었습니다');
-                    props.post.at(0).ntcNo = data.ntc_no;
-                    props.post.at(0).userId = data.user_id;
-                    props.post.at(0).title = data.ntc_title;
-                    props.post.at(0).contents = data.ntc_contents;
+                    props.post.at(0).ntcNo = data.NTC_NO;
+                    props.post.at(0).userId = data.USER_ID;
+                    props.post.at(0).title = data.NTC_TITLE;
+                    props.post.at(0).contents = data.NTC_CONTENTS;
                     props.post.at(0).date = newDateStr;
                     props.changeEditable({"editable" : false, "type" : 0});
-                }else{
-                    alert('수정실패여요');
                 }
             })
         }

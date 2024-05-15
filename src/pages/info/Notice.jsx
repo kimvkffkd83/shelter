@@ -28,6 +28,7 @@ function Notice() {
         Board.tcnt(title).then((res) =>{
             setTotalCnt(res[0].cnt);
         });
+        // setPost([]);
     }, [isEditable, isVisible]);
 
 
@@ -44,6 +45,7 @@ function Notice() {
 
 
     const write = ()=>{
+        setPost([]);
         setIsEditable({"editable" : true, "type" : 1});
     }
 
@@ -51,9 +53,13 @@ function Notice() {
     const view =(e)=>{
         const ntcNo = e.currentTarget.dataset.ntcNo;
         Board.view(ntcNo).then((res)=> {
-            setPost(res);
+            if(res.length === 0){
+                alert("존재하지 않는 게시글입니다")
+            }else{
+                setPost(res);
+                setIsVisible({visible : true , ntcNo : ntcNo})
+            }
         });
-        setIsVisible({visible : true , ntcNo : ntcNo})
     }
 
     const update = ()=>{
