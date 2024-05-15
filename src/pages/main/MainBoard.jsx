@@ -1,5 +1,6 @@
 import React, {Component, useEffect} from "react";
-import Board from '../../js/board.jsx';
+import Board from '../../api/Board.jsx';
+import Main from "../../api/Main.jsx";
 
 class MainBoard extends Component{
     constructor(props) {
@@ -21,20 +22,19 @@ class MainBoard extends Component{
                 <hr />
                 <div className="boardContents">
                     {
-                        this.state.boardRows?.map( (post, index) => {
-                            if(index < 6){
-                                return (
-                                    <a className="boardPost" href="#" key={index}>
+                        this.state.boardRows.length === 0 ?
+                            <span>게시글이 없습니다</span> :
+                            this.state.boardRows.map( (post, index) => (
+                                <a className="boardPost" href="#" key={index}>
                                     <span className="postTitle">
                                         {this.props.title == 'notice' ?
-                                            '' : <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
+                                            '' :
+                                            <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
                                         }{post.title}</span>
-                                            <span className="postDate">{post.date}</span>
-                                        </a>
-                                    );
-                                }
-                            }
-                        )
+                                    <span className="postDate">{post.date}</span>
+                                </a>
+
+                            ))
                     }
                 </div>
             </div>
@@ -43,9 +43,9 @@ class MainBoard extends Component{
 
     componentDidMount() {
         //공지사항 데이터
-        Board.getData(this.props.title)
+        Main.list(this.props.title)
             .then((res) => {
-                this.setState({boardRows: res.data})
+                this.setState({boardRows: res})
             });
     }
 }

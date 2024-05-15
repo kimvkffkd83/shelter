@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../../css/Main.css"
-import Board from '../../js/board.jsx';
+import Board from '../../api/Board.jsx';
 import write from "./Write.jsx";
 import Write from "./Write.jsx";
 import {Link} from "react-router-dom";
@@ -22,11 +22,11 @@ function Notice() {
     const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
 
     useEffect(() => {
-        Board.getData(title).then((res)=> {
-            setBoard(res.data);
+        Board.list(title).then((res)=> {
+            setBoard(res);
         });
-        Board.getCnt(title).then((res) =>{
-            setTotalCnt(res.data[0].cnt);
+        Board.tcnt(title).then((res) =>{
+            setTotalCnt(res[0].cnt);
         });
     }, [isEditable, isVisible]);
 
@@ -50,8 +50,8 @@ function Notice() {
     const [post, setPost] = useState([])
     const view =(e)=>{
         const ntcNo = e.currentTarget.dataset.ntcNo;
-        Board.view(title,ntcNo).then((res)=> {
-            setPost(res.data);
+        Board.view(ntcNo).then((res)=> {
+            setPost(res);
         });
         setIsVisible({visible : true , ntcNo : ntcNo})
     }

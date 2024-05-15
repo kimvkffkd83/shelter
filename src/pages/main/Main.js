@@ -1,7 +1,7 @@
-import '../css/Main.css';
+import '../../css/Main.css';
 import React from "react";
-import MainSlideArea from "../pages/main/MainSlideArea.jsx";
-import MainBoard from "../pages/main/MainBoard.jsx";
+import MainSlideArea from "./MainSlideArea.jsx";
+import MainBoard from "./MainBoard.jsx";
 function Main(){
     return (
         <div>

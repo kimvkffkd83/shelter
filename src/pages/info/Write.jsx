@@ -1,10 +1,10 @@
 import axios from "axios";
 import {useEffect, useRef} from "react";
-import board from "../../js/board.jsx";
+import board from "../../api/Board.jsx";
 
 function Write(props){
     console.log("props:",props);
-    console.log("props:",props.post.at(0).title);
+    // console.log("props:",props.post.at(0).title);
 
     const titleRef = useRef()
     const contentsRef = useRef()
@@ -26,7 +26,7 @@ function Write(props){
         console.log("data:",data);
 
         if(props.data.type === 1){
-            board.write('notice', data).then((res)=>{
+            board.write(data).then((res)=>{
                 console.log(res);
                 if(res.status === 200){
                     alert('공지사항이 등록되었습니다');
@@ -38,7 +38,7 @@ function Write(props){
         }else if(props.data.type === 2){
             data.ntc_no = props.post.at(0)?.ntcNo;
             delete data.ntc_reg_date;
-            board.update('notice', props.post.at(0)?.ntcNo, data).then((res)=>{
+            board.update(props.post.at(0)?.ntcNo, data).then((res)=>{
                 console.log(res);
                 if(res.status === 200){
                     alert('공지사항이 수정되었습니다');

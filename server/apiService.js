@@ -27,14 +27,50 @@ app.post("/text", (req, res) =>{
     res.send(sendText);
 })
 
+//서버 개시
 app.listen(port, ()=>{
-    // db.query('SELECT * FROM master_post_db', (error, rows, fields) =>{
-    //     if(error) throw error;
-    //     console.log('post info is: ',rows);
-    // });
-    console.log("돌리랑 도트가 제일 좋아")
+    console.log("api 서버 개시 완료")
 })
 
+//메인페이지에서 공지사항 조회
+app.get("/data/main/:board/list",(req,res) =>{
+    const board = req.params.board;
+    let tableName,noColumnName,titleColumnName,regDateColumnName;
+    
+    // board에 따른 테이블과 컬럼 설정
+    switch (board) {
+        case 'notice':
+            tableName = 'master_notice_db';
+            noColumnName = 'NTC_NO';
+            titleColumnName = 'NTC_TITLE';
+            regDateColumnName = 'NTC_REG_DATE';
+            break;
+        case 'feedback':
+            tableName = 'master_feedback_db';
+            noColumnName = 'FDB_NO';
+            titleColumnName = 'FDB_TITLE';
+            regDateColumnName = 'FDB_REG_DATE';
+            break;
+        // 추가적인 경우에 따라 필요한 테이블과 컬럼 설정
+        default:
+            res.status(400).send('해당 게시판의 정보는 불러올 수 없습니다.');
+            return;
+    }
+
+    const query = `SELECT ${titleColumnName} AS title, DATE_FORMAT(CAST(${regDateColumnName} AS date), '%Y-%m-%d') AS date FROM ${tableName} ORDER BY ${noColumnName} DESC LIMIT 0,6`;
+
+    db.query(query, (error, rows, fields) =>{
+        if (error) {
+            console.error(`(server) ${board} 목록 조회 중 에러:`, error);
+            res.status(500).send(`${board} 목록을 조회하는 도중 에러가 발생했습니다.`);
+            return;
+        }
+        res.send(rows);
+        console.log(`${board} list: `,rows);
+    });
+})
+
+//공지사항 모든 게시글 수
 app.get("/data/notice/tcnt", (req, res) =>{
     db.query('SELECT COUNT(*) AS cnt FROM master_notice_db', (error, tcnt) =>{
         if (error) throw error;
@@ -42,34 +78,37 @@ app.get("/data/notice/tcnt", (req, res) =>{
     })
 })
 
-// app.get("/main/notice",(req,res) =>{
-//     db.query('SELECT NTC_TITLE AS title, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db limit 0,6', (error, rows, fields) =>{
-//         if(error) throw error;
-//
-//         res.send(rows);
-//         console.log('notice info is: ',rows);
-//     });
-// })
-
-app.get("/data/notice",(req,res) => {
+//공지사항 최신 1페이지 조회
+app.get("/data/notice/list",(req,res) => {
     db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
     });
 })
 
+//공지사항 게시글 등록
 app.post("/data/notice/write", (req,res) =>{
-    let convertedArray = Object.entries(req.body).map(entry => entry[1]);
+    const userNo = req.body.user_no;
+    const userId = req.body.user_id;
+    const ntcTitle = req.body.ntc_title;
+    const ntcContents = req.body.ntc_contents;
+    const ntcRegDate = req.body.ntc_reg_date;
+    const ntcUdtDate = req.body.ntc_udt_date;
+    const value = [userNo,userId,ntcTitle,ntcContents,ntcRegDate,ntcUdtDate]
     // console.log("convertedArray",convertedArray);
-    db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',convertedArray, (error, rows, fields) =>{
-        console.log("rows",rows);
-        if (error) throw error;
-        res.send(rows);
+    db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',value, (error, rows, fields) =>{
+        if (error) {
+            console.error("(server)공지사항 등록 중 에러:", error);
+            res.status(500).send("공지사항을 등록하는 도중 에러가 발생했습니다.");
+        }else{
+            res.send({ insertedId: res.insertId });
+        }
     });
 })
 
+// 공지사항 게시글 확인
 app.get("/data/notice/:id/view", (req,res)=>{
-    const id = req.params.id; // request받은 id값
+    const id = req.params.id;
     if(id) {
         db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST(NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db WHERE NTC_NO=?',id, (error, rows, fields) =>{
             console.log("(server)공지사항 1개 : ",rows);
@@ -82,15 +121,23 @@ app.get("/data/notice/:id/view", (req,res)=>{
     }
 })
 
+// 공지사항 게시글 삭제
 app.post('/data/notice/:id/remove', (req, res) =>{
-    const id = req.params.id; // request받은 id값
+    const id = req.params.id;
     console.log('(server)지울 no',id);
 
     if(id) {
         db.query('DELETE FROM master_notice_db WHERE ntc_no=?', id, (error, rows, fields) =>{
-            console.log("(server)공지사항 지워짐",rows);
-            if (error) throw error;
-            res.send(rows);
+            if (error) {
+                console.error("(server)공지사항 삭제 중 에러:", error);
+                res.status(500).send(`${id}번 공지사항을 삭제하는 도중 에러가 발생했습니다.`);
+                return;;
+            }
+            if (res.affectedRows === 0) {
+                res.status(404).send("해당하는 공지사항이 없습니다.");
+                return;
+            }
+            res.send({ affectedRows: res.affectedRows });
         });
     }else{
         console.log(err);
@@ -98,25 +145,27 @@ app.post('/data/notice/:id/remove', (req, res) =>{
     }
 })
 
+// 공지사항 게시글 수정
 app.post('/data/notice/:id/update', (req, res) =>{
-    const id = req.params.id; // request받은 id값
-    let convertedArray = Object.entries(req.body).map(entry => entry[1]);
+    const id = req.params.id;
+    console.log("req.body",req.body);
+
+    const { user_no, user_id, ntc_title, ntc_contents, ntc_udt_date } = req.body;
+    const values = [user_no, user_id, ntc_title, ntc_contents, ntc_udt_date, id];
     if(id) {
-        db.query('UPDATE master_notice_db SET USER_NO = ?, USER_ID = ?, NTC_TITLE=?, NTC_CONTENTS=?, NTC_UDT_DATE = ? WHERE NTC_NO=?', convertedArray, (error, rows, fields) =>{
-            console.log("(server)공지사항 수정됨",rows);
-            if (error) throw error;
-            res.send(rows);
+        db.query('UPDATE master_notice_db SET USER_NO = ?, USER_ID = ?, NTC_TITLE=?, NTC_CONTENTS=?, NTC_UDT_DATE = ? WHERE NTC_NO=?', values, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)공지사항 수정 중 에러:", error);
+                res.status(500).send("공지사항을 수정하는 도중 에러가 발생했습니다.");
+                return;
+            }
+            if (res.affectedRows === 0) {
+                res.status(404).send("해당하는 공지사항이 없습니다.");
+                return;
+            }
         });
     }else{
         console.log(err);
         res.send('There is no id.');
     }
-})
-
-
-app.get("/data/feedback",(req,res) =>{
-    db.query('SELECT FDB_TITLE AS title, DATE_FORMAT (CAST( FDB_REG_DATE AS date),\'%Y-%m-%d\') AS date, FDB_ST as st FROM master_feedback_db limit 0,6', (error, rows, fields) =>{
-        if (error) throw error;
-        res.send(rows);
-    });
 })

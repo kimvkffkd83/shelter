@@ -1,4 +1,4 @@
-import board from "../../js/board.jsx";
+import board from "../../api/Board.jsx";
 import {useEffect} from "react";
 
 function View(props) {
@@ -11,7 +11,7 @@ function View(props) {
 
     const remove = () =>{
         if(window.confirm('정말로 해당 공지사항을 삭제하시겠습니까?')){
-            board.remove('notice', props.data.at(0)?.ntcNo).then((res)=>{
+            board.remove(props.data.at(0)?.ntcNo).then((res)=>{
                 if(res.status === 200){
                     alert('공지사항이 삭제되었습니다');
                     props.changeVisible({visible : false , ntcNo : 0});

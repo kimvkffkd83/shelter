@@ -1,5 +1,5 @@
 import '../css/App.css';
-import Main from "./Main.js";
+import Main from "../pages/main/Main.js";
 import {Route, Routes} from "react-router-dom";
 import React from "react";
 import SubLayout from "../component/SubLayout.jsx";
