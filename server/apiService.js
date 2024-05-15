@@ -79,7 +79,7 @@ app.get("/data/notice/tcnt", (req, res) =>{
 })
 
 //공지사항 최신 1페이지 조회
-app.get("/data/notice/list",(req,res) => {
+app.get("/data/notice",(req,res) => {
     db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
@@ -87,7 +87,7 @@ app.get("/data/notice/list",(req,res) => {
 })
 
 //공지사항 게시글 등록
-app.post("/data/notice/write", (req,res) =>{
+app.post("/data/notice", (req,res) =>{
     const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
     const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_REG_DATE,NTC_UDT_DATE];
     // console.log("convertedArray",convertedArray);
@@ -102,7 +102,7 @@ app.post("/data/notice/write", (req,res) =>{
 })
 
 // 공지사항 게시글 확인
-app.get("/data/notice/:id/view", (req,res)=>{
+app.get("/data/notice/:id", (req,res)=>{
     const id = req.params.id;
     if(id) {
         db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST(NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db WHERE NTC_NO=?',id, (error, rows, fields) =>{
@@ -117,7 +117,7 @@ app.get("/data/notice/:id/view", (req,res)=>{
 })
 
 // 공지사항 게시글 삭제
-app.post('/data/notice/:id/remove', (req, res) =>{
+app.delete('/data/notice/:id', (req, res) =>{
     const id = req.params.id;
     console.log('(server)지울 no',id);
 
@@ -141,7 +141,7 @@ app.post('/data/notice/:id/remove', (req, res) =>{
 })
 
 // 공지사항 게시글 수정
-app.post('/data/notice/:id/update', (req, res) =>{
+app.put('/data/notice/:id', (req, res) =>{
     const id = req.params.id;
     console.log("req.body",req.body);
     const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_UDT_DATE} = req.body;

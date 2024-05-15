@@ -1,22 +1,12 @@
 import axios from "axios";
 
-const  API_URL = 'http://localhost:4000/data/notice/';
+const  API_URL = 'http://localhost:4000/data/notice';
 
 const api = axios.create({
     baseURL : API_URL,
 });
 
 const API = {
-
-    list: async () =>{
-        try {
-            const res = await api.get('list');
-            return res.data;
-        } catch (error) {
-            console.error("Error while fetching notice list data:", error);
-            throw error;
-        }
-    },
     tcnt: async () => {
         try {
             const res = await api.get(`tcnt`);
@@ -26,9 +16,18 @@ const API = {
             throw error;
         }
     },
+    list: async () =>{
+        try {
+            const res = await api.get('/');
+            return res.data;
+        } catch (error) {
+            console.error("Error while fetching notice list data:", error);
+            throw error;
+        }
+    },
     write: async (data) => {
         try {
-            const res = await api.post(`write`, data);
+            const res = await api.post(`/`, data);
             return res;
         } catch (error) {
             console.error("Error while writing data:", error);
@@ -37,7 +36,7 @@ const API = {
     },
     view: async (ntcNo) => {
         try {
-            const res = await api.get(`${ntcNo}/view`);
+            const res = await api.get(`/${ntcNo}`);
             return res.data;
         } catch (error) {
             console.error("Error while viewing data:", error);
@@ -46,7 +45,7 @@ const API = {
     },
     remove: async (ntcNo) => {
         try {
-            const res = await api.post(`${ntcNo}/remove`, ntcNo);
+            const res = await api.delete(`/${ntcNo}`);
             return res;
         } catch (error) {
             console.error("Error while removing data:", error);
@@ -55,7 +54,7 @@ const API = {
     },
     update: async (ntcNo, data) => {
         try {
-            const res = await api.post(`${ntcNo}/update`, data);
+            const res = await api.put(`/${ntcNo}`, data);
             return res;
         } catch (error) {
             console.error("Error while updating data:", error);
