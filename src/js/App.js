@@ -12,7 +12,6 @@ import Missing from "../pages/missing/missing.jsx";
 import Protection from "../pages/protection/protection.jsx";
 import Dog from "../pages/protection/dog.jsx";
 import Cat from "../pages/protection/Cat.jsx";
-import Write from "../pages/info/Write.jsx";
 
 function App() {
    return(

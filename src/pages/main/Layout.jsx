@@ -5,12 +5,12 @@ import {Outlet} from "react-router-dom";
 
 function Layout() {
     return (
-        <div className={"wrap"}>
+        <div id="wrap">
             <Header/>
-            <div className="content">
+            <div id="container">
                 <Outlet />
             </div>
-            <footer>
+            <footer id="footer">
                 <h1>푸터</h1>
             </footer>
         </div>

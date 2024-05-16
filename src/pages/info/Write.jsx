@@ -60,52 +60,36 @@ function Write(props){
     }
 
     return(
-        <>
-            <ul>
-                <li>
-                    <div>
-                        <span>제목 : </span>
-                    </div>
-                    <div>
-                        <input className="title" ref={titleRef} defaultValue={props.post.at(0)?.title}/>
-                    </div>
-                </li>
-                <li>
-                    <div>
-                        <span>날짜 : </span>
-                    </div>
-                    <div>
-                        <span>{newDate}</span>
-                        {props.data.type === 1 &&
-                            <>
-                                <div>
-                                    <label htmlFor="date">현재</label>
-                                    <input className="date" type="radio"></input>
-                                    <label htmlFor="date">예약</label>
-                                    <input className="date" type="radio"></input>
-                                </div>
-                                <div>
-                                    날짜 라이브러리
-                                </div>
-                            </>
-                        }
-                    </div>
-                </li>
-                <li>
-                <div>
-                        <span>내용 : </span>
-                    </div>
-                    <div>
-                        <textarea ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
-                    </div>
-
-                </li>
-            </ul>
-            <div>
-                <button onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>
-                <button onClick={undo}>취소</button>
+        <div className="box__post">
+            <div className="post__item">
+                <span className="post__item-title">제목</span>
+                <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}/>
             </div>
-        </>
+            <div className="post__item">
+                <span className="post__item-title">날짜</span>
+                <span className="post__item__text">{newDateStr}</span>
+            </div>
+            {props.data.type === 1 &&
+                <div className="post__item">
+                    <div className="post__item-title"></div>
+                    <div className="post__item__text">
+                        <label name="date" className="post__item__label" htmlFor="date">현재</label>
+                        <input name="date" className="post__item__radio" type="radio" defaultChecked></input>
+                        <label name="date" className="post__item__label" htmlFor="date">예약</label>
+                        <input name="date" className="post__item__radio" type="radio"></input>
+                    </div>
+                </div>
+            }
+            <div className="post__item">
+                <span className="post__item-title">내용</span>
+                <textarea className="post__item__textarea"
+                          ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
+            </div>
+            <div className="box__btns">
+                <button className="btn__default" onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>
+                <button className="btn__default"  onClick={undo}>취소</button>
+            </div>
+        </div>
     )
 }
 

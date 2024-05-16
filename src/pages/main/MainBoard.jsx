@@ -17,21 +17,21 @@ class MainBoard extends Component{
     }
     render() {
         return (
-            <div className="boardBox">
-                <a href="#" className="boardTitle">{this.state.titleKR}</a>
-                <hr />
-                <div className="boardContents">
+            <div className="main__board__container">
+                <a href="#" className="main__board__title">{this.state.titleKR}</a>
+                <hr className="main__board__line"/>
+                <div className="main__board__contents">
                     {
                         this.state.boardRows.length === 0 ?
-                            <span>게시글이 없습니다</span> :
+                            <span className="main__post__none">게시글이 없습니다</span> :
                             this.state.boardRows.map( (post, index) => (
-                                <a className="boardPost" href="#" key={index}>
-                                    <span className="postTitle">
+                                <a className="main__post" href="#" key={index}>
+                                    <span className="main__post-title text-overflow">
                                         {this.props.title == 'notice' ?
                                             '' :
-                                            <span className="postSt"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
+                                            <span className="main__post-status"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
                                         }{post.title}</span>
-                                    <span className="postDate">{post.date}</span>
+                                    <span className="main__post-date">{post.date}</span>
                                 </a>
 
                             ))

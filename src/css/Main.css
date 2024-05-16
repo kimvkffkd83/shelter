@@ -15,25 +15,40 @@
     font-family: Pretendard-Regular, sans-serif;
 }
 
-.wrap{
+/* Layout */
+#wrap{
     width: 1280px;
     margin: 0 auto;
 }
 
-.toolbar{
+#container{
     width: 100%;
-    height: 100px;
-    /*background-color: #eee;*/
+    height: min-content;
 }
 
-header{
+#footer{
+    height: 100px;
+    background-color: #555;
+}
+/* //Layout */
+
+
+/* Header */
+#toolbar{
+    width: 100%;
+    height: 42px;
+    margin-bottom: 48px;
+    background-color: #eee;
+}
+
+#header{
     width: 100%;
     height: 100px;
     box-sizing: content-box;
     display: flex;
 }
 
-header .logo  {
+.header__logo{
     display: block;
     content:'';
     width: 250px;
@@ -44,27 +59,27 @@ header .logo  {
     background-position: center;
 }
 
-header .logo > a{
+.header__logo > a{
     display: inline-block;
     width: 100%;
     height: 100%;
 }
 
-header nav{
+.header__nav{
     flex: 1;
     text-align: center;
 }
 
-header nav > ul {
+#gnb {
     height: 100%;
     display: flex;
-    color: #000;
 }
-header nav > ul > li  {
+
+.gnb__menu  {
     flex: 1;
 }
 
-header nav > ul > li > a {
+.gnb__menu > a {
     width: 100%;
     height: 100%;
 
@@ -77,40 +92,85 @@ header nav > ul > li > a {
     font-weight: 600;
 }
 
-header nav ul > li> ul{
+#lnb{
     display: none;
     flex: 1;
 }
 
-header nav ul > li> ul > li{
+.lnb__menu{
     width: 100%;
 }
 
-.mainMenu>li:hover .subMenu{
+.lnb__menu > a{
+    font-size: 140%;
+    font-weight: 400;
+}
+
+.gnb__menu:hover{
+    background-color: #f8ffe7;
+    /*background-color: #e2ff9e;*/
+}
+
+.gnb__menu:hover #lnb{
     display: block;
 }
 
-.content{
-    width: 100%;
-    height: min-content;
+
+/* //Header */
+
+/* Main */
+/* Main Slide*/
+.box__slider{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 10px;
+    height: inherit;
+    margin-bottom: 10px;
+    /*background-color: #888;*/
 }
 
-main{
-    height: 360px;
-    background-color: #888;
+.slide{
+    width: 240px;
+    height: 300px;
+    border: 1px solid #eee;
+    margin-top: 16px;
+    text-align: center;
 }
 
-.MainContentArea{
+.slide__box{
+    margin: 16px 0;
+    width: 240px;
+    height: 180px;
+}
+
+.slide__img{
+}
+.slide__title{
+}
+.slide__info{
+}
+.slide__info__text{
+    color: #888;
+}
+/* //Main Slide */
+
+
+.main__contents{
     height: 360px;
     display: flex;
 }
 
-.MainContentArea .search{
+/* Main fast search */
+.main__box__fast-search{
     width: 320px;
     height: 100%;
-
+    background-color: #999;
 }
-.MainContentArea .boards{
+/* //Main fast search  */
+
+/* Main board */
+.main__box__board{
     flex: 1
 ;
     display: flex;
@@ -118,93 +178,271 @@ main{
     height: 100%;
 }
 
-.MainContentArea .boards > .boardBox{
+.main__board__container{
     width: 50%;
     flex: 1;
     padding: 30px;
 }
 
-.boardTitle{
+.main__board__title{
     font-size: 150%;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
-.boardBox > .boardContents{
+.main__board__line{
+    margin: 8px 0px 10px 0px;
+}
+
+.main__board__contents{
     width: 100%;
     height: 100%;
     padding: 0 10px;
 }
 
-.boardBox > hr{
-    margin: 8px 0px 10px 0px;
+.main__post__none{
+    color: #888;
 }
 
-.boardPost{
+.main__post{
     display: flex;
     justify-content: space-between;
     width: 100%;
     padding: 5px 0;
 }
 
-.postTitle{
+.main__post-title{
     display: block;
     width: 70%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.postDate{
-    right: 0;
 }
 
-.postSt{
+.main__post-status{
     color: #58AA52;
     font-weight: 600;
 }
 
-.search{
-    background-color: #999;
+.main__post-date{
+    right: 0;
 }
+/* //Main board */
 
-.statistics{
+.main__box__statistics{
     height: 120px;
     background-color: #444;
 }
+/* //Main */
 
-.sideBar{
+
+/* SubLayout */
+.flex_container{
+    display: flex;
+}
+/* SideBar */
+.box__snb{
     width: 250px;
     height: 700px;
+    padding: 16px;
     background-color: #eee;
 }
 
-.subBox{
+.box__title{
+
+}
+
+.box__line{
+    margin: 8px 0px 10px 0px;
+}
+
+.snb{
+
+}
+
+.snb__menu{
+    padding: 8px 0;
+}
+
+.snb__menu > a{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    font-size: 120%;
+    color: #555;
+
+}
+
+.snb__menu:hover{
+    background-color: #aaa;
+}
+/* //SideBar */
+
+.box__content{
     padding: 30px;
     flex: 1;
 }
-.subBox > hr{
+
+.box__content__title{
+    /*font-size: 120%;*/
+    /*font-weight: 500;*/
+    /*margin-bottom: 10px;*/
+}
+
+.box__content__line{
     width: 300px;
     margin: 10px 0px;
 }
 
-.flexContent{
- display: flex;
+.box__content__board{
+
 }
 
+.table__info{
+    margin-bottom: 4px;
+    font-weight: 600;
+    padding: 8px;
+}
 
-.boardTable{
+.table__board{
+    padding: 8px;
     text-align: center;
 }
 
-.boardTable li{
+.table__header{
+    padding: 8px 0;
+    background-color: #eee;
+    border-bottom: 1px solid black;
+    font-size: 120%;
     display: flex;
-    justify-content: space-around;
-}
-.boardTable li >*{
-    flex: 1;
 }
 
-footer{
-    height: 100px;
-    background-color: #555;
+.table__header__text{
+
+}
+
+.table__content{
+    margin-top: 4px;
+    display: flex;
+    cursor: pointer;
+}
+
+.table__content__text {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.board__paging{
+
+}
+/* board */
+.box__post{
+    margin-top: 16px;
+    padding: 8px;
+}
+.post__header{
+    display: flex;
+    align-items: center;
+    padding: 16px 4px;
+    border-bottom: 1px solid #eee;
+    /*background-color: #eee;*/
+}
+.post__title{
+    font-size: 116%;
+}
+
+.post__user-id{
+    color: #888;
+}
+
+.post__content{
+
+    padding: 16px 4px;
+}
+
+.post__date{
+    color: #888;
+}
+
+.post__item{
+    display: flex;
+}
+
+.post__item > *{
+    padding: 8px 0;
+
+}
+
+.post__item-title{
+    width: 10%;
+    height: 100%;
+    text-align: center;
+}
+
+.post__item__input{
+    width: 90%;
+}
+
+.post__item__textarea{
+    width: 90%;
+    height: 400px;
+}
+
+.post__item__label{
+    margin-right: 5px;
+}
+
+.post__item__radio{
+    margin-right: 20px;
+}
+
+.box__btns{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+}
+
+
+/* //board */
+/* //SubLayout */
+
+
+/* admin */
+.box__adm{
+    margin-top: 10px;
+    width: 500px;
+    height: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #eee;
+}
+
+.btn__adm{
+    width: 100px;
+    height: 36px;
+}
+/* //admin */
+.btn__default{
+    width: 100px;
+    height: 36px;
+}
+
+.w10{ width: 10%;}
+.w20{ width: 20%;}
+.w30{ width: 30%;}
+.w40{ width: 40%;}
+.w50{ width: 50%;}
+.w60{ width: 60%;}
+.w70{ width: 70%;}
+.w80{ width: 80%;}
+.w90{ width: 90%;}
+.w100{ width: 100%;}
+
+.tl{text-align: left;}
+.tc{text-align: center;}
+.tr{text-align: right;}
+
+.text-overflow{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

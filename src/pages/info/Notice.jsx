@@ -13,9 +13,7 @@ function Notice() {
 
     const isAdmin = true;
 
-    //type 0 : view
-    //type 1 : write
-    //type 1 : update
+    //type 0 : view, type 1 : write, type 2 : update
     const [isEditable, setIsEditable] = useState(
         {"editable" : false, "type" : 0}
     );
@@ -28,7 +26,6 @@ function Notice() {
         Board.tcnt(title).then((res) =>{
             setTotalCnt(res[0].cnt);
         });
-        // setPost([]);
     }, [isEditable, isVisible]);
 
 
@@ -75,34 +72,38 @@ function Notice() {
                     (isVisible.visible) ?
                         <View data={post} changeVisible={setViewable} changeEditable={setEditState}/> :
                         <>
-                            <div>
-                                <span>전체 : {totalCnt} / 페이지수 : {1}</span>
+                            <div className="table__info">
+                                <span>전체 : {totalCnt} / 페이지 : {1}</span>
                             </div>
-                            <ul className="boardTable">
-                                <li>
-                                    <div className="table th">번호</div>
-                                    <div className="table th">제목</div>
-                                    <div className="table th">작성자</div>
-                                    <div className="table th">등록일</div>
-                                    <div className="table th">조회</div>
+                            <ul className="table__board">
+                                <li className="table__header">
+                                    <div className="table__header__text w10">번호</div>
+                                    <div className="table__header__text w50">제목</div>
+                                    <div className="table__header__text w10">작성자</div>
+                                    <div className="table__header__text w20">등록일</div>
+                                    <div className="table__header__text w10">조회</div>
                                 </li>
                                 {
                                     board.map((post, index) => (
-                                        <li key={index} className="view" onClick={view} data-ntc-no={post.ntcNo}>
-                                            <div className="table tc">{index}</div>
-                                            <div className="table tc">{post.title}</div>
-                                            <div className="table tc">{post.userId}</div>
-                                            <div className="table tc">{post.date}</div>
-                                            <div className="table tc">{post.vcnt}</div>
+                                        <li key={index} className="table__content" onClick={view}
+                                            data-ntc-no={post.ntcNo}>
+                                            <div className="table__content__text w10">{index}</div>
+                                            <div
+                                                className="table__content__text w50 tl text-overflow">{post.title}</div>
+                                            <div className="table__content__text w10">{post.userId}</div>
+                                            <div className="table__content__text w20">{post.date}</div>
+                                            <div className="table__content__text w10">{post.vcnt}</div>
                                         </li>
                                     ))
                                 }
                             </ul>
+                            <div className="board__paging"> 페이지네이션</div>
                             {isAdmin &&
-                                <div className="admin">
-                                    <button onClick={write}>등록</button>
+                                <div className="box__adm">
+                                    <button className="btn__adm" onClick={write}>등록</button>
                                     {/*<button onClick={update}>수정</button>*/}
-                                    <button>삭제</button>
+                                    <button className="btn__adm">수정</button>
+                                    <button className="btn__adm">삭제</button>
                                 </div>
                             }
                         </>

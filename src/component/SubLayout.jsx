@@ -37,12 +37,12 @@ function SubLayout(){
     }
 
     return (
-        <div className="flexContent">
+        <div className="flex_container">
             <SideBar data={data} />
-            <div className="subBox">
-                <p className="boardTitle">{subTitle}</p>
-                <hr />
-                <div className="boardContents">
+            <div className="box__content">
+                <h2 className="box__content__title">{subTitle}</h2>
+                <hr className="box__content__line"/>
+                <div className="box__content__board">
                     <Outlet data={data} />
                 </div>
             </div>

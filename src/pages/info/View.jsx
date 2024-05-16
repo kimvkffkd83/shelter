@@ -16,7 +16,7 @@ function View(props) {
                 if(res.status === 500 || res.status === 404 ){
                     alert(res.data);
                 }else{
-                    alert("삭제가 완로되었습니다.")
+                    alert("삭제가 완료되었습니다.")
                     props.changeVisible({visible : false , ntcNo : 0});
                 }
             })
@@ -30,21 +30,25 @@ function View(props) {
 
     return(
         <>
-            <div>
-                <span>(제목){props.data.at(0)?.title}</span>
-                <span>(작성자ID){props.data.at(0)?.userId}</span>
-                <span>(등록일){props.data.at(0)?.date}</span>
+            <div className="box__post">
+                <div className="post__header">
+                    <span className="post__title w80">{props.data.at(0)?.title}</span>
+                    <span className="post__user-id w10 tc">{props.data.at(0)?.userId}</span>
+                    <span className="post__date w10 tc">{props.data.at(0)?.date}</span>
+                </div>
+                <div className="post__content">
+                    {props.data.at(0)?.contents}
+                </div>
             </div>
-            <div>(내용){props.data.at(0)?.contents}</div>
-            <div>
-                {isUdmin &&
-                    <>
-                        <button onClick={update}>수정</button>
-                        <button onClick={remove}>삭제</button>
-                    </>
-                }
-                <button onClick={undo}>돌아가기</button>
+            <div className="box__btns">
+                <button className="btn__default" onClick={undo}>돌아가기</button>
             </div>
+            {isUdmin &&
+                <div className="box__adm">
+                    <button className="btn__adm" onClick={update}>수정</button>
+                    <button className="btn__adm" onClick={remove}>삭제</button>
+                </div>
+            }
         </>
     )
 }
