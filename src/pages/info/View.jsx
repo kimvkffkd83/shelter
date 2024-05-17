@@ -41,7 +41,7 @@ function View(props) {
                 </div>
             </div>
             <div className="box__btns">
-                <button className="btn__default" onClick={undo}>돌아가기</button>
+                <button className="btn__default" onClick={undo}>목록으로</button>
             </div>
             {isUdmin &&
                 <div className="box__adm">

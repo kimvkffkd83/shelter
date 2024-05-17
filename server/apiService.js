@@ -57,7 +57,7 @@ app.get("/data/main/:board/list",(req,res) =>{
             return;
     }
 
-    const query = `SELECT ${titleColumnName} AS title, DATE_FORMAT(CAST(${regDateColumnName} AS date), '%Y-%m-%d') AS date FROM ${tableName} ORDER BY ${noColumnName} DESC LIMIT 0,6`;
+    const query = `SELECT ${noColumnName} as boardNo, ${titleColumnName} AS title, DATE_FORMAT(CAST(${regDateColumnName} AS date), '%Y-%m-%d') AS date FROM ${tableName} ORDER BY ${noColumnName} DESC LIMIT 0,6`;
 
     db.query(query, (error, rows, fields) =>{
         if (error) {

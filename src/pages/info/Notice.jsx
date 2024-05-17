@@ -3,7 +3,7 @@ import "../../css/Main.css"
 import Board from '../../api/Board.jsx';
 import write from "./Write.jsx";
 import Write from "./Write.jsx";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import View from "./View.jsx";
 
 function Notice() {
@@ -28,8 +28,6 @@ function Notice() {
         });
     }, [isEditable, isVisible]);
 
-
-
     const setEditState = (childState) =>{
         setIsEditable(childState);
     }
@@ -38,17 +36,16 @@ function Notice() {
         setIsVisible(childState);
     }
 
-
-
-
     const write = ()=>{
         setPost([]);
         setIsEditable({"editable" : true, "type" : 1});
     }
 
-    const [post, setPost] = useState([])
-    const view =(e)=>{
-        const ntcNo = e.currentTarget.dataset.ntcNo;
+    const update = ()=>{
+        setIsEditable({"editable" : true, "type" : 2});
+    }
+
+    const getView = (ntcNo)=>{
         Board.view(ntcNo).then((res)=> {
             if(res.length === 0){
                 alert("존재하지 않는 게시글입니다")
@@ -56,12 +53,26 @@ function Notice() {
                 setPost(res);
                 setIsVisible({visible : true , ntcNo : ntcNo})
             }
-        });
+        })
     }
 
-    const update = ()=>{
-        setIsEditable({"editable" : true, "type" : 2});
+    const [post, setPost] = useState([])
+    const view =(e)=>{
+        const ntcNo = e.currentTarget.dataset.ntcNo;
+        getView(ntcNo);
     }
+
+    //메인페이지 -> 공지사항 게시글 클릭 시
+    let {state} = useLocation();
+    useEffect(() => {
+        console.log("state:",state);
+        if(state?.boardNo){
+            // const boardNo = state.boardNo;
+            // console.log("boardNo:",boardNo);
+            getView(state.boardNo);
+        }
+    }, [state]);
+
 
     return (
         <>
