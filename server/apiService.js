@@ -165,3 +165,13 @@ app.put('/data/notice/:id', (req, res) =>{
         res.send('There is no id.');
     }
 })
+
+//조직도
+app.get('/data/orga',(req,res)=>{
+    db.query('SELECT DPT_NAME AS dname, DPT_RANK AS drank, DPT_TASK AS dtask, DPT_CALL AS dcall, DPT_MAIL AS dmail FROM master_department_db ORDER BY DPT_RANK', (err,rows)=>{
+        if (err) {
+            console.error("(server)조직도(부서) 에러:", err);
+        }
+        res.send(rows);
+    })
+})

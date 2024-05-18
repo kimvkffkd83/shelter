@@ -10,10 +10,8 @@ export default function useRefFocusEffect(){
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         setShowTopBtn(false);
-                        console.log("헤더 보임")
                     } else {
                         setShowTopBtn(true);
-                        console.log("헤더 가려짐")
                     }
                 });
             },{

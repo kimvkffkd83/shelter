@@ -455,8 +455,111 @@
     background-repeat: no-repeat;
     background-position: center;
 }
-
 /* //info */
+/* Organizion */
+.orga{
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.orga__title{
+    margin-top: 50px;
+}
+
+.orga__team {
+    display: flex;
+    justify-content: center;
+}
+
+.orga__box{
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+    outline: none;
+    background-color: #248E46;
+}
+.orga__box-sub{
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+    outline: none;
+    background-color: #E2FF9E;
+    margin: 0 30px;
+}
+
+.orga__team-name{
+    margin-top: 20px;
+    font-size: 150%;
+    font-weight: 600;
+}
+
+.orga__team-work{
+    margin-top: 10px;
+    font-size: 120%;
+}
+
+.orga__team-work__text{
+    padding: 0 8px;
+    color: #222;
+    border-right: 1px solid #222;
+}
+
+.orga__team-work__text__sub{
+    padding: 0 8px;
+    color: #888;
+    border-right: 1px solid #888;
+}
+
+.orga__team-work__text:last-child{
+    border-right: none;
+}
+
+.orga__team-work__text__sub:last-child{
+    border-right: none;
+}
+
+.orga__line{
+    display: flex;
+}
+
+.orga__line-vertical{
+    width: 1px;
+    height: 30px;
+    border-right: 1px solid #555;
+    margin: 0 104px;
+}
+
+.orga__line-horizontal{
+    width: 208px;
+    height: 1px;
+    border-bottom: 1px solid #555;
+    margin: 0 104px;
+}
+
+.orga__contact{
+    width: 100%;
+    height: inherit;
+    display: flex;
+}
+.orga__contact__box{
+    width: inherit;
+}
+
+.orga__team-call{
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    padding: 4px 16px;
+}
+
+.orga__team-mail{
+    display: flex;
+    align-items: center;
+    padding: 4px 16px;
+}
+/* //Organizion */
 
 
 /* //SubLayout */

@@ -13,7 +13,6 @@ function Header (){
         }else{
             topBtn.style.display = 'none';
         }
-        console.log("showTopBtn:",showTopBtn);
     }, [showTopBtn]);
 
     const handleScrollToTop = () => {
