@@ -12,6 +12,7 @@ import Missing from "../pages/missing/missing.jsx";
 import Protection from "../pages/protection/protection.jsx";
 import Dog from "../pages/protection/dog.jsx";
 import Cat from "../pages/protection/Cat.jsx";
+import Error from "../pages/main/Error.jsx";
 
 function App() {
    return(
@@ -20,7 +21,7 @@ function App() {
                 <Route index element={<Main/>} />
                 <Route path="info" element={<SubLayout/>}>
                     <Route index element={<Info />} />
-                    <Route path="notice"  element={<Notice />} />
+                    <Route path="notice" element={<Notice />} />
                     <Route path="orgn" element={<Organization />} />
                     <Route path="map" element={<Map />} />
                 </Route>
@@ -32,9 +33,9 @@ function App() {
                    <Route path="dog" element={<Dog />} />
                    <Route path="cat" element={<Cat />} />
                </Route>
+               <Route path="*" element={<Error />} />
            </Route>
            <Route path="/test" element={<Main />} />
-           <Route path="*" element={<Main />} />
        </Routes>
    )
 }

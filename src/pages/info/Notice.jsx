@@ -5,11 +5,13 @@ import write from "./Write.jsx";
 import Write from "./Write.jsx";
 import {Link, useLocation} from "react-router-dom";
 import View from "./View.jsx";
+import Paging from "../../component/common/Paging.jsx";
 
 function Notice() {
     const title = 'notice';
     const [board,setBoard] = useState([]);
     const [totalCnt , setTotalCnt] = useState(0);
+    const [pageNo, setPageNo] = useState(3);
 
     const isAdmin = true;
 
@@ -19,23 +21,27 @@ function Notice() {
     );
     const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
 
+
     useEffect(() => {
-        Board.list(title).then((res)=> {
+        Board.list(pageNo).then((res)=> {
             setBoard(res);
         });
-        Board.tcnt(title).then((res) =>{
+        Board.tcnt().then((res) =>{
             setTotalCnt(res[0].cnt);
         });
-    }, [isEditable, isVisible]);
+    }, [isEditable, isVisible, pageNo]);
 
     const setEditState = (childState) =>{
         setIsEditable(childState);
     }
 
-    const setViewable = (childState)=>{
+    const setViewState = (childState)=>{
         setIsVisible(childState);
     }
 
+    const setPageState = (childState) =>{
+        setPageNo(childState);
+    }
     const write = ()=>{
         setPost([]);
         setIsEditable({"editable" : true, "type" : 1});
@@ -65,10 +71,7 @@ function Notice() {
     //메인페이지 -> 공지사항 게시글 클릭 시
     let {state} = useLocation();
     useEffect(() => {
-        console.log("state:",state);
         if(state?.boardNo){
-            // const boardNo = state.boardNo;
-            // console.log("boardNo:",boardNo);
             getView(state.boardNo);
         }
     }, [state]);
@@ -81,10 +84,10 @@ function Notice() {
             <>
                 {
                     (isVisible.visible) ?
-                        <View data={post} changeVisible={setViewable} changeEditable={setEditState}/> :
+                        <View data={post} changeVisible={setViewState} changeEditable={setEditState}/> :
                         <>
                             <div className="table__info">
-                                <span>전체 : {totalCnt} / 페이지 : {1}</span>
+                                <span>전체 : {totalCnt} / 페이지 : {pageNo}</span>
                             </div>
                             <ul className="table__board">
                                 <li className="table__header">
@@ -108,12 +111,13 @@ function Notice() {
                                     ))
                                 }
                             </ul>
-                            <div className="board__paging"> 페이지네이션</div>
+                            <div className="board__paging">
+                                <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} ></Paging>
+                            </div>
                             {isAdmin &&
                                 <div className="box__adm">
                                     <button className="btn__adm" onClick={write}>등록</button>
-                                    {/*<button onClick={update}>수정</button>*/}
-                                    <button className="btn__adm">수정</button>
+                                    <button className="btn__adm" onClick={update}>수정</button>
                                     <button className="btn__adm">삭제</button>
                                 </div>
                             }

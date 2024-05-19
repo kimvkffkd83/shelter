@@ -80,7 +80,10 @@ app.get("/data/notice/tcnt", (req, res) =>{
 
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",(req,res) => {
-    db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit 0,10 ', (error, rows, fields) =>{
+    const pageNo =  req.query?.pageNo?? 1;
+    const queryNo = (pageNo-1)*10;
+    const sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    db.query(sql, (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
     });
