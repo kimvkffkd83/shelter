@@ -116,9 +116,11 @@ function Notice() {
                             </div>
                             {isAdmin &&
                                 <div className="box__adm">
-                                    <button className="btn__adm" onClick={write}>등록</button>
-                                    <button className="btn__adm" onClick={update}>수정</button>
-                                    <button className="btn__adm">삭제</button>
+                                    <div className="box__adm__btns">
+                                        <button className="btn__adm" onClick={write}>등록</button>
+                                        <button className="btn__adm" onClick={update}>수정</button>
+                                        <button className="btn__adm">삭제</button>
+                                    </div>
                                 </div>
                             }
                         </>

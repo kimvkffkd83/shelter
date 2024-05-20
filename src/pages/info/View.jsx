@@ -45,8 +45,10 @@ function View(props) {
             </div>
             {isUdmin &&
                 <div className="box__adm">
-                    <button className="btn__adm" onClick={update}>수정</button>
-                    <button className="btn__adm" onClick={remove}>삭제</button>
+                    <div className="box__adm__btns">
+                        <button className="btn__adm" onClick={update}>수정</button>
+                        <button className="btn__adm" onClick={remove}>삭제</button>
+                    </div>
                 </div>
             }
         </>
