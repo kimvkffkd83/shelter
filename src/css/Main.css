@@ -334,8 +334,11 @@
     padding: 8px 0;
     border-bottom: 1px solid #eee;
 }
-.board__paging{
 
+.board__paging{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
 }
 /* board */
 .box__post{
@@ -564,6 +567,39 @@
 
 /* //SubLayout */
 
+/* Paging */
+.page__btns{
+    display: flex;
+    margin: 4px;
+    text-align: center;
+    border: 1px solid #888;
+}
+
+.btn__page__default{
+    width: 30px;
+    height: 30px;
+
+    border: 1px solid #fff;
+    /*outline: none;*/
+}
+
+.btn__page__select{
+    background-color: #f8ffe7;
+}
+
+.btn__page__prev{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn__page__next{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* //Paging */
+
 
 /* admin */
 .box__adm{
@@ -575,12 +611,16 @@
     align-items: center;
     background-color: #eee;
 }
+.box__adm__btns{
+
+}
 
 .btn__adm{
     width: 100px;
     height: 36px;
 }
 /* //admin */
+
 .btn__default{
     width: 100px;
     height: 36px;

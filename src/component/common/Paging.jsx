@@ -54,17 +54,16 @@ function Paging(props){
         }
     }
 
-
     return(
         <div className="page__btns">
-            <button onClick={prev}>이전</button>
+            <button onClick={prev} className="btn__page__default btn__page__prev"><span className="material-symbols-outlined">chevron_left</span></button>
             {
                 numBtns.map((btn, idx) => (
                     <button key={idx} onClick={paging}
-                            className={pageNo === btn ? 'btn__page__select' : 'btn__page__default'}>{btn}</button>
+                            className={pageNo === btn ? 'btn__page__default btn__page__select' : 'btn__page__default btn__page__default'}>{btn}</button>
                 ))
             }
-            <button onClick={next}>다음</button>
+            <button onClick={next} className="btn__page__default btn__page__next"><span className="material-symbols-outlined">chevron_right</span></button>
         </div>
     )
 

@@ -101,7 +101,7 @@ function Notice() {
                                     board.map((post, index) => (
                                         <li key={index} className="table__content" onClick={view}
                                             data-ntc-no={post.ntcNo}>
-                                            <div className="table__content__text w10">{index}</div>
+                                            <div className="table__content__text w10">{index+((pageNo-1)*10)+1}</div>
                                             <div
                                                 className="table__content__text w50 tl text-overflow">{post.title}</div>
                                             <div className="table__content__text w10">{post.userId}</div>
