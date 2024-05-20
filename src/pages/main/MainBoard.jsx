@@ -24,7 +24,7 @@ class MainBoard extends Component{
                 <div className="main__board__contents">
                     {
                         this.state.boardRows.length === 0 ?
-                            <span className="main__post__none">게시글이 없습니다</span> :
+                            <span className="main__post__no-data">게시글이 없습니다</span> :
                             this.state.boardRows.map( (post, index) => (
                                 <Link to={'info/'+this.props.title} state={{"boardNo":post.boardNo}} className="main__post" key={index}>
                                     <span className="main__post-title text-overflow">

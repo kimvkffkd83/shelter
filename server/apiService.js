@@ -119,6 +119,26 @@ app.get("/data/notice/:id", (req,res)=>{
     }
 })
 
+
+//공지사항 조회수
+app.put('/data/notice/vcnt',(req,res) =>{
+    const id = req.body.ntcNo;
+    if(id) {
+        db.query('UPDATE master_notice_db SET NTC_VCONT = NTC_VCONT+1 WHERE NTC_NO=?',id,(err,rows) =>{
+            if (err) {
+                console.error("(server)조회수 추가 중 에러:", err);
+                res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
+                return;
+            }
+            res.send(rows);
+        })
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
+})
+
+
 // 공지사항 게시글 삭제
 app.delete('/data/notice/:id', (req, res) =>{
     const id = req.params.id;
@@ -142,6 +162,34 @@ app.delete('/data/notice/:id', (req, res) =>{
         res.send('There is no id.');
     }
 })
+
+// 공지사항 선택한 게시글 삭제
+app.post('/data/notice/selected',(req, res) =>{
+    const ntcNos = req.body.ntcNos;
+    if(ntcNos.length === 0){
+        res.send('There is no id.');
+        return;
+    }
+    let added = '';
+    ntcNos.forEach((no,idx)=>{
+        added += 'ntc_no='+no;
+        if(idx < ntcNos.length-1) added +=' or ';
+    })
+    const sql = 'DELETE FROM master_notice_db WHERE '+added;
+    db.query(sql,(err, rows)=>{
+        if (err) {
+            console.error("(server)공지사항 다중 삭제 중 에러:", err);
+            res.status(500).send("공지사항을 다중 삭제하는 도중 에러가 발생했습니다.");
+            return;
+        }
+        if (res.affectedRows === 0) {
+            res.status(404).send("해당하는 공지사항이 없습니다.");
+            return;
+        }
+        res.send(rows);
+    })
+})
+
 
 // 공지사항 게시글 수정
 app.put('/data/notice/:id', (req, res) =>{

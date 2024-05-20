@@ -14,49 +14,53 @@ function Write(props){
 
 
     const action = ()=>{
-        const data = {
-            "USER_NO" : 1,
-            "USER_ID" : 'se6651',
-            "NTC_TITLE" : titleRef.current.value,
-            "NTC_CONTENTS" : contentsRef.current.value,
-            "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
-            "NTC_UDT_DATE" : newDate,
-        }
+        if(window.confirm(props.data.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
+            const data = {
+                "USER_NO" : 1,
+                "USER_ID" : 'se6651',
+                "NTC_TITLE" : titleRef.current.value,
+                "NTC_CONTENTS" : contentsRef.current.value,
+                "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
+                "NTC_UDT_DATE" : newDate,
+            }
 
-        console.log("data:",data);
+            console.log("data:",data);
 
-        if(props.data.type === 1){
-            board.write(data).then((res)=>{
-                console.log(res);
-                if(res.status === 500){
-                    alert(res.data);
-                }else {
-                    alert('공지사항이 등록되었습니다');
-                    props.changeEditable({"editable": false, "type": 0});
-                }
-            })
-        }else if(props.data.type === 2){
-            data.NTC_NO = props.post.at(0)?.ntcNo;
-            delete data.NTC_REG_DATE;
-            board.update(props.post.at(0)?.ntcNo, data).then((res)=>{
-                console.log(res);
-                if(res.status === 500 || res.status === 404 ){
-                    alert(res.data);
-                }else{
-                    alert('공지사항이 수정되었습니다');
-                    props.post.at(0).ntcNo = data.NTC_NO;
-                    props.post.at(0).userId = data.USER_ID;
-                    props.post.at(0).title = data.NTC_TITLE;
-                    props.post.at(0).contents = data.NTC_CONTENTS;
-                    props.post.at(0).date = newDateStr;
-                    props.changeEditable({"editable" : false, "type" : 0});
-                }
-            })
+            if(props.data.type === 1){
+                board.write(data).then((res)=>{
+                    console.log(res);
+                    if(res.status === 500){
+                        alert(res.data);
+                    }else {
+                        alert('공지사항이 등록되었습니다');
+                        props.changeEditable({"editable": false, "type": 0});
+                    }
+                })
+            }else if(props.data.type === 2){
+                data.NTC_NO = props.post.at(0)?.ntcNo;
+                delete data.NTC_REG_DATE;
+                board.update(props.post.at(0)?.ntcNo, data).then((res)=>{
+                    console.log(res);
+                    if(res.status === 500 || res.status === 404 ){
+                        alert(res.data);
+                    }else{
+                        alert('공지사항이 수정되었습니다');
+                        props.post.at(0).ntcNo = data.NTC_NO;
+                        props.post.at(0).userId = data.USER_ID;
+                        props.post.at(0).title = data.NTC_TITLE;
+                        props.post.at(0).contents = data.NTC_CONTENTS;
+                        props.post.at(0).date = newDateStr;
+                        props.changeEditable({"editable" : false, "type" : 0});
+                    }
+                })
+            }
         }
     }
 
     const undo = ()=>{
-        props.changeEditable({"editable" : false, "type" : 0})
+        if(window.confirm('지금까지 내용은 저장되지 않습니다. 작성을 취소하시겠습니까?')){
+            props.changeEditable({"editable" : false, "type" : 0})
+        }
     }
 
     return(
@@ -87,7 +91,7 @@ function Write(props){
             </div>
             <div className="box__btns">
                 <button className="btn__default" onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>
-                <button className="btn__default"  onClick={undo}>취소</button>
+                <button className="btn__default" onClick={undo}>취소</button>
             </div>
         </div>
     )

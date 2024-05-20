@@ -20,7 +20,7 @@ function Notice() {
         {"editable" : false, "type" : 0}
     );
     const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
-
+    const [select, setSelect] = useState(false);
 
     useEffect(() => {
         Board.list(pageNo).then((res)=> {
@@ -29,7 +29,7 @@ function Notice() {
         Board.tcnt().then((res) =>{
             setTotalCnt(res[0].cnt);
         });
-    }, [isEditable, isVisible, pageNo]);
+    }, [isEditable, isVisible, pageNo, select]);
 
     const setEditState = (childState) =>{
         setIsEditable(childState);
@@ -47,11 +47,35 @@ function Notice() {
         setIsEditable({"editable" : true, "type" : 1});
     }
 
-    const update = ()=>{
-        setIsEditable({"editable" : true, "type" : 2});
+    const selectPosts = ()=>{
+        if(totalCnt === 0){
+            window.alert('삭제할 게시글이 없습니다');
+            return;
+        }
+        setSelect(!select);
+    }
+
+    const deletePosts = () =>{
+        if(window.confirm('선택한 게시물들을 삭제하시겠습니까?')){
+            const selectedPosts = document.getElementsByName("select")
+
+            const postNos = [];
+            selectedPosts.forEach((post,idx) =>{
+                if(post.checked) postNos.push(post.parentElement.dataset.ntcNo)
+            })
+
+            Board.removeSelected(postNos).then((res) =>{
+                console.log(res);
+                setSelect(false);
+            })
+        }
     }
 
     const getView = (ntcNo)=>{
+        Board.vcnt(ntcNo).then((res) =>{
+            console.log(res);
+            }
+        )
         Board.view(ntcNo).then((res)=> {
             if(res.length === 0){
                 alert("존재하지 않는 게시글입니다")
@@ -76,6 +100,9 @@ function Notice() {
         }
     }, [state]);
 
+    const cancleProp = (e)=>{
+        e.cancelBubble()
+    }
 
     return (
         <>
@@ -91,16 +118,26 @@ function Notice() {
                             </div>
                             <ul className="table__board">
                                 <li className="table__header">
+                                    {select &&
+                                        <div className="table__header__text w10"><span className="material-symbols-outlined">check</span></div>
+                                    }
                                     <div className="table__header__text w10">번호</div>
                                     <div className="table__header__text w50">제목</div>
                                     <div className="table__header__text w10">작성자</div>
                                     <div className="table__header__text w20">등록일</div>
                                     <div className="table__header__text w10">조회</div>
                                 </li>
-                                {
+                                {totalCnt === 0? 
+                                    <div className="table__content__no-data">
+                                        <span>게시글이 없습니다</span>
+                                    </div>
+                                    :
                                     board.map((post, index) => (
                                         <li key={index} className="table__content" onClick={view}
                                             data-ntc-no={post.ntcNo}>
+                                            {select &&
+                                                <input className="table__content__text w10" type="checkbox" onClick={event => event.stopPropagation()} name='select'/>
+                                            }
                                             <div className="table__content__text w10">{index+((pageNo-1)*10)+1}</div>
                                             <div
                                                 className="table__content__text w50 tl text-overflow">{post.title}</div>
@@ -112,14 +149,20 @@ function Notice() {
                                 }
                             </ul>
                             <div className="board__paging">
-                                <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} ></Paging>
+                                {totalCnt > 0 &&
+                                    <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} ></Paging>
+                                }
                             </div>
                             {isAdmin &&
                                 <div className="box__adm">
                                     <div className="box__adm__btns">
+                                        {!select &&
                                         <button className="btn__adm" onClick={write}>등록</button>
-                                        <button className="btn__adm" onClick={update}>수정</button>
-                                        <button className="btn__adm">삭제</button>
+                                        }
+                                        {select &&
+                                            <button className="btn__adm" onClick={deletePosts}>{'삭제'}</button>
+                                        }
+                                        <button className="btn__adm" onClick={selectPosts}>{select ? '취소' : '삭제'}</button>
                                     </div>
                                 </div>
                             }

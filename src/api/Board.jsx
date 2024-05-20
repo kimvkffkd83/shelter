@@ -61,6 +61,24 @@ const API = {
             throw error;
         }
     },
+    vcnt: async (ntcNo) =>{
+        try{
+            const res = await api.put(`vcnt`, {ntcNo});
+            return res;
+        } catch (error) {
+            console.error("Error while updating data vcnt:", error);
+            throw error;
+        }
+    },
+    removeSelected: async (ntcNos) => {
+        try {
+            const res = await api.post(`selected`, {ntcNos});
+            return res;
+        } catch (error) {
+            console.error("Error while removing data:", error);
+            throw error;
+        }
+    },
 };
 
 export default API;
