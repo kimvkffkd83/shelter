@@ -49,7 +49,7 @@ function Notice() {
 
     const selectPosts = ()=>{
         if(totalCnt === 0){
-            window.alert('삭제할 게시글이 없습니다');
+            window.alert('삭제할 게시글이 없습니다.');
             return;
         }
         setSelect(!select);
@@ -129,7 +129,7 @@ function Notice() {
                                 </li>
                                 {totalCnt === 0? 
                                     <div className="table__content__no-data">
-                                        <span>게시글이 없습니다</span>
+                                        <span>게시글이 없습니다.</span>
                                     </div>
                                     :
                                     board.map((post, index) => (

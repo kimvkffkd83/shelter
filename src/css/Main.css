@@ -402,12 +402,15 @@
 }
 
 .post__item__input{
+    padding: 0;
     width: 90%;
+    font-size: 100%;
 }
 
 .post__item__textarea{
     width: 90%;
     height: 400px;
+    font-size: 100%;
 }
 
 .post__item__label{
@@ -594,26 +597,28 @@
 .btn__page__default{
     width: 30px;
     height: 30px;
-
     border: 1px solid #fff;
-    /*outline: none;*/
+    cursor: pointer;
 }
 
 .btn__page__select{
     background-color: #f8ffe7;
+    cursor: default;
 }
 
-.btn__page__prev{
+.btn__page__arrow{
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-.btn__page__next{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.btn__page__arrow-disabled{
+    cursor: default;
+    background-color: #eee;
 }
+.btn__page__arrow-disabled > *{
+    color: #888;
+}
+
 /* //Paging */
 
 
@@ -643,6 +648,7 @@
 .btn__default{
     width: 100px;
     height: 36px;
+    cursor: pointer;
 }
 
 #btn__top{

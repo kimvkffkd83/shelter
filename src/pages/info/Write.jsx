@@ -13,7 +13,38 @@ function Write(props){
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
 
+    const chkTextLength = ()=> {
+        if (titleRef && titleRef.current && titleRef.current.value.length > 50) {
+            titleRef.current.value = titleRef.current.value.slice(0,49)
+        }
+        if(contentsRef && contentsRef.current && contentsRef.current.value.length > 1000) {
+            contentsRef.current.value = contentsRef.current.value.slice(0,999)
+        }
+    }
+    const validatation = ()=>{
+        let pass = false
+        let reason = '';
+
+        if(titleRef.current.value ===''){
+            reason = '제목을 작성해주세요.'
+            titleRef.current.focus();
+        }else if(contentsRef.current.value ===''){
+            reason = '내용을 작성해주세요.'
+            contentsRef.current.focus();
+        }else{
+            pass = true;
+        }
+        return {pass : pass, reason : reason};
+    }
+
     const action = ()=>{
+        const check = validatation();
+        if(!check.pass){
+            alert(check.reason)
+            return;
+        }
+
+
         if(window.confirm(props.data.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
             const data = {
                 "USER_NO" : 1,
@@ -67,13 +98,15 @@ function Write(props){
         <div className="box__post">
             <div className="post__item">
                 <span className="post__item-title">제목</span>
-                <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}/>
+                <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
+                    onKeyUp={chkTextLength} onKeyDown={chkTextLength} onfocusout={chkTextLength}
+                />
             </div>
             <div className="post__item">
                 <span className="post__item-title">날짜</span>
                 <span className="post__item__text">{newDateStr}</span>
             </div>
-            {props.data.type === 1 &&
+            {/*props.data.type === 1 &&
                 <div className="post__item">
                     <div className="post__item-title"></div>
                     <div className="post__item__text">
@@ -83,11 +116,13 @@ function Write(props){
                         <input name="date" className="post__item__radio" type="radio"></input>
                     </div>
                 </div>
-            }
+            */}
             <div className="post__item">
                 <span className="post__item-title">내용</span>
                 <textarea className="post__item__textarea"
-                          ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
+                          ref={contentsRef} defaultValue={props.post.at(0)?.contents}
+                          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onfocusout={chkTextLength}
+                />
             </div>
             <div className="box__btns">
                 <button className="btn__default" onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>

@@ -56,14 +56,18 @@ function Paging(props){
 
     return(
         <div className="page__btns">
-            <button onClick={prev} className="btn__page__default btn__page__prev"><span className="material-symbols-outlined">chevron_left</span></button>
+            <button onClick={prev} className={bundleNo > 1 ? "btn__page__default btn__pa_arrow" : "btn__page__default btn__page__arrow-disabled"}>
+                <span className="material-symbols-outlined">chevron_left</span>
+            </button>
             {
                 numBtns.map((btn, idx) => (
                     <button key={idx} onClick={paging}
                             className={pageNo === btn ? 'btn__page__default btn__page__select' : 'btn__page__default btn__page__default'}>{btn}</button>
                 ))
             }
-            <button onClick={next} className="btn__page__default btn__page__next"><span className="material-symbols-outlined">chevron_right</span></button>
+            <button onClick={next} className={bundleNo < bundleCnt ? "btn__page__default btn__page__arrow" : "btn__page__default btn__page__arrow-disabled"}>
+                <span className="material-symbols-outlined">chevron_right</span>
+            </button>
         </div>
     )
 
