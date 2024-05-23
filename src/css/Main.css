@@ -80,6 +80,12 @@
     height: 100%;
     display: flex;
 }
+.lnb-show{
+    display: block;
+}
+.lnb-disabled{
+    display: none;
+}
 
 .gnb__menu {
     flex: 1;
@@ -98,8 +104,7 @@
     font-weight: 600;
 }
 
-#lnb{
-    display: none;
+.lnb{
     flex: 1;
 }
 
@@ -116,11 +121,6 @@
     background-color: #f8ffe7;
     /*background-color: #e2ff9e;*/
 }
-
-.gnb__menu:hover #lnb{
-    display: block;
-}
-
 
 /* //Header */
 
@@ -279,6 +279,7 @@
 .snb__menu:hover{
     background-color: #aaa;
 }
+
 /* //SideBar */
 
 .box__content{

@@ -1,10 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import MenuJson from "../../jsons/Menu.json"
 import useRefFocusEffect from "../../js/useRefFocusEffect.js";
 
 function Header (){
     const {ref,showTopBtn} = useRefFocusEffect();
+    const [activeMenu, setActiveMenu] = useState(false);
 
     useEffect(() => {
         const topBtn = document.getElementById("btn__top");
@@ -19,6 +20,20 @@ function Header (){
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const mouseEnter = (index) => {
+        setActiveMenu(index);
+        // const link = e.target.dataset.link;
+        // document.getElementById("lnb_"+link).setAttribute("class","lnb lnb-show");
+    }
+    const mouseLeave = (index) => {
+        setActiveMenu(null);
+        // const link = e.target.dataset.link;
+        // document.getElementById("lnb_"+link).setAttribute("class","lnb lnb-disabled");
+        // console.log(e)
+        // const link = e.target.dataset.link;
+        // document.getElementById("lnb_"+link).className = "lnb lnb-disabled"
+    }
+
     return (
         <>
             <div id="toolbar"></div>
@@ -30,10 +45,13 @@ function Header (){
                     <ul id="gnb">
                         {
                             MenuJson.mainMenu.map((menu, mainIndex) => (
-                                <li key={mainIndex} className="gnb__menu">
+                                <li key={mainIndex} className="gnb__menu" onMouseOver={() =>mouseEnter(mainIndex)} onMouseOut={mouseLeave}>
                                     <Link to={menu.addr} state={{index: mainIndex}}
-                                          className="gnb__menu-link">{menu.addrKR}</Link>
-                                    <ul id="lnb">
+                                          className="gnb__menu-link"
+                                          data-link={mainIndex}>{menu.addrKR}</Link>
+                                    <ul className={`lnb ${activeMenu === mainIndex ? 'lnb-show' : 'lnb-disabled'}`}
+                                        onMouseEnter={() => mouseEnter(mainIndex)}
+                                        onMouseLeave={mouseLeave}>
                                         {menu.subMenu.map((subMenu, index) => (
                                             <li key={index} className="lnb__menu">
                                                 <Link to={subMenu.addr} state={{index: mainIndex}}
