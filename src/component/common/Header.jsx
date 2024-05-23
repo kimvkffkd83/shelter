@@ -22,16 +22,9 @@ function Header (){
 
     const mouseEnter = (index) => {
         setActiveMenu(index);
-        // const link = e.target.dataset.link;
-        // document.getElementById("lnb_"+link).setAttribute("class","lnb lnb-show");
     }
     const mouseLeave = (index) => {
         setActiveMenu(null);
-        // const link = e.target.dataset.link;
-        // document.getElementById("lnb_"+link).setAttribute("class","lnb lnb-disabled");
-        // console.log(e)
-        // const link = e.target.dataset.link;
-        // document.getElementById("lnb_"+link).className = "lnb lnb-disabled"
     }
 
     return (
@@ -55,7 +48,7 @@ function Header (){
                                         {menu.subMenu.map((subMenu, index) => (
                                             <li key={index} className="lnb__menu">
                                                 <Link to={subMenu.addr} state={{index: mainIndex}}
-                                                      className="lng__menu-link">{subMenu.addrKR}</Link>
+                                                      className="lnb__menu-link">{subMenu.addrKR}</Link>
                                             </li>
                                         ))}
                                     </ul>
