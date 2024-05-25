@@ -1,6 +1,6 @@
-import axios from "axios";
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 import board from "../../api/Board.jsx";
+import Editor from "../../component/Editor.jsx";
 
 function Write(props){
     console.log("props:",props);
@@ -13,12 +13,9 @@ function Write(props){
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
 
-    const chkTextLength = ()=> {
-        if (titleRef && titleRef.current && titleRef.current.value.length > 50) {
-            titleRef.current.value = titleRef.current.value.slice(0,49)
-        }
-        if(contentsRef && contentsRef.current && contentsRef.current.value.length > 1000) {
-            contentsRef.current.value = contentsRef.current.value.slice(0,999)
+    const chkTextLength = (ref,length)=> {
+        if (ref && ref.current && ref.current.value.length > 50) {
+            ref.current.value = ref.current.value.slice(0,length-1)
         }
     }
     const validatation = ()=>{
@@ -99,7 +96,8 @@ function Write(props){
             <div className="post__item">
                 <span className="post__item-title">제목</span>
                 <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
-                    onKeyUp={chkTextLength} onKeyDown={chkTextLength} onfocusout={chkTextLength}
+                    onKeyUp={()=>chkTextLength(titleRef,50)} onKeyDown={()=>chkTextLength(titleRef,50)} onBlur={()=>chkTextLength(titleRef,50)}
+
                 />
             </div>
             <div className="post__item">
@@ -119,10 +117,11 @@ function Write(props){
             */}
             <div className="post__item">
                 <span className="post__item-title">내용</span>
-                <textarea className="post__item__textarea"
-                          ref={contentsRef} defaultValue={props.post.at(0)?.contents}
-                          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onfocusout={chkTextLength}
-                />
+                <Editor ref={contentsRef} defaultValue={props.post.at(0)?.contents} />
+                {/*<textarea className="post__item__textarea"*/}
+                {/*          ref={contentsRef} defaultValue={props.post.at(0)?.contents}*/}
+                {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}
+                {/*/>*/}
             </div>
             <div className="box__btns">
                 <button className="btn__default" onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>
