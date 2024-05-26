@@ -423,7 +423,7 @@
 .post__item__textarea{
     width: 90%;
     height: 400px;
-    font-size: 100%;
+    margin-bottom: 20px;
 }
 
 .post__item__label{
@@ -699,4 +699,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.ql-editor{
+    font-size: 120%;
 }
