@@ -1,12 +1,34 @@
 import ReactQuill from "react-quill";
 import {forwardRef, useMemo, useRef} from "react";
+import axios from "axios";
+import photoUpload from "../api/photoUpload.jsx";
 
 const TextEditor = forwardRef((props,ref)=> {
      console.log("props",props);
      console.log("ref",ref);
 
-     const imageHandeler = ()=>{
-
+     const imageHandler = ()=>{
+         const input = document.createElement("input");
+         input.setAttribute("type","file");
+         input.setAttribute("accept", "image/*");
+         input.click();
+         input.addEventListener("change", async (e)=>{
+             e.preventDefault();
+             const file = input.files?.[0];
+             const formData = new FormData();
+             formData.append('img', file);
+             if(file){
+                 photoUpload.upload(formData).then((res) => {
+                     try {
+                         const editor = ref.current.getEditor();
+                         const range = editor.getSelection();
+                         editor.insertEmbed(range.index, "image", res.data.url)
+                     } catch (error) {
+                         alert("에러!")
+                     }
+                 })
+             }
+         })
      }
      const toolbarOption = [
          ['bold',
@@ -22,8 +44,8 @@ const TextEditor = forwardRef((props,ref)=> {
         return{
             toolbar : {
                 container : toolbarOption,
-                handler : {
-                    image : imageHandeler,
+                handlers : {
+                    image : imageHandler,
                 },
             },
         };

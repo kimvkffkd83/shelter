@@ -1,5 +1,5 @@
 import board from "../../api/Board.jsx";
-import {useEffect} from "react";
+import dp from "dompurify"
 
 function View(props) {
     console.log("view props:", props)
@@ -36,8 +36,7 @@ function View(props) {
                     <span className="post__user-id w10 tc">{props.data.at(0)?.userId}</span>
                     <span className="post__date w10 tc">{props.data.at(0)?.date}</span>
                 </div>
-                <div className="post__content">
-                    {props.data.at(0)?.contents}
+                <div className="post__content" dangerouslySetInnerHTML={{ __html: dp.sanitize(props.data.at(0)?.contents) }}>
                 </div>
             </div>
             <div className="box__btns">
