@@ -52,8 +52,6 @@ function Write(props){
                 "NTC_UDT_DATE" : newDate,
             }
 
-            console.log("data:",data);
-
             if(props.data.type === 1){
                 board.write(data).then((res)=>{
                     console.log(res);

@@ -4,21 +4,22 @@ import axios from "axios";
 import photoUpload from "../api/photoUpload.jsx";
 
 const TextEditor = forwardRef((props,ref)=> {
-     console.log("props",props);
-     console.log("ref",ref);
 
      const imageHandler = ()=>{
+         debugger;
          const input = document.createElement("input");
          input.setAttribute("type","file");
          input.setAttribute("accept", "image/*");
          input.click();
          input.addEventListener("change", async (e)=>{
              e.preventDefault();
+             const route = 'notice'
              const file = input.files?.[0];
              const formData = new FormData();
              formData.append('img', file);
              if(file){
-                 photoUpload.upload(formData).then((res) => {
+                 photoUpload.upload(route,formData).then((res) => {
+                     debugger;
                      try {
                          const editor = ref.current.getEditor();
                          const range = editor.getSelection();
@@ -71,18 +72,21 @@ const TextEditor = forwardRef((props,ref)=> {
     }
 
      return(
-        <ReactQuill
-            className="post__item__textarea"
-            placeholder="내용을 입력하세요"
-            thema="snow"
-            modules = {modules}
-            formats={formats}
-            ref={ref}
-            defaultValue={props.defaultValue}
-            onKeyUp={chkTextLength}
-            onKeyDown={chkTextLength}
-            onBlur={chkTextLength}
-        ></ReactQuill>
+         <>
+             <ReactQuill
+                 className="post__item__textarea"
+                 placeholder="내용을 입력하세요"
+                 thema="snow"
+                 modules = {modules}
+                 formats={formats}
+                 ref={ref}
+                 defaultValue={props.defaultValue}
+                 onKeyUp={chkTextLength}
+                 onKeyDown={chkTextLength}
+                 onBlur={chkTextLength}
+             ></ReactQuill>
+         </>
+
     )
 });
 export default TextEditor;

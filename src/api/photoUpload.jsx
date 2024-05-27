@@ -7,9 +7,11 @@ const api = axios.create({
 });
 
 const API = {
-    upload: async (img) => {
+    upload: async (route, img) => {
         try{
-            const res = await api.post('', img);
+            const res = await api.post(`/${route}`, img,{ headers: {
+                    "Content-Type": "multipart/form-data",
+                },});
             return res;
         } catch (error) {
             console.error("이미지 업로드 에러 :", error);
