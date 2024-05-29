@@ -2,7 +2,14 @@ import board from "../../api/Board.jsx";
 import dp from "dompurify"
 
 function View(props) {
-    console.log("view props:", props)
+    const imgs = Array.from(document.getElementsByTagName("img"));
+    if(imgs.length >0) {
+        imgs.forEach((img, index) =>{
+            console.log("img : ",img);
+            img.onclick=()=>{window.open(img.src)};
+        })
+    }
+
     const isUdmin = true;
 
     const update = () =>{
@@ -36,7 +43,7 @@ function View(props) {
                     <span className="post__user-id w10 tc">{props.data.at(0)?.userId}</span>
                     <span className="post__date w10 tc">{props.data.at(0)?.date}</span>
                 </div>
-                <div className="post__content" dangerouslySetInnerHTML={{ __html: dp.sanitize(props.data.at(0)?.contents) }}>
+                <div className="post__content clearfix" dangerouslySetInnerHTML={{ __html: dp.sanitize(props.data.at(0)?.contents) }}>
                 </div>
             </div>
             <div className="box__btns">

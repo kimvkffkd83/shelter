@@ -14,8 +14,9 @@ const API = {
                 },});
             return res;
         } catch (error) {
-            console.error("이미지 업로드 에러 :", error);
-            throw error;
+            if(error.message === '"Network Error"'){
+                console.log('There was a network error.');
+            }
         }
     }
 };

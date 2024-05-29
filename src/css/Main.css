@@ -395,6 +395,10 @@
     border-bottom: 1px solid black;
 }
 
+.post__content > p > img {
+    max-width: 90%;
+}
+
 .post__date{
     color: #888;
 }
@@ -659,6 +663,8 @@
 /* //admin */
 
 .btn__default{
+    position: relative;
+    z-index: 100;
     width: 100px;
     height: 36px;
     cursor: pointer;
@@ -704,3 +710,7 @@
 .ql-editor{
     font-size: 120%;
 }
+
+.clearfix {*zoom:1;}
+.clearfix:before, .clearfix:after {display:block; content: ''; line-height: 0;}
+.clearfix:after {clear: both;}

@@ -1,12 +1,13 @@
-import ReactQuill from "react-quill";
-import {forwardRef, useMemo, useRef} from "react";
-import axios from "axios";
+import ReactQuill, {Quill} from "react-quill";
+import {forwardRef, useMemo} from "react";
 import photoUpload from "../api/photoUpload.jsx";
+import { ImageActions } from '@xeger/quill-image-actions';
+import { ImageFormats } from '@xeger/quill-image-formats';
+Quill.register('modules/imageActions', ImageActions);
+Quill.register('modules/imageFormats', ImageFormats);
 
 const TextEditor = forwardRef((props,ref)=> {
-
      const imageHandler = ()=>{
-         debugger;
          const input = document.createElement("input");
          input.setAttribute("type","file");
          input.setAttribute("accept", "image/*");
@@ -18,31 +19,45 @@ const TextEditor = forwardRef((props,ref)=> {
              const formData = new FormData();
              formData.append('img', file);
              if(file){
+                 if(file.size >= 10000000){
+                     alert("10mb 이하의 이미지만 업로드 할 수 있습니다.");
+                     return;
+                 }
+                 const editor = ref.current.getEditor();
+                 const contents = editor.getContents();
+                 const imageCount = contents.ops.filter(op => op.insert && op.insert.image).length;
+                 if (imageCount >= 5) {
+                     alert("이미지는 최대 5개까지 추가할 수 있습니다.");
+                     return;
+                 }
+
                  photoUpload.upload(route,formData).then((res) => {
-                     debugger;
                      try {
-                         const editor = ref.current.getEditor();
                          const range = editor.getSelection();
                          editor.insertEmbed(range.index, "image", res.data.url)
                      } catch (error) {
-                         alert("에러!")
+                         alert("이미지 업로드 중 에러가 발생했습니다. 관리자에게 문의하세요.")
                      }
                  })
              }
          })
      }
      const toolbarOption = [
+         [{'align':[]}, {'color':[]}, {'background':[]}],
          ['bold',
          'italic',
          'underline',
          'strike',
          'link'],
          [{ 'list': 'ordered'}, { 'list': 'bullet' },{ 'list': 'check' }],
+         [{'indent':'-1'},{'indent':'+1'},],
          ['image'],
     ]
 
     const modules = useMemo(()=>{
         return{
+            imageActions: {},
+            imageFormats: {},
             toolbar : {
                 container : toolbarOption,
                 handlers : {
@@ -58,9 +73,16 @@ const TextEditor = forwardRef((props,ref)=> {
         'underline',
         'strike',
         'link',
-        'bullet',
         'list',
+        'bullet',
+        'indent',
         'image',
+        'align',
+        'color',
+        'background',
+        'float',
+        'height',
+        'width'
     ]
 
     const chkTextLength = ()=> {
