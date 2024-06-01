@@ -20,7 +20,7 @@ const TextEditor = forwardRef((props,ref)=> {
              formData.append('img', file);
              if(file){
                  if(file.size >= 10000000){
-                     alert("10mb 이하의 이미지만 업로드 할 수 있습니다.");
+                     alert("10MB 이하의 이미지만 업로드 할 수 있습니다.");
                      return;
                  }
                  const editor = ref.current.getEditor();

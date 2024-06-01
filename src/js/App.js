@@ -10,8 +10,7 @@ import Organization from "../pages/info/Organization.jsx";
 import Map from "../pages/info/Map.jsx";
 import Missing from "../pages/missing/missing.jsx";
 import Protection from "../pages/protection/protection.jsx";
-import Dog from "../pages/protection/dog.jsx";
-import Cat from "../pages/protection/Cat.jsx";
+import AnmView from "../pages/protection/AnmView.jsx";
 import Error from "../pages/main/Error.jsx";
 
 function App() {
@@ -30,8 +29,9 @@ function App() {
                </Route>
                <Route path="protection" element={<SubLayout/>}>
                    <Route index element={<Protection />} />
-                   <Route path="dog" element={<Dog />} />
-                   <Route path="cat" element={<Cat />} />
+                   <Route path="?ctgr=dog" element={<Protection />} />
+                   <Route path="?ctgr=cat" element={<Protection />} />
+                   <Route path="?ctgr=etc" element={<Protection />} />
                </Route>
                <Route path="*" element={<Error />} />
            </Route>

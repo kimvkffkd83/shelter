@@ -9,19 +9,19 @@
           {"addr" : "/info/map","addrKR" :"찾아오시는 길"}
         ]
       },
-      {"addr" : "/missing",
-        "addrKR" : "실종신고",
-        "subMenu" : [
-          {"addr" : "/missing","addrKR" :"유기동물신고"}
-        ]
-      },
       {"addr" : "/protection",
         "addrKR" : "보호공고",
         "subMenu" : [
           {"addr" : "/protection","addrKR" :"전체"},
-          {"addr" : "/protection/dog","addrKR" :"개"},
-          {"addr" : "/protection/cat","addrKR" :"고양이"},
-          {"addr" : "/protection/etc","addrKR" :"기타"}
+          {"addr" : "/protection?ctgr=dog","addrKR" :"개"},
+          {"addr" : "/protection?ctgr=cat","addrKR" :"고양이"},
+          {"addr" : "/protection?ctgr=etc","addrKR" :"기타"}
+        ]
+      },
+      {"addr" : "/missing",
+        "addrKR" : "실종공고",
+        "subMenu" : [
+          {"addr" : "/missing","addrKR" :"유기동물신고"}
         ]
       },
       {"addr" : "/adopt",

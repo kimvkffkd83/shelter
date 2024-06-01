@@ -1,14 +1,14 @@
 import React from "react";
 import "../../css/Main.css"
 
-function Cat() {
+function AnmView() {
     return (
         <>
             <div>
-                고양이
+                AnmView
             </div>
         </>
     )
 }
 
-export default Cat;
+export default AnmView;
