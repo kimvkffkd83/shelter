@@ -8,7 +8,6 @@ import View from "./View.jsx";
 import Paging from "../../component/common/Paging.jsx";
 
 function Notice() {
-    const title = 'notice';
     const [board,setBoard] = useState([]);
     const [totalCnt , setTotalCnt] = useState(0);
     const [pageNo, setPageNo] = useState(1);
@@ -150,7 +149,7 @@ function Notice() {
                             </ul>
                             <div className="board__paging">
                                 {totalCnt > 0 &&
-                                    <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} ></Paging>
+                                    <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} rowMax={10}></Paging>
                                 }
                             </div>
                             {isAdmin &&

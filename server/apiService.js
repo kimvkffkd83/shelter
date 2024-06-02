@@ -82,7 +82,7 @@ app.get("/data/notice/tcnt", (req, res) =>{
 app.get("/data/notice",(req,res) => {
     const pageNo =  req.query?.pageNo?? 1;
     const queryNo = (pageNo-1)*10;
-    const sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCONT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    const sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
     db.query(sql, (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
@@ -124,7 +124,7 @@ app.get("/data/notice/:id", (req,res)=>{
 app.put('/data/notice/vcnt',(req,res) =>{
     const id = req.body.ntcNo;
     if(id) {
-        db.query('UPDATE master_notice_db SET NTC_VCONT = NTC_VCONT+1 WHERE NTC_NO=?',id,(err,rows) =>{
+        db.query('UPDATE master_notice_db SET NTC_VCNT = NTC_VCNT+1 WHERE NTC_NO=?',id,(err,rows) =>{
             if (err) {
                 console.error("(server)조회수 추가 중 에러:", err);
                 res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
@@ -225,4 +225,59 @@ app.get('/data/orga',(req,res)=>{
         }
         res.send(rows);
     })
+})
+
+//보호 모든 게시글 수
+app.get("/data/protection/tcnt", (req, res) =>{
+    db.query('SELECT COUNT(*) AS cnt FROM master_anm_post_db WHERE POST_ST = 2', (error, tcnt) =>{
+        if (error) throw error;
+        res.send(tcnt);
+    })
+})
+
+//보호 모든 게시글
+app.get('/data/protection',(req,res) =>{
+    const rowMax =  req.query?.rowMax?? 10;
+    console.log("rowMax",rowMax);
+    const pageNo =  req.query?.pageNo?? 1;
+    const queryNo = (pageNo-1)*rowMax;
+    const sql = `SELECT POST_NO AS ntcNo, USER_ID AS userId, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),'%Y-%m-%d') AS rDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),'%Y-%m-%d') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),'%Y-%m-%d') AS sDate, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt FROM master_anm_post_db WHERE POST_ST = 2 ORDER BY POST_NO DESC limit ${queryNo},${rowMax}`;
+    db.query(sql, (error, rows, fields) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+// 보호 게시글 확인
+app.get("/data/protection/:id", (req,res)=>{
+    const id = req.params.id;
+    if(id) {
+        db.query('SELECT POST_NO AS ntcNo, USER_ID AS userId, USER_NO AS userNo, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),\'%Y-%m-%d\') AS rDate, DATE_FORMAT (CAST( POST_UDT_YMD AS date),\'%Y-%m-%d\') AS uDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),\'%Y-%m-%d\') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),\'%Y-%m-%d\') AS sDate, POST_MEMO AS postMemo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
+            console.log("(server)공지사항 1개 : ",rows);
+            if (error) throw error;
+            res.send(rows);
+        });
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
+})
+
+
+//보호 조회수+
+app.put('/data/protection/vcnt',(req,res) =>{
+    const id = req.body.ntcNo;
+    if(id) {
+        db.query('UPDATE master_anm_post_db SET POST_VCNT = POST_VCNT+1 WHERE POST_NO=?',id,(err,rows) =>{
+            if (err) {
+                console.error("(server)조회수 추가 중 에러:", err);
+                res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
+                return;
+            }
+            res.send(rows);
+        })
+    }else{
+        console.log(err);
+        res.send('There is no id.');
+    }
 })

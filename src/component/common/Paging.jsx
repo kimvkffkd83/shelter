@@ -2,11 +2,13 @@ import {useEffect, useState} from "react";
 
 function Paging(props){
     //페이지네이션 자체 값 (블럭 수)
-    const ROW_MAX = 10; //한 페이지에 뿌릴 데이터 수
+    // const ROW_MAX = 10; //한 페이지에 뿌릴 데이터 수
     const BLOCK_MAX = 10; //한 번들의 최대 버튼 개수
+    // const [rowMax, setRowMax] = useState(10);
+    // const [blockMax, setBlockMax] = useState(10);
 
     //페이징 파라미터
-    const {pageNo, changePage, totalRows}= props;
+    const {pageNo, changePage, totalRows, rowMax}= props;
 
     //자체값과 파라미터로 계산하는 값들
     const [pageCnt, setPageCnt] = useState(1)
@@ -22,10 +24,10 @@ function Paging(props){
     //전체 data 개수를 알면 필요한 페이지 수와 번들 수를 구할 수 있음
     useEffect(() => {
         //총 페이지 수
-        let pc = Math.ceil(totalRows/ROW_MAX);
+        let pc = Math.ceil(totalRows/rowMax);
         setPageCnt(pc);
         setBundleCnt(Math.ceil(pc/BLOCK_MAX));
-    }, [totalRows]);
+    }, [totalRows,rowMax]);
 
     useEffect(()=>{
         //번들 계산

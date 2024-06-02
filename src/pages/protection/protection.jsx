@@ -5,12 +5,9 @@ import Filter from "./Filter.jsx";
 import AnmView from "./AnmView.jsx";
 
 function Protection() {
-    const location = useLocation();
-    console.log("location",location.search);
     return (
         <>
-            <Filter />
-            <AnmView />
+            <Filter/>
         </>
     )
 }

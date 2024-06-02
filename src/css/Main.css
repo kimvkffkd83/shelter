@@ -295,7 +295,7 @@
 /* //SideBar */
 
 .box__content{
-    padding: 30px;
+    padding: 28px;
     flex: 1;
 }
 
@@ -605,6 +605,7 @@
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 8px;
 }
 .filter__box{
     display: flex;
@@ -635,6 +636,45 @@
 .filter__item__btn {
     width: 32px;
     height: 32px;
+}
+
+.gallery__content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.gallery__item{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 1px;
+    height: inherit;
+    margin-bottom: 10px;
+    /*background-color: #888;*/
+}
+
+.gallery__box{
+    width: 240px;
+    height: 300px;
+    border: 1px solid #eee;
+    text-align: center;
+}
+
+.gallery__img__box{
+    margin: 16px 0;
+    width: 240px;
+    height: 180px;
+}
+
+.gallery__img{
+}
+.gallery__title{
+}
+.gallery__info{
+}
+.gallery__info__text{
+    color: #888;
 }
 /* //Protection */
 
