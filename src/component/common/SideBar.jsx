@@ -9,7 +9,7 @@ function SideBar(props){
             <hr className="box__line"/>
             <ul className="snb">
                 { props.data.target?.subMenu?.map((str, index ) => (
-                    <li className="snb__menu" key={index}>
+                    <li className={"snb__menu "+(index===props.data.subIndex? "snb__menu_selected" : "")} key={index}>
                         <Link to={str.addr} state={{index:props.data.index}} className="sbn__menu-link">{str.addrKR}</Link>
                     </li>))
                 }

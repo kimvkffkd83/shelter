@@ -9,6 +9,7 @@ function SubLayout(){
         index: 0,
         target: MenuJson.mainMenu[0],
         title: '',
+        subIndex:0,
         subTitle: ''
     });
 
@@ -33,6 +34,10 @@ function SubLayout(){
         if(pathArray.length > 2) {
             subIndex = subMenu.findIndex(subMenu => subMenu.addr === location.pathname)
         }
+        //보호 공고 계시판은 예외
+        if(pathArray[1] === 'protection'){
+            subIndex = subMenu.findIndex(subMenu => subMenu.addr === location.pathname+location.search)
+        }
 
         //서브 타이틀 정하기
         const subTitle = subMenu[subIndex].addrKR
@@ -42,6 +47,7 @@ function SubLayout(){
             index ,
             target,
             title,
+            subIndex,
             subTitle
         })
 
