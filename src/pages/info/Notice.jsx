@@ -113,7 +113,7 @@ function Notice() {
                         <View data={post} changeVisible={setViewState} changeEditable={setEditState}/> :
                         <>
                             <div className="table__info">
-                                <span>전체 : {totalCnt} / 현재 페이지 : {pageNo}</span>
+                                <span>전체 : <strong>{totalCnt}</strong> / 현재 페이지 : <strong>{pageNo}</strong></span>
                             </div>
                             <ul className="table__board">
                                 <li className="table__header">

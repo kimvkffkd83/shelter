@@ -4,7 +4,6 @@ import Protection from "../../api/Protection.jsx";
 import Paging from "../../component/common/Paging.jsx";
 
 function AnmView(props) {
-    console.log("props", props);
     const [post, setPost] = useState([])
 
     const getView = (postNo)=>{
@@ -69,7 +68,7 @@ function AnmView(props) {
                                 <h1 className="gallery__title">{stSubConverter(data.stSub)}</h1>
                                 <div className="gallery__info">
                                     <span className="gallery__info__text">{sexConverter(data.spc)} / {data.region} </span><br/>
-                                    <span className="gallery__info__text">{data.sex === 'm'? '수컷' : '암컷'} / {data.weight}kg / {data.age}살 추정</span>
+                                    <span className="gallery__info__text">{data.sex === 'M' || data.sex === 'm' ? '수컷' : '암컷'} / {data.weight}kg / {data.age}살 추정</span>
                                 </div>
                             </article>
                         </div>

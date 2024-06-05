@@ -236,15 +236,29 @@ app.get("/data/protection/tcnt", (req, res) =>{
 })
 
 //보호 모든 게시글
-app.get('/data/protection',(req,res) =>{
-    const rowMax =  req.query?.rowMax?? 10;
-    console.log("rowMax",rowMax);
-    const pageNo =  req.query?.pageNo?? 1;
+app.post('/data/protection',(req,res) =>{
+    const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;
+    const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
     const queryNo = (pageNo-1)*rowMax;
-    const sql = `SELECT POST_NO AS ntcNo, USER_ID AS userId, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),'%Y-%m-%d') AS rDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),'%Y-%m-%d') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),'%Y-%m-%d') AS sDate, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt FROM master_anm_post_db WHERE POST_ST = 2 ORDER BY POST_NO DESC limit ${queryNo},${rowMax}`;
-    db.query(sql, (error, rows, fields) =>{
+
+    let spc = 0;
+    if(req.query.ctgr){
+        switch (req.query.ctgr){
+            case 'dog': spc = 1; break;
+            case 'cat': spc = 2; break;
+            case 'etc': spc = 3; break;
+            default: spc='';
+        }
+    }
+    let region = req.body.query?.region?? 0;
+    let st = req.body.query?.st?? '';
+    let sex = req.body.query?.sex?? '';
+    let neutering = req.body.query?.neutering?? '';
+    let chip = req.body.query?.chip?? '';
+
+    db.query(`CALL sheter_p_anm_past_lists(${spc},${region},'${st}','${sex}','${neutering}','${chip}',${queryNo},${rowMax});`, (error, rows, fields) =>{
         if (error) throw error;
-        res.send(rows);
+        res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
 })
 

@@ -16,9 +16,9 @@ const API = {
             throw error;
         }
     },
-    list: async (pageNo, rowMax) =>{
+    list: async (searchParam, query, pageNo, rowMax) =>{
         try {
-            const res = await api.get(`?pageNo=${pageNo}&rowMax=${rowMax}`,rowMax);
+            const res = await api.post(searchParam, {pageNo, rowMax, query});
             return res.data;
         } catch (error) {
             console.error("Error while fetching notice list data:", error);
