@@ -70,15 +70,33 @@ const API = {
             throw error;
         }
     },
+    display: async (ntcNo, visible) =>{
+        try{
+            const res = await api.put(`display`, {ntcNo, visible});
+            return res;
+        } catch (error) {
+            console.error("Error while updating data vcnt:", error);
+            throw error;
+        }
+    },
     removeSelected: async (ntcNos) => {
         try {
-            const res = await api.post(`selected`, {ntcNos});
+            const res = await api.post(`delSelection`, {ntcNos});
             return res;
         } catch (error) {
             console.error("Error while removing data:", error);
             throw error;
         }
     },
+    hideSelected: async (ntcNos) =>{
+        try {
+            const res = await api.post(`hideSelection`, {ntcNos});
+            return res;
+        } catch (error) {
+            console.error("Error while removing data:", error);
+            throw error;
+        }
+    }
 };
 
 export default API;

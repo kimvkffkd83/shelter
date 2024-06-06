@@ -63,8 +63,8 @@ function AnmView(props) {
                             <article className="gallery__box">
                                 {isAdmin &&
                                     <div className="adm__gallery__btns">
-                                        <button className="adm__gallery__btn adm__btn__write"><span className="material-symbols-outlined">edit_note</span></button>
-                                        <button className="adm__gallery__btn adm__btn__delete"><span className="material-symbols-outlined">delete</span></button>
+                                        <button className="btn__adm__icon btn__adm__modify"><span className="material-symbols-outlined">edit_note</span></button>
+                                        <button className="btn__adm__icon btn__adm__delete"><span className="material-symbols-outlined">delete</span></button>
                                     </div>
                                 }
                                 <div className="gallery__img__box">

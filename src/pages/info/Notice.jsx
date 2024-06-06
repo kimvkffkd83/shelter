@@ -63,7 +63,33 @@ function Notice() {
                 if(post.checked) postNos.push(post.parentElement.dataset.ntcNo)
             })
 
+            if(postNos.length<=0){
+                alert("삭제할 게시물을 선택해주세요.")
+                return;
+            }
+
             Board.removeSelected(postNos).then((res) =>{
+                console.log(res);
+                setSelect(false);
+            })
+        }
+    }
+
+    const hidePosts = () =>{
+        if(window.confirm('선택한 게시물들을 비공개하시겠습니까?')){
+            const selectedPosts = document.getElementsByName("select")
+
+            const postNos = [];
+            selectedPosts.forEach((post,idx) =>{
+                if(post.checked) postNos.push(post.parentElement.dataset.ntcNo)
+            })
+
+            if(postNos.length<=0){
+                alert("비공개할 게시물을 선택해주세요.")
+                return;
+            }
+
+            Board.hideSelected(postNos).then((res) =>{
                 console.log(res);
                 setSelect(false);
             })
@@ -114,6 +140,30 @@ function Notice() {
                         <>
                             <div className="table__info">
                                 <span>전체 : <strong>{totalCnt}</strong> / 현재 페이지 : <strong>{pageNo}</strong></span>
+                                {isAdmin &&
+                                    <div className="box__adm__btns">
+                                        {!select &&
+                                            <button className="btn__adm__icon btn__adm__write" onClick={write}><span className="material-symbols-outlined">edit_square</span></button>
+                                        }
+                                        {select &&
+                                            <>
+                                                <button className="btn__adm__icon btn__adm__hide" onClick={hidePosts}>
+                                                    <span className="material-symbols-outlined">visibility_off</span>
+                                                </button>
+                                                <button className="btn__adm__icon btn__adm__delete" onClick={deletePosts}>
+                                                    <span className="material-symbols-outlined">delete</span>
+                                                </button>
+                                            </>
+                                        }
+                                        <button className="btn__adm__icon btn__adm__checkbox" onClick={selectPosts}>
+                                            {
+                                                select ?
+                                                    <span className="material-symbols-outlined">select</span> :
+                                                    <span className="material-symbols-outlined">select_check_box</span>
+                                            }
+                                        </button>
+                                    </div>
+                                }
                             </div>
                             <ul className="table__board">
                                 <li className="table__header">
@@ -132,7 +182,7 @@ function Notice() {
                                     </div>
                                     :
                                     board.map((post, index) => (
-                                        <li key={index} className="table__content" onClick={view}
+                                        <li key={index} className={`table__content ${post.display==='n'? 'table__content__hide':''}`} onClick={view}
                                             data-ntc-no={post.ntcNo}>
                                             {select &&
                                                 <input className="table__content__text w10" type="checkbox" onClick={event => event.stopPropagation()} name='select'/>
@@ -152,19 +202,6 @@ function Notice() {
                                     <Paging pageNo={pageNo} changePage={setPageState} totalRows={totalCnt} rowMax={10}></Paging>
                                 }
                             </div>
-                            {isAdmin &&
-                                <div className="box__adm">
-                                    <div className="box__adm__btns">
-                                        {!select &&
-                                        <button className="btn__adm" onClick={write}>등록</button>
-                                        }
-                                        {select &&
-                                            <button className="btn__adm" onClick={deletePosts}>{'삭제'}</button>
-                                        }
-                                        <button className="btn__adm" onClick={selectPosts}>{select ? '취소' : '삭제'}</button>
-                                    </div>
-                                </div>
-                            }
                         </>
                 }
             </>

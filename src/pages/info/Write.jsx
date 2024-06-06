@@ -84,7 +84,7 @@ function Write(props){
     }
 
     const undo = ()=>{
-        if(window.confirm('지금까지 내용은 저장되지 않습니다. 작성을 취소하시겠습니까?')){
+        if(window.confirm('지금까지 수정된 내용은 저장되지 않습니다. 작성을 취소하시겠습니까?')){
             props.changeEditable({"editable" : false, "type" : 0})
         }
     }

@@ -324,8 +324,11 @@
 }
 
 .table__info{
+    display: flex;
     margin-bottom: 4px;
     padding: 8px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .table__board{
@@ -370,6 +373,10 @@
     background-color: #eee;
     align-items: center;
     justify-content: center;
+}
+
+.table__content__hide{
+    background-color: #eee;
 }
 
 .board__paging{
@@ -693,25 +700,6 @@
     z-index: 300;
     justify-content: space-between;
 }
-.adm__gallery__btn{
-    width: 32px;
-    height: 32px;
-    margin: 4px;
-    border: none;
-}
-.adm__btn__write{
-    background-color: #f8ffe7;
-}
-.adm__btn__write > span {
-    color:#248E46
-}
-
-.adm__btn__delete{
-    background-color: #FF9E9E;
-}
-.adm__btn__delete > span {
-    color: #8E2424;
-}
 /* //Protection */
 
 /* //SubLayout */
@@ -754,14 +742,13 @@
 
 /* admin */
 .box__adm{
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-
+    /*position: absolute;*/
+    /*margin-top: 10px;*/
+    /*display: flex;*/
+    /*justify-content: center;*/
 }
+
 .box__adm__btns{
-    width: 500px;
-    height: 50px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -773,6 +760,62 @@
     height: 36px;
     cursor: pointer;
 }
+
+.btn__adm__icon{
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    border: none;
+}
+
+.btn__adm__write{
+    background-color: #f8ffe7;
+}
+
+.btn__adm__write > span {
+    color:#248E46
+}
+
+.btn__adm__modify{
+    background-color: #f8ffe7;
+}
+
+.btn__adm__modify > span {
+    color:#248E46
+}
+
+.btn__adm__delete{
+    background-color: #FF9E9E;
+}
+
+.btn__adm__delete > span {
+    color: #8E2424;
+}
+
+.btn__adm__show{
+    background-color: #f8ffe7;
+}
+
+.btn__adm__show > span {
+    color:#248E46
+}
+
+.btn__adm__hide{
+    background-color: #FF9E9E;
+}
+
+.btn__adm__hide > span {
+    color: #8E2424;
+}
+
+.btn__adm__checkbox {
+    background-color: #f8ffe7;
+}
+
+.btn__adm__checkbox > span {
+    color:#248E46
+}
+
 /* //admin */
 
 .btn__default{

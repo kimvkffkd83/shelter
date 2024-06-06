@@ -80,9 +80,15 @@ app.get("/data/notice/tcnt", (req, res) =>{
 
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",(req,res) => {
+    const isUdmin = true;
     const pageNo =  req.query?.pageNo?? 1;
     const queryNo = (pageNo-1)*10;
-    const sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    let sql = '';
+    if(isUdmin){
+        sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt, NTC_DISPLAY AS display FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    }else{
+        sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt FROM master_notice_db WHERE NTC_DISPLAY='y' ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    }
     db.query(sql, (error, rows, fields) =>{
         if (error) throw error;
         res.send(rows);
@@ -108,7 +114,7 @@ app.post("/data/notice", (req,res) =>{
 app.get("/data/notice/:id", (req,res)=>{
     const id = req.params.id;
     if(id) {
-        db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST(NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date FROM master_notice_db WHERE NTC_NO=?',id, (error, rows, fields) =>{
+        db.query('SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST(NTC_REG_DATE AS date),\'%Y-%m-%d\') AS date, NTC_DISPLAY AS display FROM master_notice_db WHERE NTC_NO=?',id, (error, rows, fields) =>{
             console.log("(server)공지사항 1개 : ",rows);
             if (error) throw error;
             res.send(rows);
@@ -127,6 +133,27 @@ app.put('/data/notice/vcnt',(req,res) =>{
             if (err) {
                 console.error("(server)조회수 추가 중 에러:", err);
                 res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
+                return;
+            }
+            res.send(rows);
+        })
+    }else{
+        res.send('There is no id.');
+    }
+})
+
+//공지사항 show/hide
+app.put('/data/notice/display',(req,res) =>{
+    const id = req.body.ntcNo;
+    const display = req.body.visible;
+    console.log("id",id);
+    console.log("display",display);
+    const oppoDisplay = display === 'y'? 'n' : display === 'n'? 'y' : false;
+    if(id && oppoDisplay) {
+        db.query(`UPDATE master_notice_db SET NTC_DISPLAY='${oppoDisplay}' WHERE NTC_NO=?`,id,(err,rows) =>{
+            if (err) {
+                console.error("(server)게시글 show/hide 중 에러:", err);
+                res.status(500).send("게시글 show/hide 중 에러가 발생했습니다.");
                 return;
             }
             res.send(rows);
@@ -161,7 +188,7 @@ app.delete('/data/notice/:id', (req, res) =>{
 })
 
 // 공지사항 선택한 게시글 삭제
-app.post('/data/notice/selected',(req, res) =>{
+app.post('/data/notice/delSelection',(req, res) =>{
     const ntcNos = req.body.ntcNos;
     if(ntcNos.length === 0){
         res.send('There is no id.');
@@ -172,7 +199,34 @@ app.post('/data/notice/selected',(req, res) =>{
         added += 'ntc_no='+no;
         if(idx < ntcNos.length-1) added +=' or ';
     })
-    const sql = 'DELETE FROM master_notice_db WHERE '+added;
+    const sql = `DELETE FROM master_notice_db WHERE {$added}`;
+    db.query(sql,(err, rows)=>{
+        if (err) {
+            console.error("(server)공지사항 다중 삭제 중 에러:", err);
+            res.status(500).send("공지사항을 다중 삭제하는 도중 에러가 발생했습니다.");
+            return;
+        }
+        if (res.affectedRows === 0) {
+            res.status(404).send("해당하는 공지사항이 없습니다.");
+            return;
+        }
+        res.send(rows);
+    })
+})
+
+// 공지사항 선택한 게시글 비공개
+app.post('/data/notice/hideSelection',(req, res) =>{
+    const ntcNos = req.body.ntcNos;
+    if(ntcNos.length === 0){
+        res.send('There is no id.');
+        return;
+    }
+    let added = '';
+    ntcNos.forEach((no,idx)=>{
+        added += 'ntc_no='+no;
+        if(idx < ntcNos.length-1) added +=' or ';
+    })
+    const sql = `UPDATE master_notice_db SET NTC_DISPLAY=\'n\' WHERE +${added}`;
     db.query(sql,(err, rows)=>{
         if (err) {
             console.error("(server)공지사항 다중 삭제 중 에러:", err);
