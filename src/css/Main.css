@@ -686,6 +686,32 @@
 .gallery__info__text{
     color: #888;
 }
+.adm__gallery__btns{
+    display: flex;
+    position: absolute;
+    width: 240px;
+    z-index: 300;
+    justify-content: space-between;
+}
+.adm__gallery__btn{
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    border: none;
+}
+.adm__btn__write{
+    background-color: #f8ffe7;
+}
+.adm__btn__write > span {
+    color:#248E46
+}
+
+.adm__btn__delete{
+    background-color: #FF9E9E;
+}
+.adm__btn__delete > span {
+    color: #8E2424;
+}
 /* //Protection */
 
 /* //SubLayout */

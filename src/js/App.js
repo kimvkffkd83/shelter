@@ -9,7 +9,7 @@ import Info from "../pages/info/Info.jsx";
 import Organization from "../pages/info/Organization.jsx";
 import Map from "../pages/info/Map.jsx";
 import Missing from "../pages/missing/missing.jsx";
-import Protection from "../pages/protection/protection.jsx";
+import Protection from "../pages/protection/Protection.jsx";
 import AnmView from "../pages/protection/AnmView.jsx";
 import Error from "../pages/main/Error.jsx";
 

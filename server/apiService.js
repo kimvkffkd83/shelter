@@ -114,7 +114,6 @@ app.get("/data/notice/:id", (req,res)=>{
             res.send(rows);
         });
     }else{
-        console.log(err);
         res.send('There is no id.');
     }
 })
@@ -133,7 +132,6 @@ app.put('/data/notice/vcnt',(req,res) =>{
             res.send(rows);
         })
     }else{
-        console.log(err);
         res.send('There is no id.');
     }
 })
@@ -158,7 +156,6 @@ app.delete('/data/notice/:id', (req, res) =>{
             res.send({ affectedRows: res.affectedRows });
         });
     }else{
-        console.log(err);
         res.send('There is no id.');
     }
 })
@@ -266,13 +263,12 @@ app.post('/data/protection',(req,res) =>{
 app.get("/data/protection/:id", (req,res)=>{
     const id = req.params.id;
     if(id) {
-        db.query('SELECT POST_NO AS ntcNo, USER_ID AS userId, USER_NO AS userNo, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),\'%Y-%m-%d\') AS rDate, DATE_FORMAT (CAST( POST_UDT_YMD AS date),\'%Y-%m-%d\') AS uDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),\'%Y-%m-%d\') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),\'%Y-%m-%d\') AS sDate, POST_MEMO AS postMemo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
-            console.log("(server)공지사항 1개 : ",rows);
+        db.query('SELECT POST_NO AS postNo, USER_ID AS userId, USER_NO AS userNo, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),\'%Y-%m-%d\') AS rDate, DATE_FORMAT (CAST( POST_UDT_YMD AS date),\'%Y-%m-%d\') AS uDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),\'%Y-%m-%d\') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),\'%Y-%m-%d\') AS sDate, POST_MEMO AS postMemo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
+            // console.log("(server)공지사항 1개 : ",rows);
             if (error) throw error;
             res.send(rows);
         });
     }else{
-        console.log(err);
         res.send('There is no id.');
     }
 })
@@ -280,7 +276,7 @@ app.get("/data/protection/:id", (req,res)=>{
 
 //보호 조회수+
 app.put('/data/protection/vcnt',(req,res) =>{
-    const id = req.body.ntcNo;
+    const id = req.body.postNo;
     if(id) {
         db.query('UPDATE master_anm_post_db SET POST_VCNT = POST_VCNT+1 WHERE POST_NO=?',id,(err,rows) =>{
             if (err) {
@@ -291,7 +287,6 @@ app.put('/data/protection/vcnt',(req,res) =>{
             res.send(rows);
         })
     }else{
-        console.log(err);
         res.send('There is no id.');
     }
 })

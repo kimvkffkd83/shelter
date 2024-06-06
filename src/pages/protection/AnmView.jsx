@@ -1,27 +1,20 @@
 import React, {useState} from "react";
 import "../../css/Main.css"
-import Protection from "../../api/Protection.jsx";
-import Paging from "../../component/common/Paging.jsx";
-
+import Region from "../../jsons/Region.json"
 function AnmView(props) {
-    const [post, setPost] = useState([])
+    const isAdmin = true;
+
+    const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
+
+
 
     const getView = (postNo)=>{
-        Protection.vcnt(postNo).then((res) =>{
-                console.log(res);
-            }
-        )
-        Protection.view(postNo).then((res)=> {
-            if(res.length === 0){
-                alert("존재하지 않는 게시글입니다")
-            }else{
-                setPost(res);
-            }
-        })
+        props.changeVisible({visible : true , postNo : postNo});
     }
     const view =(e)=>{
-        const ntcNo = e.currentTarget.dataset.ntcNo;
-        getView(ntcNo);
+        const postNo = e.currentTarget.dataset.postNo;
+        console.log("postNo",postNo);
+        getView(postNo);
     }
     const stSubConverter = (stSub)=>{
         switch (stSub){
@@ -39,7 +32,7 @@ function AnmView(props) {
         }
     }
 
-    const sexConverter = (stSub)=>{
+    const spcConverter = (stSub)=>{
         switch (stSub){
             case '1': return '개';
             case '2': return '고양이';
@@ -48,6 +41,11 @@ function AnmView(props) {
         }
     }
 
+    const regionConverter = (region) =>{
+        return Region.gu.map((g,index)=>{
+            if(g.no === Number(region)) return g.addrKR;
+        })
+    }
 
 
     return (
@@ -60,15 +58,24 @@ function AnmView(props) {
                         <span>게시글이 없습니다.</span>
                     </div> :
                     props.datas?.map((data,idx) => (
-                        <div className="gallery__item" key={idx}>
+                        <div key={idx} className="gallery__item" onClick={view}
+                             data-post-no={data.postNo} >
                             <article className="gallery__box">
+                                {isAdmin &&
+                                    <div className="adm__gallery__btns">
+                                        <button className="adm__gallery__btn adm__btn__write"><span className="material-symbols-outlined">edit_note</span></button>
+                                        <button className="adm__gallery__btn adm__btn__delete"><span className="material-symbols-outlined">delete</span></button>
+                                    </div>
+                                }
                                 <div className="gallery__img__box">
                                     <img className="gallery__img" src="" alt="asdf"/>
                                 </div>
                                 <h1 className="gallery__title">{stSubConverter(data.stSub)}</h1>
                                 <div className="gallery__info">
-                                    <span className="gallery__info__text">{sexConverter(data.spc)} / {data.region} </span><br/>
-                                    <span className="gallery__info__text">{data.sex === 'M' || data.sex === 'm' ? '수컷' : '암컷'} / {data.weight}kg / {data.age}살 추정</span>
+                                    <span
+                                        className="gallery__info__text">{spcConverter(data.spc)} / {regionConverter(data.region)} </span><br/>
+                                    <span
+                                        className="gallery__info__text">{data.sex === 'M' || data.sex === 'm' ? '수컷' : '암컷'} / {data.weight}kg / {data.age}살 추정</span>
                                 </div>
                             </article>
                         </div>
