@@ -32,12 +32,16 @@ function Filter() {
         }));
     }
 
+    const [isEditable, setIsEditable] = useState(
+        {"editable" : false, "type" : 0}
+    );
+
     useEffect(() => {
         Protection.list(location.search, query, pageNo, rowMax).then((res)=> {
             setTotalCnt(res.totalCount);
             setDatas(res.lists);
         });
-    }, [location, pageNo, rowMax, query]);
+    }, [location, pageNo, rowMax, query, isEditable]);
 
     const dataCntAction = (e)=>{
         setRowMax(e.target.value);
@@ -49,9 +53,6 @@ function Filter() {
         setIsVisible(childState);
     }
 
-    const [isEditable, setIsEditable] = useState(
-        {"editable" : false, "type" : 0}
-    );
 
     const [post, setPost] = useState([]);
 
@@ -163,11 +164,11 @@ function Filter() {
                                         <label htmlFor="region" className="filter__label">지역:</label>
                                         <select id="region" className="filter__select" onChange={dataSelectAction}>
                                             <option value="0">전체</option>
-                                            <option value="1">동구</option>
-                                            <option value="2">서구</option>
-                                            <option value="3">남구</option>
+                                            <option value="1">광산구</option>
+                                            <option value="2">남구</option>
+                                            <option value="3">동구</option>
                                             <option value="4">북구</option>
-                                            <option value="5">광산구</option>
+                                            <option value="5">서구</option>
                                         </select>
                                     </div>
                                     <div className="filter__item">

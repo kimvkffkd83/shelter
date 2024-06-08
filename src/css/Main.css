@@ -487,10 +487,15 @@
 }
 
 .post__item__preview{
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #888;
+}
+
+.post__item__preview_img{
     width: 400px;
     height: 300px;
-    border: 1px solid #888;
 }
 
 .radio__box{
@@ -737,6 +742,8 @@
 }
 
 .gallery__img{
+    width: inherit;
+    height: inherit;
 }
 .gallery__title{
 }

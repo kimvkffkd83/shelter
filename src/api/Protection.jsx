@@ -43,6 +43,15 @@ const API = {
             throw error;
         }
     },
+    write: async (data) => {
+        try {
+            const res = await api.put(``, data);
+            return res;
+        } catch (error) {
+            console.error("Error while writing data:", error);
+            throw error;
+        }
+    },
 }
 
 export default API;

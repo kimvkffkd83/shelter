@@ -68,7 +68,7 @@ function AnmView(props) {
                                     </div>
                                 }
                                 <div className="gallery__img__box">
-                                    <img className="gallery__img" src="" alt="asdf"/>
+                                    <img className="gallery__img" src={data.photoUrl} alt="사진오류"/>
                                 </div>
                                 <h1 className="gallery__title">{stSubConverter(data.stSub)}</h1>
                                 <div className="gallery__info">
