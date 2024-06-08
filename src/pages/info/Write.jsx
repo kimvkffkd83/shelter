@@ -92,19 +92,23 @@ function Write(props){
     return(
         <div className="box__post">
             <div className="post__item">
-                <span className="post__item-title">제목</span>
-                <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
-                    onKeyUp={()=>chkTextLength(titleRef,50)} onKeyDown={()=>chkTextLength(titleRef,50)} onBlur={()=>chkTextLength(titleRef,50)}
-
-                />
+                <span className="post__item__title">제목</span>
+                <div className="post__item__contents">
+                    <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
+                           onKeyUp={() => chkTextLength(titleRef, 50)} onKeyDown={() => chkTextLength(titleRef, 50)}
+                           onBlur={() => chkTextLength(titleRef, 50)}
+                    />
+                </div>
             </div>
             <div className="post__item">
-                <span className="post__item-title">날짜</span>
-                <span className="post__item__text">{newDateStr}</span>
+                <span className="post__item__title">날짜</span>
+                <div className="post__item__contents">
+                    <span className="post__item__text">{newDateStr}</span>
+                </div>
             </div>
             {/*props.data.type === 1 &&
                 <div className="post__item">
-                    <div className="post__item-title"></div>
+                    <div className="post__item__title"></div>
                     <div className="post__item__text">
                         <label name="date" className="post__item__label" htmlFor="date">현재</label>
                         <input name="date" className="post__item__radio" type="radio" defaultChecked></input>
@@ -114,12 +118,14 @@ function Write(props){
                 </div>
             */}
             <div className="post__item">
-                <span className="post__item-title">내용</span>
-                <Editor ref={contentsRef} defaultValue={props.post.at(0)?.contents} />
-                {/*<textarea className="post__item__textarea"*/}
-                {/*          ref={contentsRef} defaultValue={props.post.at(0)?.contents}*/}
-                {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}
-                {/*/>*/}
+                <span className="post__item__title">내용</span>
+                <div className="post__item__contents">
+                    <Editor ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
+                    {/*<textarea className="post__item__textarea"*/}
+                    {/*          ref={contentsRef} defaultValue={props.post.at(0)?.contents}*/}
+                    {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}
+                    {/*/>*/}
+                </div>
             </div>
             <div className="box__btns">
                 <button className="btn__default" onClick={action}>{props.data.type === 1 ? '등록' : '수정'}</button>
