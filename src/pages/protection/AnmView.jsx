@@ -47,6 +47,10 @@ function AnmView(props) {
         })
     }
 
+    const update = () =>{
+
+    }
+
 
     return (
         <>
@@ -63,8 +67,12 @@ function AnmView(props) {
                             <article className="gallery__box">
                                 {isAdmin &&
                                     <div className="adm__gallery__btns">
-                                        <button className="btn__adm__icon btn__adm__modify"><span className="material-symbols-outlined">edit_note</span></button>
-                                        <button className="btn__adm__icon btn__adm__delete"><span className="material-symbols-outlined">delete</span></button>
+                                        <button className="btn__adm__icon btn__adm__modify" onClick={update}>
+                                            <span className="material-symbols-outlined">edit_note</span>
+                                        </button>
+                                        <button className="btn__adm__icon btn__adm__delete">
+                                            <span className="material-symbols-outlined">delete</span>
+                                        </button>
                                     </div>
                                 }
                                 <div className="gallery__img__box">

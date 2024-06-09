@@ -66,7 +66,7 @@ function Filter() {
                 if(res.length === 0){
                     alert("존재하지 않는 게시글입니다")
                 }else{
-                    console.log(res)
+                    console.log("post res : ",res);
                     setPost(res);
                 }
             })
@@ -107,6 +107,17 @@ function Filter() {
             if(g.no === Number(region)) return g.addrKR;
         })
     }
+    
+    const sexConverter = (sex) =>{
+        switch (sex) {
+            case 'm':
+            case 'M' : return "수컷"; break;
+            case 'f':
+            case 'F' : return "암컷"; break;
+            case 'u':
+            case 'U' : return "미상"; break;
+        }
+    }
 
     const write = ()=>{
         setPost([]);
@@ -128,12 +139,55 @@ function Filter() {
                                 <div className="post__header">
                                 <span className="post__title w80">
                                     <strong>[{stSubConverter(post[0]?.stSub)}] </strong>
-                                    {spcConverter(post[0]?.spc)} / {regionConverter(post[0]?.region)} / {post[0]?.sex === "m" || post[0]?.sex === "M" ? "수컷" : "암컷"}
+                                    {spcConverter(post[0]?.spc)} / {regionConverter(post[0]?.region)} / {sexConverter(post[0]?.sex)}
                                 </span>
                                     <span className="post__user-id w10 tc">{post[0]?.userId}</span>
                                     <span className="post__date w10 tc">{post[0]?.rDate}</span>
                                 </div>
-                                <div className="post__content clearfix" dangerouslySetInnerHTML={{ __html: dp.sanitize(post[0]?.postMemo) }}>
+                                <div className="post__table">
+                                    <table className="table__default w90">
+                                        <tbody className="table__default__body">
+                                        <tr>
+                                            <td className="table_item_title">축종</td>
+                                            <td className="table_item_content">{spcConverter(post[0]?.spc)}</td>
+                                            <td className="table_item_title">세부 종</td>
+                                            <td className="table_item_content">{post[0]?.spcSub}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table_item_title">이름</td>
+                                            <td className="table_item_content">{post[0]?.name}</td>
+                                            <td className="table_item_title">성별</td>
+                                            <td className="table_item_content">{sexConverter(post[0]?.sex)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table_item_title">체중</td>
+                                            <td className="table_item_content">{post[0]?.weight}Kg</td>
+                                            <td className="table_item_title">추정나이</td>
+                                            <td className="table_item_content">{post[0]?.age}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table_item_title">구조 지역</td>
+                                            <td className="table_item_content">{regionConverter(post[0]?.region)}</td>
+                                            <td className="table_item_title">지역 상세</td>
+                                            <td className="table_item_content">{post[0]?.regionSub}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table_item_title">공고 상태</td>
+                                            <td className="table_item_content">{stSubConverter(post[0]?.stSub)}</td>
+                                            <td className="table_item_title">특징</td>
+                                            <td className="table_item_content">{post[0]?.feature}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table_item_title">구조일</td>
+                                            <td className="table_item_content">{post[0]?.cDate}</td>
+                                            <td className="table_item_title">마감일</td>
+                                            <td className="table_item_content">{post[0]?.sDate}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="post__image">
+                                    <img className="post__image-single" src={post[0]?.photoUrl} alt="보호사진"/>
                                 </div>
                             </div>
                             <div className="box__btns">
@@ -148,31 +202,31 @@ function Filter() {
                             {/*    </div>*/}
                             {/*}*/}
                         </> :
-                        <>
-                            <div className="filter__content">
-                                <div className="filter__box">
-                                    {/*<div className="filter__item">*/}
-                                    {/*    <label htmlFor="spc" className="filter__label">종류:</label>*/}
-                                    {/*    <select id="spc" className="filter__select" onChange={dataSelectAction}>*/}
-                                    {/*        <option value="">전체</option>*/}
-                                    {/*        <option value="1">개</option>*/}
-                                    {/*        <option value="2">고양이</option>*/}
-                                    {/*        <option value="3">기타</option>*/}
-                                    {/*    </select>*/}
-                                    {/*</div>*/}
-                                    <div className="filter__item">
-                                        <label htmlFor="region" className="filter__label">지역:</label>
-                                        <select id="region" className="filter__select" onChange={dataSelectAction}>
-                                            <option value="0">전체</option>
-                                            <option value="1">광산구</option>
-                                            <option value="2">남구</option>
-                                            <option value="3">동구</option>
-                                            <option value="4">북구</option>
-                                            <option value="5">서구</option>
-                                        </select>
-                                    </div>
-                                    <div className="filter__item">
-                                        <label htmlFor="st" className="filter__label">상태:</label>
+                            <>
+                                <div className="filter__content">
+                                    <div className="filter__box">
+                                        {/*<div className="filter__item">*/}
+                                        {/*    <label htmlFor="spc" className="filter__label">종류:</label>*/}
+                                        {/*    <select id="spc" className="filter__select" onChange={dataSelectAction}>*/}
+                                        {/*        <option value="">전체</option>*/}
+                                        {/*        <option value="1">개</option>*/}
+                                        {/*        <option value="2">고양이</option>*/}
+                                        {/*        <option value="3">기타</option>*/}
+                                        {/*    </select>*/}
+                                        {/*</div>*/}
+                                        <div className="filter__item">
+                                            <label htmlFor="region" className="filter__label">지역:</label>
+                                            <select id="region" className="filter__select" onChange={dataSelectAction}>
+                                                <option value="0">전체</option>
+                                                <option value="1">광산구</option>
+                                                <option value="2">남구</option>
+                                                <option value="3">동구</option>
+                                                <option value="4">북구</option>
+                                                <option value="5">서구</option>
+                                            </select>
+                                        </div>
+                                        <div className="filter__item">
+                                            <label htmlFor="st" className="filter__label">상태:</label>
                                         <select id="st" className="filter__select" onChange={dataSelectAction}>
                                             <option value="">전체</option>
                                             <option value="a">공고중</option>
