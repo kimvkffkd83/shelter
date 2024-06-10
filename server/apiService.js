@@ -31,6 +31,24 @@ app.post("/text", (req, res) =>{
 app.listen(port, ()=>{
     console.log("api 서버 개시 완료")
 })
+//메인페이지에서 슬라이드 조회
+app.get("/data/main/slide",(req,res)=>{
+    const query = `SELECT POST_NO AS postNo, USER_ID AS userId, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, DATE_FORMAT (CAST( POST_REG_YMD AS date),'%Y-%m-%d') AS rDate,
+       DATE_FORMAT (CAST( ANM_RSC_YMD AS date),'%Y-%m-%d') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),'%Y-%m-%d') AS sDate, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub,
+       ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight,
+       ANM_AGE AS age, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt, POST_PHOTO_URL AS photoUrl
+       FROM master_anm_post_db WHERE POST_ST = 2 ORDER BY POST_NO DESC limit 0,10;`;
+
+    db.query(query, (error, rows, fields) =>{
+        if (error) {
+            console.error(`(server) 보호 목록 조회 중 에러:`, error);
+            res.status(500).send(`보호 목록을 조회하는 도중 에러가 발생했습니다.`);
+            return;
+        }
+        res.send(rows);
+        console.log(`보호 list: `,rows);
+    });
+})
 
 //메인페이지에서 공지사항 조회
 app.get("/data/main/:board/list",(req,res) =>{

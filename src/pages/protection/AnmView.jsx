@@ -47,6 +47,16 @@ function AnmView(props) {
         })
     }
 
+    const sexConverter = (sex) =>{
+        switch (sex) {
+            case 'm':
+            case 'M' : return "수컷"; break;
+            case 'f':
+            case 'F' : return "암컷"; break;
+            case 'u':
+            case 'U' : return "미상"; break;
+        }
+    }
     const update = () =>{
 
     }
@@ -83,7 +93,7 @@ function AnmView(props) {
                                     <span
                                         className="gallery__info__text">{spcConverter(data.spc)} / {regionConverter(data.region)} </span><br/>
                                     <span
-                                        className="gallery__info__text">{data.sex === 'M' || data.sex === 'm' ? '수컷' : '암컷'} / {data.weight}kg / {data.age}살 추정</span>
+                                        className="gallery__info__text">{sexConverter(data.sex)} / {data.weight}kg / {data.age}살 추정</span>
                                 </div>
                             </article>
                         </div>

@@ -1,5 +1,7 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import MainSlide from "./MainSlide.jsx";
+import Main from "../../api/Main.jsx";
+import {useLocation} from "react-router-dom";
 
 function MainSlideBox() {
     return (

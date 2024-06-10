@@ -7,7 +7,16 @@ const api = axios.create({
 });
 
 const API = {
-    list: async (board) =>{
+    slideList: async (board) =>{
+        try {
+            const res = await api.get(`slide`);
+            return res.data;
+        } catch (error) {
+            console.error("Error while fetching notice list data:", error);
+            throw error;
+        }
+    },
+    boardList: async (board) =>{
         try {
             const res = await api.get(`${board}/list`);
             return res.data;

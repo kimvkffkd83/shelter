@@ -44,7 +44,7 @@ class MainBoard extends Component{
 
     componentDidMount() {
         //공지사항 데이터
-        Main.list(this.props.title)
+        Main.boardList(this.props.title)
             .then((res) => {
                 this.setState({boardRows: res})
             });

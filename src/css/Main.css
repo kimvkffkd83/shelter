@@ -163,6 +163,8 @@
 }
 
 .slide__img{
+    width: inherit;
+    height: inherit;
 }
 .slide__title{
 }
