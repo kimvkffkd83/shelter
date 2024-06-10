@@ -4,9 +4,9 @@ import AnmView from "./AnmView.jsx";
 import {useLocation} from "react-router-dom";
 import Protection from "../../api/Protection.jsx";
 import Paging from "../../component/common/Paging.jsx";
-import dp from "dompurify";
 import Region from "../../jsons/Region.json"
 import Write from "./Write.jsx";
+import cvt from "../../js/converter.js"
 
 function Filter() {
     const isAdmin = true;
@@ -77,48 +77,6 @@ function Filter() {
         setIsVisible({visible : false, postNo : 0});
     }
 
-    const stSubConverter = (stSub)=>{
-        switch (stSub){
-            case 'a': return '공고중';
-            case 'b': return '입양가능';
-            case 'c': return '입양예정';
-            case 'd': return '귀가예정';
-            case 'e': return '임시보호';
-            case 'f': return '입양완료';
-            case 'g': return '귀가';
-            case 'h': return '기증';
-            case 'i': return '자연사';
-            case 'j': return '안락사';
-            default : return '';
-        }
-    }
-
-    const spcConverter = (stSub)=>{
-        switch (stSub){
-            case '1': return '개';
-            case '2': return '고양이';
-            case '3': return '기타';
-            default : return '';
-        }
-    }
-
-    const regionConverter = (region) =>{
-        return Region.gu.map((g,index)=>{
-            if(g.no === Number(region)) return g.addrKR;
-        })
-    }
-    
-    const sexConverter = (sex) =>{
-        switch (sex) {
-            case 'm':
-            case 'M' : return "수컷"; break;
-            case 'f':
-            case 'F' : return "암컷"; break;
-            case 'u':
-            case 'U' : return "미상"; break;
-        }
-    }
-
     const write = ()=>{
         setPost([]);
         setIsEditable({"editable" : true, "type" : 1});
@@ -138,8 +96,8 @@ function Filter() {
                             <div className="box__post">
                                 <div className="post__header">
                                 <span className="post__title w80">
-                                    <strong>[{stSubConverter(post[0]?.stSub)}] </strong>
-                                    {spcConverter(post[0]?.spc)} / {regionConverter(post[0]?.region)} / {sexConverter(post[0]?.sex)}
+                                    <strong>[{cvt.stSubCvt(post[0]?.stSub)}] </strong>
+                                    {cvt.spcCvt(post[0]?.spc)} / {cvt.regionCvt(post[0]?.region)} / {cvt.sexCvt(post[0]?.sex)}
                                 </span>
                                     <span className="post__user-id w10 tc">{post[0]?.userId}</span>
                                     <span className="post__date w10 tc">{post[0]?.rDate}</span>
@@ -149,7 +107,7 @@ function Filter() {
                                         <tbody className="table__default__body">
                                         <tr>
                                             <td className="table_item_title">축종</td>
-                                            <td className="table_item_content">{spcConverter(post[0]?.spc)}</td>
+                                            <td className="table_item_content">{cvt.spcCvt(post[0]?.spc)}</td>
                                             <td className="table_item_title">세부 종</td>
                                             <td className="table_item_content">{post[0]?.spcSub}</td>
                                         </tr>
@@ -157,7 +115,7 @@ function Filter() {
                                             <td className="table_item_title">이름</td>
                                             <td className="table_item_content">{post[0]?.name}</td>
                                             <td className="table_item_title">성별</td>
-                                            <td className="table_item_content">{sexConverter(post[0]?.sex)}</td>
+                                            <td className="table_item_content">{cvt.sexCvt(post[0]?.sex)}</td>
                                         </tr>
                                         <tr>
                                             <td className="table_item_title">체중</td>
@@ -167,13 +125,13 @@ function Filter() {
                                         </tr>
                                         <tr>
                                             <td className="table_item_title">구조 지역</td>
-                                            <td className="table_item_content">{regionConverter(post[0]?.region)}</td>
+                                            <td className="table_item_content">{cvt.regionCvt(post[0]?.region)}</td>
                                             <td className="table_item_title">지역 상세</td>
                                             <td className="table_item_content">{post[0]?.regionSub}</td>
                                         </tr>
                                         <tr>
                                             <td className="table_item_title">공고 상태</td>
-                                            <td className="table_item_content">{stSubConverter(post[0]?.stSub)}</td>
+                                            <td className="table_item_content">{cvt.stSubCvt(post[0]?.stSub)}</td>
                                             <td className="table_item_title">특징</td>
                                             <td className="table_item_content">{post[0]?.feature}</td>
                                         </tr>

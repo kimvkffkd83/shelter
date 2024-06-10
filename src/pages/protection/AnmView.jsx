@@ -1,12 +1,9 @@
 import React, {useState} from "react";
 import "../../css/Main.css"
-import Region from "../../jsons/Region.json"
+import cvt from "../../js/converter.js"
 function AnmView(props) {
     const isAdmin = true;
-
     const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
-
-
 
     const getView = (postNo)=>{
         props.changeVisible({visible : true , postNo : postNo});
@@ -16,47 +13,7 @@ function AnmView(props) {
         console.log("postNo",postNo);
         getView(postNo);
     }
-    const stSubConverter = (stSub)=>{
-        switch (stSub){
-            case 'a': return '공고중';
-            case 'b': return '입양가능';
-            case 'c': return '입양예정';
-            case 'd': return '귀가예정';
-            case 'e': return '임시보호';
-            case 'f': return '입양완료';
-            case 'g': return '귀가';
-            case 'h': return '기증';
-            case 'i': return '자연사';
-            case 'j': return '안락사';
-            default : return '';
-        }
-    }
 
-    const spcConverter = (stSub)=>{
-        switch (stSub){
-            case '1': return '개';
-            case '2': return '고양이';
-            case '3': return '기타';
-            default : return '';
-        }
-    }
-
-    const regionConverter = (region) =>{
-        return Region.gu.map((g,index)=>{
-            if(g.no === Number(region)) return g.addrKR;
-        })
-    }
-
-    const sexConverter = (sex) =>{
-        switch (sex) {
-            case 'm':
-            case 'M' : return "수컷"; break;
-            case 'f':
-            case 'F' : return "암컷"; break;
-            case 'u':
-            case 'U' : return "미상"; break;
-        }
-    }
     const update = () =>{
 
     }
@@ -88,12 +45,12 @@ function AnmView(props) {
                                 <div className="gallery__img__box">
                                     <img className="gallery__img" src={data.photoUrl} alt="사진오류"/>
                                 </div>
-                                <h1 className="gallery__title">{stSubConverter(data.stSub)}</h1>
+                                <h1 className="gallery__title">{cvt.stSubCvt(data.stSub)}</h1>
                                 <div className="gallery__info">
                                     <span
-                                        className="gallery__info__text">{spcConverter(data.spc)} / {regionConverter(data.region)} </span><br/>
+                                        className="gallery__info__text">{cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} </span><br/>
                                     <span
-                                        className="gallery__info__text">{sexConverter(data.sex)} / {data.weight}kg / {data.age}살 추정</span>
+                                        className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.age}살 추정</span>
                                 </div>
                             </article>
                         </div>

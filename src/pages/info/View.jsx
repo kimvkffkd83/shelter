@@ -6,7 +6,6 @@ function View(props) {
     const imgs = Array.from(document.getElementsByTagName("img"));
     if(imgs.length >0) {
         imgs.forEach((img, index) =>{
-            console.log("img : ",img);
             img.onclick=()=>{window.open(img.src)};
         })
     }
