@@ -1,10 +1,10 @@
 import {useRef} from "react";
 import board from "../../api/Board.jsx";
 import Editor from "../../component/Editor.jsx";
+import vdt from "../../js/validation.js";
 
 function Write(props){
     console.log("props:",props);
-    // console.log("props:",props.post.at(0).title);
 
     const titleRef = useRef()
     const contentsRef = useRef()
@@ -12,32 +12,17 @@ function Write(props){
     const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
-
-    const chkTextLength = (ref,length)=> {
-        if (ref && ref.current && ref.current.value.length > 50) {
-            ref.current.value = ref.current.value.slice(0,length-1)
-        }
-    }
     const validatation = ()=>{
-        let pass = false
-        let reason = '';
-
-        if(titleRef.current.value ===''){
-            reason = '제목을 작성해주세요.'
-            titleRef.current.focus();
-        }else if(contentsRef.current.value ===''){
-            reason = '내용을 작성해주세요.'
-            contentsRef.current.focus();
-        }else{
-            pass = true;
-        }
-        return {pass : pass, reason : reason};
+        let flag  = {pass : true, comment : ''};
+        flag = vdt.chkInputIsEmpty(flag, titleRef,'제목을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, contentsRef,'내용을 작성해주세요.');
+        return flag;
     }
 
     const action = ()=>{
         const check = validatation();
         if(!check.pass){
-            alert(check.reason)
+            alert(check.comment)
             return;
         }
 
@@ -84,7 +69,7 @@ function Write(props){
     }
 
     const undo = ()=>{
-        if(window.confirm('지금까지 수정된 내용은 저장되지 않습니다. 작성을 취소하시겠습니까?')){
+        if(window.confirm('지금까지 수정된 내용은 저장되지 않습니다.\n작성을 취소하시겠습니까?')){
             props.changeEditable({"editable" : false, "type" : 0})
         }
     }
@@ -95,8 +80,9 @@ function Write(props){
                 <span className="post__item__title">제목</span>
                 <div className="post__item__contents">
                     <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
-                           onKeyUp={() => chkTextLength(titleRef, 50)} onKeyDown={() => chkTextLength(titleRef, 50)}
-                           onBlur={() => chkTextLength(titleRef, 50)}
+                           onKeyUp={() => vdt.chkInputLength(titleRef, 50)}
+                           onKeyDown={() => vdt.chkInputLength(titleRef, 50)}
+                           onBlur={() => vdt.chkInputLength(titleRef, 50)}
                     />
                 </div>
             </div>

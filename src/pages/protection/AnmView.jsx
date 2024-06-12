@@ -50,7 +50,7 @@ function AnmView(props) {
                                     <span
                                         className="gallery__info__text">{cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} </span><br/>
                                     <span
-                                        className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.age}살 추정</span>
+                                        className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.bYear}년 {data.bMonth?data.bMonth+'월':''}(추정)</span>
                                 </div>
                             </article>
                         </div>

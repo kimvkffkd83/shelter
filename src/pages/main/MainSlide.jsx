@@ -24,7 +24,7 @@ function MainSlide(){
                         <h1 className="slide__title">{cvt.stSubCvt(item.stSub)}</h1>
                         <div className="slide__info">
                             <span className="slide__info__text">{cvt.spcCvt(item.spc)} / {cvt.regionCvt(item.region)} </span><br/>
-                            <span className="slide__info__text">{cvt.sexCvt(item.sex)} / {item.weight}kg / {item.age}살 추정</span>
+                            <span className="slide__info__text">{cvt.sexCvt(item.sex)} / {item.weight}kg / {item.bYear}년생(추정)</span>
                         </div>
                     </article>
                 ))

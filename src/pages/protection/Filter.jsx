@@ -4,7 +4,6 @@ import AnmView from "./AnmView.jsx";
 import {useLocation} from "react-router-dom";
 import Protection from "../../api/Protection.jsx";
 import Paging from "../../component/common/Paging.jsx";
-import Region from "../../jsons/Region.json"
 import Write from "./Write.jsx";
 import cvt from "../../js/converter.js"
 
@@ -120,8 +119,8 @@ function Filter() {
                                         <tr>
                                             <td className="table_item_title">체중</td>
                                             <td className="table_item_content">{post[0]?.weight}Kg</td>
-                                            <td className="table_item_title">추정나이</td>
-                                            <td className="table_item_content">{post[0]?.age}</td>
+                                            <td className="table_item_title">생년</td>
+                                            <td className="table_item_content">{post[0]?.bYear}년 {post[0]?.bMonth? post[0]?.bMonth + '월' : '' }(추정)</td>
                                         </tr>
                                         <tr>
                                             <td className="table_item_title">구조 지역</td>

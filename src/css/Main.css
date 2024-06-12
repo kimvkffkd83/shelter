@@ -21,6 +21,10 @@
     font-family: Pretendard-Regular, sans-serif;
 }
 
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 /* Layout */
 #wrap{
     width: 1280px;
@@ -430,6 +434,7 @@
 .post__item{
     display: flex;
     margin: 4px 0;
+    align-items: center;
 }
 
 .post__item__title{
@@ -449,6 +454,7 @@
 .post__item__input{
     width: 100%;
     height: 100%;
+    padding: 4px 0;
     font-size: 100%;
 }
 
@@ -456,6 +462,7 @@
     width: 100%;
     height: 100%;
     font-size: 100%;
+    padding: 4px 0;
 }
 
 .post__item__text{
@@ -484,6 +491,7 @@
     width: 100%;
     height: 100%;
     font-size: 100%;
+    padding: 4px 0;
 }
 
 .post__item__image__box{

@@ -7,6 +7,8 @@ Quill.register('modules/imageActions', ImageActions);
 Quill.register('modules/imageFormats', ImageFormats);
 
 const TextEditor = forwardRef((props,ref)=> {
+     const maxFileSize = 10000000;
+
      const imageHandler = ()=>{
          const input = document.createElement("input");
          input.setAttribute("type","file");
@@ -19,7 +21,7 @@ const TextEditor = forwardRef((props,ref)=> {
              const formData = new FormData();
              formData.append('img', file);
              if(file){
-                 if(file.size >= 10000000){
+                 if(file.size >= maxFileSize){
                      alert("10MB 이하의 이미지만 업로드 할 수 있습니다.");
                      return;
                  }
@@ -32,12 +34,10 @@ const TextEditor = forwardRef((props,ref)=> {
                  }
 
                  photoUpload.upload(route,formData).then((res) => {
-                     try {
-                         const range = editor.getSelection();
-                         editor.insertEmbed(range.index, "image", res.data.url)
-                     } catch (error) {
-                         alert("이미지 업로드 중 에러가 발생했습니다. 관리자에게 문의하세요.")
-                     }
+                     const range = editor.getSelection();
+                     editor.insertEmbed(range.index, "image", res.data.url)
+                 }).catch ((error) =>{
+                     alert(error.message);
                  })
              }
          })
@@ -85,11 +85,12 @@ const TextEditor = forwardRef((props,ref)=> {
         'width'
     ]
 
+    //모듈화 하기 까다로워서 chk 로직 그대로 둠
+    const lengthLimit = 1000;
     const chkTextLength = ()=> {
-        const length = 1000;
-        if (ref && ref.current && ref.current.editor.getLength()> length) {
+        if (ref && ref.current && ref.current.editor.getLength()> lengthLimit) {
             console.log("text", ref.current.editor.getText())
-            ref.current.editor.deleteText(length,length+1)
+            ref.current.editor.deleteText(lengthLimit,lengthLimit+1)
         }
     }
 
