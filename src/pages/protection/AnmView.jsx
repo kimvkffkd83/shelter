@@ -28,33 +28,36 @@ function AnmView(props) {
                     <div className="table__content__no-data">
                         <span>게시글이 없습니다.</span>
                     </div> :
-                    props.datas?.map((data,idx) => (
-                        <div key={idx} className="gallery__item" onClick={view}
-                             data-post-no={data.postNo} >
-                            <article className="gallery__box">
-                                {isAdmin &&
-                                    <div className="adm__gallery__btns">
-                                        <button className="btn__adm__icon btn__adm__modify" onClick={update}>
-                                            <span className="material-symbols-outlined">edit_note</span>
-                                        </button>
-                                        <button className="btn__adm__icon btn__adm__delete">
-                                            <span className="material-symbols-outlined">delete</span>
-                                        </button>
+                    props.datas?.map((data,idx) => {
+                        const urlArray = data.photoUrl?.split(',');
+                        return (
+                            <div key={idx} className="gallery__item" onClick={view}
+                                 data-post-no={data.postNo}>
+                                <article className="gallery__box">
+                                    {isAdmin &&
+                                        <div className="adm__gallery__btns">
+                                            <button className="btn__adm__icon btn__adm__modify" onClick={update}>
+                                                <span className="material-symbols-outlined">edit_note</span>
+                                            </button>
+                                            <button className="btn__adm__icon btn__adm__delete">
+                                                <span className="material-symbols-outlined">delete</span>
+                                            </button>
+                                        </div>
+                                    }
+                                    <div className="gallery__img__box">
+                                        <img className="gallery__img" src={urlArray? urlArray[data.photoThumb??0]:''} alt="사진오류"/>
                                     </div>
-                                }
-                                <div className="gallery__img__box">
-                                    <img className="gallery__img" src={data.photoUrl} alt="사진오류"/>
-                                </div>
-                                <h1 className="gallery__title">{cvt.stSubCvt(data.stSub)}</h1>
-                                <div className="gallery__info">
+                                    <h1 className="gallery__title">{cvt.stSubCvt(data.stSub)}</h1>
+                                    <div className="gallery__info">
                                     <span
                                         className="gallery__info__text">{cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} </span><br/>
-                                    <span
-                                        className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.bYear}년 {data.bMonth?data.bMonth+'월':''}(추정)</span>
-                                </div>
-                            </article>
-                        </div>
-                    ))
+                                        <span
+                                            className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.bYear}년 {data.bMonth ? data.bMonth + '월' : ''}(추정)</span>
+                                    </div>
+                                </article>
+                            </div>
+                        )
+                    })
             }
             {
                 //리스트형

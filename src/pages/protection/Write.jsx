@@ -7,6 +7,8 @@ import cvt from "../../js/converter.js";
 const Write = (props)=>{
     console.log("props:",props);
     // console.log("props:",props.post.at(0).title);
+    const maxFileCnt = 3;
+    const maxFileSize = 10000000;
 
     const radioRef = useRef();
     const spcSubRef = useRef();
@@ -45,25 +47,49 @@ const Write = (props)=>{
     }
 
 
-    const [imgFile, setImageFile] = useState();
-    const [imgUrl, setImageUrl] = useState("");
+    const [imgFile, setImageFile] = useState([]);
+    const [imgUrl, setImageUrl] = useState([]);
+    const [thumbnail, setThumbnail] = useState(0);
 
     const selectImage = (e)=>{
-        const file = e.target.files[0];
-        if(file){
-            setImageFile(file);
-            const url = URL.createObjectURL(file)
-            setImageUrl(url);
+        setImageFile([]);
+        setImageUrl([]);
+        setThumbnail(0);
+
+        const files = e.target.files;
+        if(e.target.files.length > maxFileCnt){
+            alert(`파일은 최대 ${maxFileCnt}개까지 선택할 수 있습니다.`);
+            e.target.value = '';
+        }
+
+        if(files){
+            console.log("files",files);
+            Array.from(files).forEach((file,idx) =>{
+                if(file.size >= maxFileSize){
+                    alert("10MB 이하의 이미지만 업로드 할 수 있습니다.");
+                    e.target.value = '';
+                    setImageFile([]);
+                    setImageUrl([]);
+                    setThumbnail(0);
+                    return;
+                }
+                const url = URL.createObjectURL(file)
+                setImageUrl((preUrl)=>[...preUrl,url]);
+                setImageFile((preFile)=>[...preFile,file]);
+            })
         }
     }
 
-    const action = ()=>{
-        const check = validatation();
-        if(!check.pass){
-            alert(check.comment)
-            return;
-        }
+    const changeThumbnail = (e) =>{
+        setThumbnail(Number(e.target.dataset.num))
+    }
 
+    const action = ()=>{
+        // const check = validatation();
+        // if(!check.pass){
+        //     alert(check.comment)
+        //     return;
+        // }
 
         if(window.confirm(props.data.type === 1 ? '등록하시겠습니까?' : '수정하시겠습니까?')){
             const selectedValues = {};
@@ -75,7 +101,10 @@ const Write = (props)=>{
             console.log("imgFile",imgFile);
             //이미지 등록
             const formData = new FormData();
-            formData.append('img', imgFile);
+            // formData.append('img', imgFile);
+            imgFile.forEach(file => {
+                formData.append('img', file);
+            });
             photoUpload.upload('protection',formData).then((res)=>{
                 const data = {
                     "USER_NO" : 1,
@@ -83,7 +112,8 @@ const Write = (props)=>{
                     "POST_ST" : 2,
                     "POST_ST_SUB" : stSubSubRef.current.value,
                     "POST_MEMO" : memoRef.current.value,
-                    "POST_PHOTO_URL" : res.url,
+                    "POST_PHOTO_URL" : res.urls,
+                    "POST_PHOTO_THUMB" : thumbnail,
                     "POST_REG_YMD" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
                     "POST_UDT_YMD" : newDate,
                     "ANM_RSC_YMD" : cDateRef.current.value.replaceAll('-',''),
@@ -107,7 +137,6 @@ const Write = (props)=>{
                 }
                 console.log('data:', data);
                 console.log('radioRef:', radioRef.current);
-
                 console.log('selectedValues:', selectedValues);
                 if(props.data.type === 1){
                     protection.write(data).then((res)=>{
@@ -354,11 +383,21 @@ const Write = (props)=>{
                         <div className="gallery__form__title">대표사진 업로드(필수)</div>
                         <div className="post__item">
                             <div className="post__item__image__box">
-                                <input id="img" className="post__item__file" type="file" accept="image/*" ref={imgRef} onChange={selectImage}/>
+                                <input id="img" className="post__item__file" type="file" accept="image/*" multiple
+                                       ref={imgRef} onChange={selectImage}/>
                                 {
-                                    imgUrl &&
+                                    imgUrl?.length>0 &&
                                     <div className="post__item__preview">
-                                        <img className="post__item__preview_img" src={imgUrl} alt="선택된 파일"/>
+                                        {imgUrl.map((url, idx) => (
+                                            <div key={idx} className="post__item__preview_box">
+                                                <img className="post__item__preview_img" src={url} alt="선택한 이미지 파일"
+                                                     onClick={changeThumbnail} data-num={idx}/>
+                                                {
+                                                    idx === thumbnail &&
+                                                    <div className="post__item__preview_img_thumbnail">대표</div>
+                                                }
+                                            </div>
+                                        ))}
                                     </div>
                                 }
                             </div>

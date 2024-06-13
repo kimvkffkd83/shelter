@@ -154,14 +154,14 @@ input[type=number]::-webkit-inner-spin-button {
 
 .slide{
     width: 240px;
-    height: 300px;
+    height: inherit;
     border: 1px solid #eee;
     margin-top: 16px;
     text-align: center;
 }
 
 .slide__box{
-    margin: 16px 0;
+    margin-bottom: 16px;
     width: 240px;
     height: 180px;
 }
@@ -173,6 +173,7 @@ input[type=number]::-webkit-inner-spin-button {
 .slide__title{
 }
 .slide__info{
+    padding-bottom: 16px;
 }
 .slide__info__text{
     color: #888;
@@ -495,7 +496,8 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .post__item__image__box{
-
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .post__item__file{
@@ -509,12 +511,31 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     border: 1px solid #888;
 }
-
-.post__item__preview_img{
-    width: 400px;
-    height: 300px;
+.post__item__preview_box{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.post__item__preview_img{
+    width: 180px;
+    height: 135px;
+}
+
+.post__item__preview_img_thumbnail{
+    position: absolute;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    color: #fff;
+    background-color: #248e46;
+
+}
 .radio__box{
     display: inline-flex;
     align-items: center;
@@ -994,6 +1015,7 @@ tr{
 
 .post__image{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;

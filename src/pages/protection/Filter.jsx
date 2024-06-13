@@ -144,7 +144,20 @@ function Filter() {
                                     </table>
                                 </div>
                                 <div className="post__image">
-                                    <img className="post__image-single" src={post[0]?.photoUrl} alt="보호사진"/>
+                                    {
+                                        post[0]?.photoUrl &&
+                                        post[0]?.photoUrl.split(',').map((url,idx) =>{
+                                            return (
+                                                <img className="post__image-single"
+                                                     src={url}
+                                                     onClick={(e)=>{
+                                                         e.preventDefault();
+                                                         window.open(url);
+                                                     }}
+                                                     alt="보호사진"/>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
                             <div className="box__btns">
