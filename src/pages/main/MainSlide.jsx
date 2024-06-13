@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import Main from "../../api/Main.jsx";
 import cvt from "../../js/converter.js"
 
@@ -19,18 +19,20 @@ function MainSlide(){
                 list?.map((item,index)=> {
                     const urlArray = item.photoUrl?.split(',');
                     return (
-                        <article className="slide" key={index}>
-                            <div className="slide__box">
-                                <img className="slide__img" src={urlArray[item.photoThumb??0]} alt="사진오류"/>
-                            </div>
-                            <h1 className="slide__title">{cvt.stSubCvt(item.stSub)}</h1>
-                            <div className="slide__info">
+                        <Link to={'protection'} state={{"index":1,"postNo":item.postNo}} key={index}>
+                            <article className="slide">
+                                <div className="slide__box">
+                                    <img className="slide__img" src={urlArray[item.photoThumb ?? 0]} alt="사진오류"/>
+                                </div>
+                                <h1 className="slide__title">{cvt.stSubCvt(item.stSub)}</h1>
+                                <div className="slide__info">
                                 <span
                                     className="slide__info__text">{cvt.spcCvt(item.spc)} / {cvt.regionCvt(item.region)} </span><br/>
-                                <span
-                                    className="slide__info__text">{cvt.sexCvt(item.sex)} / {item.weight}kg / {item.bYear}년생(추정)</span>
-                            </div>
-                        </article>
+                                    <span
+                                        className="slide__info__text">{cvt.sexCvt(item.sex)} / {item.weight}kg / {item.bYear}년생(추정)</span>
+                                </div>
+                            </article>
+                        </Link>
                     )
                 })
             }

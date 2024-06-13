@@ -10,6 +10,7 @@ import cvt from "../../js/converter.js"
 function Filter() {
     const isAdmin = true;
     const location = useLocation();
+    console.log("loc",location);
     //0이면 갤러리형, 1이면 리스트형 보기
     const [viewSt, setViewSt] = useState(0);
     //게시판 정보들
@@ -40,7 +41,32 @@ function Filter() {
             setTotalCnt(res.totalCount);
             setDatas(res.lists);
         });
-    }, [location, pageNo, rowMax, query, isEditable]);
+    }, [pageNo, rowMax, query, isEditable]);
+
+
+    const getView = (postNo)=>{
+        Protection.vcnt(postNo).then((res) =>{
+                console.log(res);
+            }
+        )
+        Protection.view(postNo).then((res)=> {
+            if(res.length === 0){
+                alert("존재하지 않는 게시글입니다")
+            }else{
+                console.log("post res : ",res);
+                setPost(res);
+                setIsVisible({visible : true , postNo : postNo})
+            }
+        })
+    }
+
+    //메인페이지 -> 보호 게시글 클릭 시
+    useEffect(() => {
+        if(location.state?.postNo){
+            getView(location.state?.postNo);
+        }
+    }, [location.state]);
+
 
     const dataCntAction = (e)=>{
         setRowMax(e.target.value);
@@ -57,20 +83,9 @@ function Filter() {
 
     useEffect(()=>{
         if(isVisible.postNo !== 0){
-            Protection.vcnt(isVisible.postNo).then((res) =>{
-                    console.log(res);
-                }
-            )
-            Protection.view(isVisible.postNo).then((res)=> {
-                if(res.length === 0){
-                    alert("존재하지 않는 게시글입니다")
-                }else{
-                    console.log("post res : ",res);
-                    setPost(res);
-                }
-            })
+            getView(isVisible.postNo);
         }
-    },[isEditable, isVisible])
+    },[location.state,isEditable, isVisible])
 
     const undo = ()=>{
         setIsVisible({visible : false, postNo : 0});
