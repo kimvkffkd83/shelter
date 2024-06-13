@@ -55,19 +55,11 @@ function Filter() {
             }else{
                 console.log("post res : ",res);
                 setPost(res);
-                setIsVisible({visible : true , postNo : postNo})
             }
         })
     }
 
     //메인페이지 -> 보호 게시글 클릭 시
-    useEffect(() => {
-        if(location.state?.postNo){
-            getView(location.state?.postNo);
-        }
-    }, [location.state]);
-
-
     const dataCntAction = (e)=>{
         setRowMax(e.target.value);
         if(e.target.value*pageNo >totalCnt) setPageNo(1);
@@ -81,11 +73,21 @@ function Filter() {
 
     const [post, setPost] = useState([]);
 
+
     useEffect(()=>{
         if(isVisible.postNo !== 0){
+            console.log("?")
             getView(isVisible.postNo);
         }
-    },[location.state,isEditable, isVisible])
+    },[isEditable, isVisible])
+
+    useEffect(()=>{
+        if(location.state?.postNo){
+            console.log("!")
+            getView(location.state.postNo);
+            setIsVisible({visible : true , postNo : location.state.postNo})
+        }
+    },[location])
 
     const undo = ()=>{
         setIsVisible({visible : false, postNo : 0});
@@ -163,7 +165,7 @@ function Filter() {
                                         post[0]?.photoUrl &&
                                         post[0]?.photoUrl.split(',').map((url,idx) =>{
                                             return (
-                                                <img className="post__image-single"
+                                                <img className="post__image-single" key={idx}
                                                      src={url}
                                                      onClick={(e)=>{
                                                          e.preventDefault();
