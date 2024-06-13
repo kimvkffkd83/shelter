@@ -12,6 +12,7 @@ const Write = (props)=>{
     const spcSubRef = useRef();
     const bYearRef = useRef();
     const bMonthRef = useRef();
+    const ageSupposeRef = useRef();
     const weightRef = useRef();
     const reagionRef = useRef();
     const reagionSubRef = useRef();
@@ -149,7 +150,13 @@ const Write = (props)=>{
     }
 
     const unknownAge = () =>{
-
+        let toggle = ageSupposeRef.current.checked;
+        bYearRef.current.disabled = toggle;
+        bYearRef.current.readonly = toggle;
+        bYearRef.current.value = '';
+        bMonthRef.current.disabled = toggle;
+        bMonthRef.current.readonly = toggle;
+        bMonthRef.current.value = '';
     }
 
     const calStayDate = (stSub) =>{
@@ -267,7 +274,8 @@ const Write = (props)=>{
                                    ref={bMonthRef}/>
                         </div>
                         <div className="select__box">
-                            <input id="age_suppose" className="post__item__checkbox" type="checkbox" onChange={unknownAge}/>
+                            <input id="age_suppose" className="post__item__checkbox" type="checkbox"
+                                   ref={ageSupposeRef} onChange={unknownAge}/>
                             <label className="post__item__label" htmlFor="age_suppose">미상</label>
                         </div>
                     </div>
