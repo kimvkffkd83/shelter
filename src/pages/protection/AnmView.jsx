@@ -1,34 +1,18 @@
 import React, {useState} from "react";
 import "../../css/Main.css"
 import cvt from "../../js/converter.js"
-function AnmView(props) {
-    const isAdmin = true;
-    const [isVisible, setIsVisible] = useState({visible : false , ntcNo : 0})
-
-    const getView = (postNo)=>{
-        props.changeVisible({visible : true , postNo : postNo});
-    }
-    const view =(e)=>{
-        const postNo = e.currentTarget.dataset.postNo;
-        console.log("postNo",postNo);
-        getView(postNo);
-    }
-
-    const update = () =>{
-
-    }
-
+function AnmView({ viewSt, board, view, update,remove, isAdmin }) {
 
     return (
         <>
             {
                 //갤러리형
-                props.viewSt === 0 &&
-                props.datas?.length === 0 ?
+                viewSt === 0 &&
+                board?.length === 0 ?
                     <div className="table__content__no-data">
                         <span>게시글이 없습니다.</span>
                     </div> :
-                    props.datas?.map((data,idx) => {
+                    board?.map((data,idx) => {
                         const urlArray = data.photoUrl?.split(',');
                         return (
                             <div key={idx} className="gallery__item" onClick={view}
@@ -36,10 +20,10 @@ function AnmView(props) {
                                 <article className="gallery__box">
                                     {isAdmin &&
                                         <div className="adm__gallery__btns">
-                                            <button className="btn__adm__icon btn__adm__modify" onClick={update}>
+                                            <button className="btn__adm__icon btn__adm__modify" data-post-no={data.postNo} onClick={update}>
                                                 <span className="material-symbols-outlined">edit_note</span>
                                             </button>
-                                            <button className="btn__adm__icon btn__adm__delete">
+                                            <button className="btn__adm__icon btn__adm__delete" data-post-no={data.postNo} onClick={remove}>
                                                 <span className="material-symbols-outlined">delete</span>
                                             </button>
                                         </div>

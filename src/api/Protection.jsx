@@ -52,6 +52,15 @@ const API = {
             throw error;
         }
     },
+    remove: async (postNo) => {
+        try {
+            const res = await api.delete(`${postNo}`);
+            return res;
+        } catch (error) {
+            console.error("Error while removing data:", error);
+            throw error;
+        }
+    },
 }
 
 export default API;

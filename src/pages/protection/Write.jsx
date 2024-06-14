@@ -218,7 +218,7 @@ const Write = (props)=>{
                         <div className="post__item__contents">
                             <div className="radio__box">
                                 <input id="spc_dog" className="input__radio" name="spc" type="radio" value="1"
-                                       defaultChecked/>
+                                       defaultChecked={props.post?.spc === 1}/>
                                 <label className="post__item__label" htmlFor="spc_dog">개</label>
                             </div>
                             <div className="radio__box">
@@ -234,7 +234,7 @@ const Write = (props)=>{
                     <div className="post__item">
                         <span className="post__item__title">세부종</span>
                         <div className="post__item__contents">
-                            <input id="spc_sub" className="post__item__input" type="text" ref={spcSubRef}/>
+                            <input id="spc_sub" className="post__item__input" type="text" ref={spcSubRef} defaultValue={props.post?.spcSub}/>
                         </div>
                     </div>
                     <div className="post__item">
@@ -295,12 +295,12 @@ const Write = (props)=>{
                         <span className="post__item__title">생년(추정)</span>
                         <div className="post__item__contents">
                             <input id="bYear" className="post__item__input" type="number" placeholder="생년"
-                                   ref={bYearRef}/>
+                                   ref={bYearRef} defaultValue={props.post?.bYear}/>
                         </div>
                         /
                         <div className="post__item__contents">
                             <input id="bMonth" className="post__item__input" type="number" placeholder="월(선택)"
-                                   ref={bMonthRef}/>
+                                   ref={bMonthRef} defaultValue={props.post?.bMonth}/>
                         </div>
                         <div className="select__box">
                             <input id="age_suppose" className="post__item__checkbox" type="checkbox"
@@ -313,7 +313,7 @@ const Write = (props)=>{
                         <div className="post__item__contents">
                             <input id="weight" className="post__item__input" type="number"
                                    placeholder="소수점 아래 2자리까지 입력 가능"
-                                   step="0.1" min="0.1" max="50" ref={weightRef}/>
+                                   step="0.1" min="0.1" max="50" ref={weightRef} defaultValue={props.post?.weight}/>
                         </div>
                     </div>
                     <div className="post__item">
@@ -333,7 +333,7 @@ const Write = (props)=>{
                         <span className="post__item__title">지역상세</span>
                         <div className="post__item__contents">
                             <input id="region_sub" className="post__item__input" type="text"
-                                   placeholder="OO동/발견된 상세 위치" ref={reagionSubRef}/>
+                                   placeholder="OO동/발견된 상세 위치" ref={reagionSubRef} defaultValue={props.post?.region}/>
                         </div>
                     </div>
                     <div className="post__item">
@@ -359,13 +359,15 @@ const Write = (props)=>{
                     <div className="post__item">
                         <span className="post__item__title">구조일</span>
                         <div className="post__item__contents">
-                            <input id="cDate" className="post__item__date" type="date" ref={cDateRef} onChange={setStayDate}/>
+                            <input id="cDate" className="post__item__date" type="date" ref={cDateRef}
+                                   onChange={setStayDate} defaultValue={props.post?.cDate}/>
                         </div>
                     </div>
                     <div className="post__item">
                         <span className="post__item__title">유지일</span>
                         <div className="post__item__contents">
-                            <input id="sDate" className="post__item__date w70" type="date" ref={sDateRef} readOnly disabled/>
+                            <input id="sDate" className="post__item__date w70" type="date" ref={sDateRef}
+                                   defaultValue={props.post?.spcSub}defaultValue={props.post?.sDate} readOnly disabled/>
                             <div>
                                 <span>[+10일]</span>
                             </div>
@@ -374,7 +376,8 @@ const Write = (props)=>{
                     <div className="post__item">
                         <span className="post__item__title">비고(기관용)</span>
                         <div className="post__item__contents">
-                            <input id="memo" className="post__item__input" type="text" ref={memoRef}/>
+                            <input id="memo" className="post__item__input" type="text" ref={memoRef}
+                                   defaultValue={props.post?.postMemo}/>
                         </div>
                     </div>
                 </div>

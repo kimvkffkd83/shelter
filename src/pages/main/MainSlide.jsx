@@ -22,7 +22,7 @@ function MainSlide(){
                         <Link to={'protection'} state={{"index":1,"postNo":item.postNo}} key={index}>
                             <article className="slide">
                                 <div className="slide__box">
-                                    <img className="slide__img" src={urlArray[item.photoThumb ?? 0]} alt="사진오류"/>
+                                    <img className="slide__img" src={urlArray? urlArray[item.photoThumb ?? 0] : ''} alt="사진오류"/>
                                 </div>
                                 <h1 className="slide__title">{cvt.stSubCvt(item.stSub)}</h1>
                                 <div className="slide__info">
@@ -39,107 +39,6 @@ function MainSlide(){
             {/* 필요한 케이스*/}
             {/* 리스트가 0개일 경우 */}
             {/* 리스트가 10개 이하일 경우*/}
-
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">임시보호</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">임시보호</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
-            {/*<article className="slide">*/}
-            {/*    <div className="slide__box">*/}
-            {/*        <img className="slide__img" src="" alt="asdf"/>*/}
-            {/*    </div>*/}
-            {/*    <h1 className="slide__title">공고중</h1>*/}
-            {/*    <div className="slide__info">*/}
-            {/*        <span className="slide__info__text">강아지 / 광산구 신창동</span><br/>*/}
-            {/*        <span className="slide__info__text">수컷 / 1.8kg / 1살(추정)</span>*/}
-            {/*    </div>*/}
-            {/*</article>*/}
         </>
     )
 }

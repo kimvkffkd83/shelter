@@ -1,0 +1,56 @@
+[
+  {
+    "id": "region",
+    "label": "지역",
+    "options": [
+      {"value": "0", "text": "전체"},
+      {"value": "1", "text": "광산구"},
+      {"value": "2", "text": "남구"},
+      {"value": "3", "text": "동구"},
+      {"value": "4", "text": "북구"},
+      {"value": "5", "text": "서구"}
+    ]
+  },
+  {
+    "id": "st",
+    "label": "상태",
+    "options": [
+      {"value": "", "text": "전체"},
+      {"value": "a", "text": "공고중"},
+      {"value": "b", "text": "입양가능"},
+      {"value": "c", "text": "입양예정"},
+      {"value": "d", "text": "귀가예정"},
+      {"value": "e", "text": "임시보호"},
+      {"value": "f", "text": "입양완료"},
+      {"value": "g", "text": "귀가"},
+      {"value": "h", "text": "기증"}
+    ]
+  },
+  {
+    "id": "sex",
+    "label": "성별",
+    "options": [
+      {"value": "", "text": "전체"},
+      {"value": "m", "text": "수컷"},
+      {"value": "f", "text": "암컷"}
+    ]
+  },
+  {
+    "id": "neutering",
+    "label": "중성화",
+    "options": [
+      {"value": "", "text": "전체"},
+      {"value": "y", "text": "유"},
+      {"value": "n", "text": "무"}
+    ]
+  },
+  {
+    "id": "chip",
+    "label": "내장칩",
+    "options": [
+      {"value": "", "text": "전체"},
+      {"value": "y", "text": "유"},
+      {"value": "n", "text": "무"}
+    ]
+}
+]

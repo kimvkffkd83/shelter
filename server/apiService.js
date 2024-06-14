@@ -219,7 +219,7 @@ app.post('/data/notice/delSelection',(req, res) =>{
         added += 'ntc_no='+no;
         if(idx < ntcNos.length-1) added +=' or ';
     })
-    const sql = `DELETE FROM master_notice_db WHERE {$added}`;
+    const sql = `DELETE FROM master_notice_db WHERE ${added}`;
     db.query(sql,(err, rows)=>{
         if (err) {
             console.error("(server)공지사항 다중 삭제 중 에러:", err);
@@ -344,7 +344,6 @@ app.get("/data/protection/:id", (req,res)=>{
             'ANM_SEX AS sex, ANM_NEUTERING_ST AS ntrSt, ANM_CHIP_ST AS chipSt, ANM_COLOR AS color, ANM_WEIGHT AS weight, ' +
             'ANM_BIRTH_YEAR AS bYear, ANM_BIRTH_MONTH AS bMonth, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt, ' +
             'POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
-            // console.log("(server)공지사항 1개 : ",rows);
             if (error) throw error;
             res.send(rows);
         });
@@ -353,6 +352,29 @@ app.get("/data/protection/:id", (req,res)=>{
     }
 })
 
+
+// 보호 게시글 삭제
+app.delete('/data/protection/:id', (req, res) =>{
+    const id = req.params.id;
+    console.log('(server)지울 no',id);
+
+    if(id) {
+        db.query('DELETE FROM master_anm_post_db WHERE post_no=?', id, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)공지사항 삭제 중 에러:", error);
+                res.status(500).send(`${id}번 공지사항을 삭제하는 도중 에러가 발생했습니다.`);
+                return;
+            }
+            if (res.affectedRows === 0) {
+                res.status(404).send("해당하는 공지사항이 없습니다.");
+                return;
+            }
+            res.send({ affectedRows: res.affectedRows });
+        });
+    }else{
+        res.send('There is no id.');
+    }
+})
 
 //보호 조회수+
 app.put('/data/protection/vcnt',(req,res) =>{
