@@ -1,28 +1,32 @@
 import Color from '../jsons/Color.json'
-const ColorPicker = ({picked,setPickedColor})=>{
-    const handleToggle = (e) => {
-        const target = e.target
-        const no = target.dataset.no;
-        const code = target.dataset.code;
-        console.log("picked",picked);
-        console.log("picked",no);
-        console.log("picked",code);
-        if(picked.includes(no)){
-            setPickedColor((prev => prev.filter((c) => c !== no)))
-            target.style=`border-color:${code}; background-color:#ffffff`;
-        }else{
-            setPickedColor((prev => [...prev, no]))
-            target.style=`border-color:${code}; background-color:${code}`;
-        }
-    };
+import {useEffect, useState} from "react";
+const ColorPicker = ({initialSelectedColors })=>{
+    const [selectedColors, setSelectedColors] = useState([]);
 
+    useEffect(() => {
+        if (initialSelectedColors) {
+            setSelectedColors(initialSelectedColors);
+        }
+    }, [initialSelectedColors]);
+    const toggle = (e,name)=>{
+        if(e.target.classList.contains(`__${name}-selected`)){
+            e.target.classList.remove(`__${name}-selected`);
+        }else{
+            e.target.classList.add(`__${name}-selected`);
+        }
+    }
     return(
         <>
             {
-                Color.map((c, idx) => (
-                    <span key={idx} className="color_chip" style={{borderColor:c.code}}
-                          data-no={c.no} data-code={c.code} onClick={handleToggle}></span>
-                ))
+                Color.map((color, idx) => {
+                    const isSelected = selectedColors.includes((Number(idx)+1)+'');
+                    return(
+                        <span key={idx}
+                              className={`color_chip __${color.name} ${isSelected ? `__${color.name}-selected` : ''}`}
+                              onClick={ (e)=>toggle(e,color.name) }>
+                        </span>
+                    )
+                })
             }
         </>
     )

@@ -33,7 +33,7 @@ function Write(props){
                 "USER_ID" : 'se6651',
                 "NTC_TITLE" : titleRef.current.value,
                 "NTC_CONTENTS" : contentsRef.current.value,
-                "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post.at(0).date.replaceAll('-',''),
+                "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post?.date.replaceAll('-',''),
                 "NTC_UDT_DATE" : newDate,
             }
 
@@ -48,19 +48,19 @@ function Write(props){
                     }
                 })
             }else if(props.data.type === 2){
-                data.NTC_NO = props.post.at(0)?.ntcNo;
+                data.NTC_NO = props.post?.ntcNo;
                 delete data.NTC_REG_DATE;
-                board.update(props.post.at(0)?.ntcNo, data).then((res)=>{
+                board.update(props.post?.ntcNo, data).then((res)=>{
                     console.log(res);
                     if(res.status === 500 || res.status === 404 ){
                         alert(res.data);
                     }else{
                         alert('공지사항이 수정되었습니다');
-                        props.post.at(0).ntcNo = data.NTC_NO;
-                        props.post.at(0).userId = data.USER_ID;
-                        props.post.at(0).title = data.NTC_TITLE;
-                        props.post.at(0).contents = data.NTC_CONTENTS;
-                        props.post.at(0).date = newDateStr;
+                        props.post.ntcNo = data.NTC_NO;
+                        props.post.userId = data.USER_ID;
+                        props.post.title = data.NTC_TITLE;
+                        props.post.contents = data.NTC_CONTENTS;
+                        props.post.date = newDateStr;
                         props.changeEditable({"editable" : false, "type" : 0});
                     }
                 })
@@ -79,7 +79,7 @@ function Write(props){
             <div className="post__item">
                 <span className="post__item__title">제목</span>
                 <div className="post__item__contents">
-                    <input className="post__item__input" ref={titleRef} defaultValue={props.post.at(0)?.title}
+                    <input className="post__item__input" ref={titleRef} defaultValue={props.post?.title}
                            onKeyUp={() => vdt.chkInputLength(titleRef, 50)}
                            onKeyDown={() => vdt.chkInputLength(titleRef, 50)}
                            onBlur={() => vdt.chkInputLength(titleRef, 50)}
@@ -106,9 +106,9 @@ function Write(props){
             <div className="post__item">
                 <span className="post__item__title">내용</span>
                 <div className="post__item__contents">
-                    <Editor ref={contentsRef} defaultValue={props.post.at(0)?.contents}/>
+                    <Editor ref={contentsRef} defaultValue={props.post?.contents}/>
                     {/*<textarea className="post__item__textarea"*/}
-                    {/*          ref={contentsRef} defaultValue={props.post.at(0)?.contents}*/}
+                    {/*          ref={contentsRef} defaultValue={props.post?.contents}*/}
                     {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}
                     {/*/>*/}
                 </div>

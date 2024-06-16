@@ -1,4 +1,5 @@
 import Region from "../jsons/Region.json";
+import Color from "../jsons/Color.json";
 
 const cvt = {
     stSubDateCvt: (stSub)=>{
@@ -54,6 +55,28 @@ const cvt = {
             default : return '';
         }
     },
+    chipCvt : (chip) =>{
+        switch (chip) {
+            case 'y':
+            case 'Y' : return "유"; break;
+            case 'n':
+            case 'N' : return "무"; break;
+            case 'u':
+            case 'U' : return "모름"; break;
+            default : return '';
+        }
+    },
+    ntrCvt : (ntr) =>{
+        switch (ntr) {
+            case 'y':
+            case 'Y' : return "유"; break;
+            case 'n':
+            case 'N' : return "무"; break;
+            case 'u':
+            case 'U' : return "모름"; break;
+            default : return '';
+        }
+    },
     regionCvt: (region) =>{
         return Region.gu.map((g,index)=>{
             if(g.no === Number(region)){
@@ -63,5 +86,17 @@ const cvt = {
             }
         })
     },
+    colorCvt: (colors) =>{
+        let result = '';
+        const resArr = [];
+        if(colors.length > 0){
+            const cArr = colors.split(",");
+            cArr.map((c,idx) =>{
+                resArr.push(Color[Number(c)-1].nameKr);
+            })
+            result = resArr.join(",");
+        }
+        return result;
+    }
 }
 export default cvt;

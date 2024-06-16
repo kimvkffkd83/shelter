@@ -2,7 +2,7 @@ import AnmView from "./AnmView.jsx";
 import React, {useState} from "react";
 import Filter from "../../component/Filter.jsx";
 
-const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, write, update, remove, isAdmin, setViewState, setEditState})=>{
+const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, write, update, remove, isAdmin})=>{
     //0이면 갤러리형, 1이면 리스트형 보기
     const [viewSt, setViewSt] = useState(0);
 
@@ -13,7 +13,7 @@ const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, 
                     <Filter id="region" selected={0} onChange={dataSelectAction} />
                     <Filter id="st" selected={0} onChange={dataSelectAction} />
                     <Filter id="sex" selected={0} onChange={dataSelectAction} />
-                    <Filter id="neutering" selected={0} onChange={dataSelectAction} />
+                    <Filter id="ntr" selected={0} onChange={dataSelectAction} />
                     <Filter id="chip" selected={0} onChange={dataSelectAction} />
                 </div>
                 <div className="filter__box">

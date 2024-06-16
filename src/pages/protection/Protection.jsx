@@ -42,11 +42,13 @@ function Protection() {
         });
     }, [pageNo, rowMax, query, isEditable, isSingleView]);
 
+    //사이드바
     useEffect(() => {
         api.list(location.search, query, pageNo, rowMax).then((res)=> {
             setTotalCnt(res.totalCount);
             setBoard(res.lists);
             setIsSingleView({single: false,postNo: 0})
+            setIsEditable({editable : false, type : 0})
         });
     }, [location.search]);
 
@@ -97,18 +99,17 @@ function Protection() {
         setIsEditable({"editable" : true, "type" : 1});
     }
 
-    const update = async (e) =>{
+    const update = async (e,postNo) =>{
         e.stopPropagation();
-        const postNo = e.currentTarget.dataset.postNo;
         await getView(postNo).then(()=>{
             setIsEditable({"editable": true, "type": 2});
         })
     }
 
-    const remove = (e) =>{
+    const remove = (e,postNo) =>{
         e.stopPropagation();
         if(window.confirm('정말로 해당 게시글을 삭제하시겠습니까?')){
-            api.remove(e.currentTarget.dataset.postNo).then((res)=>{
+            api.remove(postNo).then((res)=>{
                 if(res.status === 500 || res.status === 404 ){
                     alert(res.data);
                 }else{
@@ -133,11 +134,14 @@ function Protection() {
     return (
         <>
             {(isEditable.editable) ?
-                <Write data={isEditable} post={post} changeEditable={setEditState}/> :
+                <Write isEditable={isEditable} post={post} changeEditable={setEditState}/> :
                 <>
                     {(isSingleView.single) ?
                         <View
+                            isAdmin={isAdmin}
                             post={post}
+                            update={update}
+                            remove={remove}
                             undo={undo}
                         /> :
                         <>
@@ -152,8 +156,6 @@ function Protection() {
                                 update={update}
                                 remove={remove}
                                 isAdmin={isAdmin}
-                                setViewState={setViewState}
-                                setEditState={setEditState}
                             />
 
                             <div className="board__paging">

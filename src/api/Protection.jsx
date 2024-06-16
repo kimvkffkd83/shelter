@@ -52,6 +52,15 @@ const API = {
             throw error;
         }
     },
+    update: async (postNo, data) => {
+        try {
+            const res = await api.put(`${postNo}`, data);
+            return res;
+        } catch (error) {
+            console.error("Error while writing data:", error);
+            throw error;
+        }
+    },
     remove: async (postNo) => {
         try {
             const res = await api.delete(`${postNo}`);

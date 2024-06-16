@@ -2,61 +2,51 @@
   {
     "name" : "white",
     "nameKr" : "흰색",
-    "code" : "#eeeeee",
-    "no" : "1"
+    "code" : "#eeeeee"
   },
   {
     "name" : "grey",
     "nameKr" : "회색",
-    "code" : "#7e7e7e",
-    "no" : "2"
+    "code" : "#7e7e7e"
   },
   {
     "name" : "black",
     "nameKr" : "검은색",
-    "code" : "#000000",
-    "no" : "3"
+    "code" : "#000000"
   },
   {
     "name" : "ivory",
     "nameKr" : "상아색",
-    "code" : "#ffdb58",
-    "no" : "4"
+    "code" : "#ffdb58"
   },
   {
     "name" : "orange",
     "nameKr" : "주황색",
-    "code" : "#f36d00",
-    "no" : "5"
+    "code" : "#f36d00"
   },
   {
     "name" : "brown",
     "nameKr" : "갈색",
-    "code" : "#672e00",
-    "no" : "6"
+    "code" : "#672e00"
   },
   {
-    "name" : "red",
+    "name" : "grass",
     "nameKr" : "연두색",
-    "code" : "#4beb59",
-    "no" : "7"
+    "code" : "#4beb59"
   },
   {
     "name" : "green",
     "nameKr" : "초록색",
-    "code" : "#005907",
-    "no" : "8"
+    "code" : "#005907"
   },
   {
     "name" : "red",
     "nameKr" : "빨간색",
-    "code" : "#e81313",
-    "no" : "9"
+    "code" : "#e81313"
   },
   {
     "name" : "blue",
     "nameKr" : "파란색",
-    "code" : "#0020d4",
-    "no" : "10"
+    "code" : "#0020d4"
   }
 ]

@@ -20,10 +20,12 @@ function AnmView({ viewSt, board, view, update,remove, isAdmin }) {
                                 <article className="gallery__box">
                                     {isAdmin &&
                                         <div className="adm__gallery__btns">
-                                            <button className="btn__adm__icon btn__adm__modify" data-post-no={data.postNo} onClick={update}>
+                                            <button className="btn__adm__icon btn__adm__modify"
+                                                    onClick={(e)=>update(e,data.postNo)}>
                                                 <span className="material-symbols-outlined">edit_note</span>
                                             </button>
-                                            <button className="btn__adm__icon btn__adm__delete" data-post-no={data.postNo} onClick={remove}>
+                                            <button className="btn__adm__icon btn__adm__delete"
+                                                    onClick={(e)=>remove(e,data.postNo)}>
                                                 <span className="material-symbols-outlined">delete</span>
                                             </button>
                                         </div>
