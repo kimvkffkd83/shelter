@@ -1,7 +1,7 @@
 import cvt from "../../js/converter.js";
 import React from "react";
 
-const View = ({isAdmin,post,update,remove,undo})=>{
+const View = ({isAdmin,post,remove,undo,setEditState})=>{
     console.log("post",post);
 
     return(
@@ -16,7 +16,7 @@ const View = ({isAdmin,post,update,remove,undo})=>{
                     <span className="post__date w20 tc">{post?.rDate}</span>
                     {isAdmin &&
                         <div className="box__adm__btns">
-                            <button className="btn__adm__icon btn__adm__modify" onClick={(e) => update(e, post.postNo)}>
+                            <button className="btn__adm__icon btn__adm__modify" onClick={(e) => setEditState({"editable": true, "type": 2})}>
                                 <span className="material-symbols-outlined">edit_note</span>
                             </button>
                             {/*<button*/}
@@ -46,7 +46,7 @@ const View = ({isAdmin,post,update,remove,undo})=>{
                         </tr>
                         <tr>
                             <td className="table_item_title">이름</td>
-                            <td className="table_item_content">{post?.name.length > 0 ? post.name : '-'}</td>
+                            <td className="table_item_content">{post?.name?.length > 0 ? post.name : '-'}</td>
                             <td className="table_item_title">성별</td>
                             <td className="table_item_content">{cvt.sexCvt(post?.sex)}</td>
                         </tr>

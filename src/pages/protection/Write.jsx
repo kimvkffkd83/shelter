@@ -5,7 +5,7 @@ import vdt from "../../js/validation.js";
 import cvt from "../../js/converter.js";
 import ColorPicker from "../../component/ColorPicker.jsx";
 
-const Write = ({isEditable,post,changeEditable})=>{
+const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     console.log("post:",post);
     const maxFileCnt = 3;
     const maxFileSize = 10000000;
@@ -48,42 +48,68 @@ const Write = ({isEditable,post,changeEditable})=>{
         return flag;
     }
 
+    const initialImgUrl = ()=>{
+        let init = [];
+        if(post?.photoUrl) init = post?.photoUrl.split(",");
+        return init;
+    }
 
     const [imgFile, setImageFile] = useState([]);
-    const [imgUrl, setImageUrl] = useState([]);
-    const [thumbnail, setThumbnail] = useState(0);
+    const [imgUrl, setImageUrl] = useState(initialImgUrl);
+    const [thumbnail, setThumbnail] = useState(post?.photoThumb?? 0);
 
     const selectImage = (e)=>{
-        setImageFile([]);
-        setImageUrl([]);
-        setThumbnail(0);
-
         const files = e.target.files;
         if(e.target.files.length > maxFileCnt){
             alert(`파일은 최대 ${maxFileCnt}개까지 선택할 수 있습니다.`);
             e.target.value = '';
+            return;
         }
 
         if(files){
-            console.log("files",files);
-            Array.from(files).forEach((file,idx) =>{
-                if(file.size >= maxFileSize){
+            const arr = Array.from(files);
+            for(let i = 0 ; i < arr.length ; i++){
+                if(arr[i].size >= maxFileSize){
                     alert("10MB 이하의 이미지만 업로드 할 수 있습니다.");
                     e.target.value = '';
-                    setImageFile([]);
-                    setImageUrl([]);
-                    setThumbnail(0);
-                    return;
+                    break;
                 }
-                const url = URL.createObjectURL(file)
+
+                if(imgFile.length+i >= maxFileCnt){
+                    alert(`파일은 최대 ${maxFileCnt}개까지 선택할 수 있습니다.`);
+                    e.target.value = '';
+                    break;
+                }
+
+                const url = URL.createObjectURL(arr[i])
                 setImageUrl((preUrl)=>[...preUrl,url]);
-                setImageFile((preFile)=>[...preFile,file]);
-            })
+                setImageFile((preFile)=>[...preFile,arr[i]]);
+            }
         }
     }
 
-    const changeThumbnail = (e) =>{
-        setThumbnail(Number(e.target.dataset.num))
+    const deleteImage =(num)=>{
+        if( isEditable.type === 2 && imgUrl.length === 1){
+            alert("사진을 한 장 이상 첨부해야합니다.")
+            return;
+        }
+        const imgFileArray = Array.from(imgFile);
+        imgFileArray.splice(num,1);
+        setImageFile(imgFileArray);
+
+        const imgUrlArray = Array.from(imgUrl);
+        imgUrlArray.splice(num,1)
+        setImageUrl(imgUrlArray)
+
+        if(thumbnail === num) {
+            setThumbnail(0);
+        }else if(num < thumbnail){
+            setThumbnail(thumbnail-1);
+        }
+    }
+
+    const changeThumbnail = (num) =>{
+        setThumbnail(num);
     }
 
     const action = ()=>{
@@ -92,94 +118,99 @@ const Write = ({isEditable,post,changeEditable})=>{
         //     alert(check.comment)
         //     return;
         // }
-
-        const selectedIndexes = [];
-        const colorChips = document.querySelectorAll('.color_chip');
-        colorChips.forEach((chip, index) => {
-            // "어쩌고-selected" 클래스가 있는지 확인
-            if (chip.classList.contains('__white-selected') || chip.classList.contains('__grey-selected') ||
-                chip.classList.contains('__black-selected') || chip.classList.contains('__ivory-selected') ||
-                chip.classList.contains('__orange-selected') || chip.classList.contains('__brown-selected') ||
-                chip.classList.contains('__grass-selected') || chip.classList.contains('__green-selected') ||
-                chip.classList.contains('__red-selected') || chip.classList.contains('__blue-selected')) {
-                    selectedIndexes.push(Number(index)+1);
-            }
-        });
-
         if(window.confirm(isEditable.type === 1 ? '등록하시겠습니까?' : '수정하시겠습니까?')){
+            const selectedIndexes = [];
+            const colorChips = document.querySelectorAll('.color_chip');
+            colorChips.forEach((chip, index) => {
+                // "어쩌고-selected" 클래스가 있는지 확인
+                if (chip.classList.contains('__white-selected') || chip.classList.contains('__grey-selected') ||
+                    chip.classList.contains('__black-selected') || chip.classList.contains('__ivory-selected') ||
+                    chip.classList.contains('__orange-selected') || chip.classList.contains('__brown-selected') ||
+                    chip.classList.contains('__grass-selected') || chip.classList.contains('__green-selected') ||
+                    chip.classList.contains('__red-selected') || chip.classList.contains('__blue-selected')) {
+                        selectedIndexes.push(Number(index)+1);
+                }
+            });
+
             const selectedValues = {};
             const inputs = radioRef.current.querySelectorAll('input[type="radio"]:checked');
             inputs.forEach(input => {
                 selectedValues[input.name] = input.value;
             });
 
-            console.log("imgFile",imgFile);
-            //이미지 등록
-            const formData = new FormData();
-            // formData.append('img', imgFile);
-            imgFile.forEach(file => {
-                formData.append('img', file);
-            });
-            photoUpload.upload('protection',formData).then((res)=>{
-                const data = {
-                    "USER_NO" : 1,
-                    "USER_ID" : 'se6651',
-                    "POST_ST_SUB" : stSubSubRef.current.value,
-                    "POST_MEMO" : memoRef.current.value,
-                    "POST_PHOTO_URL" : res.urls,
-                    "POST_PHOTO_THUMB" : thumbnail,
-                    "POST_REG_YMD" : isEditable.type === 1 ? newDate : post.rDate.replaceAll('-',''),
-                    "POST_UDT_YMD" : newDate,
-                    "ANM_RSC_YMD" : cDateRef.current.value.replaceAll('-',''),
-                    "ANM_STAY_YMD" : sDateRef.current.value.replaceAll('-',''),
-                    "ANM_SPC" : selectedValues.spc,
-                    "ANM_SPC_SUB" : spcSubRef.current.value,
-                    "ANM_REGION" : reagionRef.current.value,
-                    "ANM_REGION_SUB" : reagionSubRef.current.value,
-                    "ANM_SEX": selectedValues.sex,
-                    "ANM_NEUTERING_ST": selectedValues.ntr,
-                    'ANM_CHIP_ST':selectedValues.chip,
-                    "ANM_WEIGHT":weightRef.current.value,
-                    "ANM_BIRTH_YEAR":bYearRef.current.value,
-                    "ANM_BIRTH_MONTH":bMonthRef.current.value??0,
-                    "ANM_AGE_SUPPOSE":1,
-                    "ANM_NM":nameRef.current.value,
-                    "ANM_COLOR": selectedIndexes.join(','),
-                    "ANM_FEATURE":featureRef.current.value,
-                }
-                console.log('data:', data);
-                console.log('radioRef:', radioRef.current);
-                console.log('selectedValues:', selectedValues);
-                if(isEditable.type === 1){
-                    protection.write(data).then((res)=>{
-                        console.log(res);
-                        if(res.status === 500){
-                            alert(res.data);
-                        }else {
-                            alert('게시글이 등록되었습니다');
-                            changeEditable({"editable": false, "type": 0});
-                        }
-                    })
-                }else if(isEditable.type === 2){
-                    delete data.POST_REG_YMD;
-                    protection.update(post?.postNo, data).then((res)=>{
-                        console.log(res);
-                        if(res.status === 500 || res.status === 404 ){
-                            alert(res.data);
-                        }else{
+            const data = {
+                "USER_NO" : 1,
+                "USER_ID" : 'se6651',
+                "POST_ST_SUB" : stSubSubRef.current.value,
+                "POST_MEMO" : memoRef.current.value,
+                "POST_PHOTO_THUMB" : thumbnail,
+                "POST_REG_YMD" : isEditable.type === 1 ? newDate : post.rDate.replaceAll('-',''),
+                "POST_UDT_YMD" : newDate,
+                "ANM_RSC_YMD" : cDateRef.current.value.replaceAll('-',''),
+                "ANM_STAY_YMD" : sDateRef.current.value.replaceAll('-',''),
+                "ANM_SPC" : selectedValues.spc,
+                "ANM_SPC_SUB" : spcSubRef.current.value,
+                "ANM_REGION" : reagionRef.current.value,
+                "ANM_REGION_SUB" : reagionSubRef.current.value,
+                "ANM_SEX": selectedValues.sex,
+                "ANM_NEUTERING_ST": selectedValues.ntr,
+                'ANM_CHIP_ST':selectedValues.chip,
+                "ANM_WEIGHT":weightRef.current.value,
+                "ANM_BIRTH_YEAR":bYearRef.current.value,
+                "ANM_BIRTH_MONTH":bMonthRef.current.value??0,
+                "ANM_AGE_SUPPOSE":1,
+                "ANM_NM":nameRef.current.value,
+                "ANM_COLOR": selectedIndexes.join(','),
+                "ANM_FEATURE":featureRef.current.value,
+            }
+
+            //등록
+            if(isEditable.type === 1){
+                //이미지 등록
+                const formData = new FormData();
+                imgFile.forEach(file => {
+                    formData.append('img', file);
+                });
+
+                photoUpload.upload('protection',formData).then((res)=>{
+                    data["POST_PHOTO_URL"] = res.urls;
+                    if(isEditable.type === 1){
+                        protection.write(data).then((res)=>{
+                            if(res.status === 500){
+                                alert(res.data);
+                            }else {
+                                getList().then(()=>{
+                                    alert('게시글이 등록되었습니다');
+                                    changeEditable({"editable": false, "type": 0});
+                                });
+                            }
+                        }).catch((error) => {
+                            alert(error.message);
+                        });
+                    }
+                }).catch((error) => {
+                    alert(error.message);
+                });
+            }else if(isEditable.type === 2){ //수정
+                const imgs = document.querySelectorAll('img[class=post__item__preview_img]');
+                const arr = [];
+                imgs.forEach((img,idx) =>{
+                    arr.push(img.src);
+                })
+                data["POST_PHOTO_URL"]=arr.join(',');
+                delete data.POST_REG_YMD;
+                protection.update(post?.postNo, data).then((res)=>{
+                    if(res.status === 500 || res.status === 404 ){
+                        alert(res.data);
+                    }else{
+                        getList().then(()=>{
                             alert('게시글이 수정되었습니다');
-                            //post.ntcNo = isEditable.NTC_NO;
-                            //post.userId = isEditable.USER_ID;
-                            //post.title = isEditable.NTC_TITLE;
-                            //post.contents = isEditable.NTC_CONTENTS;
-                            //post.date = newDateStr;
-                            changeEditable({"editable" : false, "type" : 0});
-                        }
-                    })
-                }
-            }).catch((error) => {
-                alert(error.message);
-            });
+                            getView(post?.postNo).then(changeEditable({"editable" : false, "type" : 0}));
+                            //수정 후 데이터 업데이트... 해야함
+                        });
+                    }
+                })
+            }
         }
     }
 
@@ -377,13 +408,14 @@ const Write = ({isEditable,post,changeEditable})=>{
                         <div className="post__item">
                             <span className="post__item__title">구조 지역</span>
                             <div className="post__item__contents">
-                                <select id="region" className="post__item__select" ref={reagionRef}>
-                                    <option value="0" selected={post?.region === ""}>전체</option>
-                                    <option value="1" selected={post?.region === "1"}>광산구</option>
-                                    <option value="2" selected={post?.region === "2"}>남구</option>
-                                    <option value="3" selected={post?.region === "3"}>동구</option>
-                                    <option value="4" selected={post?.region === "4"}>북구</option>
-                                    <option value="5" selected={post?.region === "5"}>서구</option>
+                                <select id="region" className="post__item__select" ref={reagionRef}
+                                        defaultValue={post?.region}>
+                                    <option value="">전체</option>
+                                    <option value="1">광산구</option>
+                                    <option value="2">남구</option>
+                                    <option value="3">동구</option>
+                                    <option value="4">북구</option>
+                                    <option value="5">서구</option>
                                 </select>
                             </div>
                         </div>
@@ -399,20 +431,20 @@ const Write = ({isEditable,post,changeEditable})=>{
                             <span className="post__item__title">공고상태</span>
                             <div className="post__item__contents">
                                 <select id="st_sub" className="post__item__select" ref={stSubSubRef}
-                                        onChange={setStayDate}>
-                                    <option value=""  selected={post?.stSub === ""}>전체</option>
-                                    <option value="a" selected={post?.stSub === "a"}>공고중</option>
-                                    <option value="b" selected={post?.stSub === "b"}>입양가능</option>
-                                    <option value="c" selected={post?.stSub === "c"}>입양예정</option>
-                                    <option value="d" selected={post?.stSub === "d"}>귀가예정</option>
-                                    <option value="e" selected={post?.stSub === "e"}>임시보호</option>
-                                    <option value="f" selected={post?.stSub === "f"}>입양완료</option>
-                                    <option value="g" selected={post?.stSub === "g"}>귀가</option>
-                                    <option value="h" selected={post?.stSub === "h"}>기증</option>
-                                    <option value="i" selected={post?.stSub === "i"}>안락사</option>
-                                    <option value="j" selected={post?.stSub === "j"}>자연사</option>
-                                    <option value="k" selected={post?.stSub === "k"}>방생</option>
-                                    <option value="l" selected={post?.stSub === "l"}>탈주</option>
+                                        defaultValue={post?.stSub} onChange={setStayDate}>
+                                    <option value=""  >전체</option>
+                                    <option value="a" >공고중</option>
+                                    <option value="b" >입양가능</option>
+                                    <option value="c" >입양예정</option>
+                                    <option value="d" >귀가예정</option>
+                                    <option value="e" >임시보호</option>
+                                    <option value="f" >입양완료</option>
+                                    <option value="g" >귀가</option>
+                                    <option value="h" >기증</option>
+                                    <option value="i" >안락사</option>
+                                    <option value="j" >자연사</option>
+                                    <option value="k" >방생</option>
+                                    <option value="l" >탈주</option>
                                 </select>
                             </div>
                         </div>
@@ -447,21 +479,34 @@ const Write = ({isEditable,post,changeEditable})=>{
                     <div className="form__photo">
                         <div className="gallery__form__title">대표사진 업로드(필수)</div>
                         <div className="gallerty__form__contents">
+                            {
+                                isEditable.type === 2 &&
+                                <div className="warning__box">
+                                    <span className="warning__text">※수정 시 에는 사진 삭제, 대표사진 변경만 가능합니다.</span>
+                                </div>
+                            }
                             <div className="post__item">
                                 <div className="post__item__image__box">
-                                    <input id="img" className="post__item__file" type="file" accept="image/*" multiple
-                                           ref={imgRef} onChange={selectImage}/>
+                                    {
+                                        isEditable.type === 1 &&
+                                        <input id="img" className="post__item__file" type="file" accept="image/*"
+                                               multiple
+                                               ref={imgRef} onChange={selectImage}/>
+                                    }
                                     {
                                         imgUrl?.length > 0 &&
                                         <div className="post__item__preview">
-                                            {imgUrl.map((url, idx) => (
+                                        {imgUrl.map((url, idx) => (
                                                 <div key={idx} className="post__item__preview_box">
                                                     <img className="post__item__preview_img" src={url} alt="선택한 이미지 파일"
-                                                         onClick={changeThumbnail} data-num={idx}/>
+                                                         onClick={()=>changeThumbnail(idx)}/>
                                                     {
                                                         idx === thumbnail &&
                                                         <div className="post__item__preview_img_thumbnail">대표</div>
                                                     }
+                                                    <div className="post__item__preview_img_delete" onClick={()=>deleteImage(idx)}>
+                                                        <span className="material-symbols-outlined">delete</span>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>

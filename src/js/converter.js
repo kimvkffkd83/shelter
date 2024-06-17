@@ -79,7 +79,7 @@ const cvt = {
     },
     regionCvt: (region) =>{
         return Region.gu.map((g,index)=>{
-            if(g.no === Number(region)){
+            if(index+1 === Number(region)){
                 return g.addrKR;
             }else{
                 return '';

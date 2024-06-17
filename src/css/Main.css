@@ -555,8 +555,23 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 4px 8px;
     color: #fff;
     background-color: var(--bright-color);
-
 }
+
+.post__item__preview_img_delete{
+    position: absolute;
+    z-index: 200;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    background-color: var(--negative-hover);
+}
+.post__item__preview_img_delete > span{
+    color: var(--negative-color);
+}
+
 .radio__box{
     display: inline-flex;
     align-items: center;

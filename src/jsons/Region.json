@@ -1,9 +1,9 @@
 {
- "gu" : [
-   {"no":1,"addrKR":  "광산구"},
-   {"no":2,"addrKR":  "남구"},
-   {"no":3,"addrKR":  "동구"},
-   {"no":4,"addrKR":  "북구"},
-   {"no":5,"addrKR":  "서구"}
- ]
+  "gu" : [
+    {"addrKR": "광산구"},
+    {"addrKR": "남구"},
+    {"addrKR": "동구"},
+    {"addrKR": "북구"},
+    {"addrKR": "서구"}
+  ]
 }

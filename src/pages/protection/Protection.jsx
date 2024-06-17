@@ -35,21 +35,29 @@ function Protection() {
     const [board, setBoard] = useState([]);
     const [totalCnt, setTotalCnt] = useState();
 
-    useEffect(() => {
-        api.list(location.search, query, pageNo, rowMax).then((res)=> {
+    const getList  = async ()=>{
+        await api.list(location.search, query, pageNo, rowMax).then((res)=> {
             setTotalCnt(res.totalCount);
             setBoard(res.lists);
         });
-    }, [pageNo, rowMax, query, isEditable, isSingleView]);
+    }
+
+    useEffect( () => {
+        const list = async () => {
+            await getList();
+        }
+        list();
+    }, [pageNo, rowMax, query]);
 
     //사이드바
     useEffect(() => {
-        api.list(location.search, query, pageNo, rowMax).then((res)=> {
-            setTotalCnt(res.totalCount);
-            setBoard(res.lists);
-            setIsSingleView({single: false,postNo: 0})
-            setIsEditable({editable : false, type : 0})
-        });
+        const list = async ()=> {
+            await getList().then(()=>{
+                setIsSingleView({single: false,postNo: 0})
+                setIsEditable({editable : false, type : 0})
+            })
+        }
+        list();
     }, [location.search]);
 
     //메인페이지 -> 보호 게시글 클릭 시
@@ -109,12 +117,12 @@ function Protection() {
     const remove = (e,postNo) =>{
         e.stopPropagation();
         if(window.confirm('정말로 해당 게시글을 삭제하시겠습니까?')){
-            api.remove(postNo).then((res)=>{
+            api.remove(postNo).then( async (res)=>{
                 if(res.status === 500 || res.status === 404 ){
                     alert(res.data);
                 }else{
                     alert("삭제가 완료되었습니다.")
-                    setIsSingleView({single : false , postNo : 0});
+                    await getList().then(setIsSingleView({single : false , postNo : 0}));
                 }
             })
         }
@@ -134,15 +142,16 @@ function Protection() {
     return (
         <>
             {(isEditable.editable) ?
-                <Write isEditable={isEditable} post={post} changeEditable={setEditState}/> :
+                <Write post={post} isEditable={isEditable} changeEditable={setEditState}
+                       getView={getView} getList={getList}/> :
                 <>
                     {(isSingleView.single) ?
                         <View
                             isAdmin={isAdmin}
                             post={post}
-                            update={update}
                             remove={remove}
                             undo={undo}
+                            setEditState = {setEditState}
                         /> :
                         <>
                             <List
