@@ -92,7 +92,7 @@ const cvt = {
         if(colors.length > 0){
             const cArr = colors.split(",");
             cArr.map((c,idx) =>{
-                resArr.push(Color[Number(c)-1].nameKr);
+                resArr.push(Color[Number(c)].nameKr);
             })
             result = resArr.join(",");
         }

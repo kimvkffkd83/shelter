@@ -38,7 +38,7 @@ app.get("/data/main/slide",(req,res)=>{
        DATE_FORMAT (CAST( ANM_STAY_YMD AS date),'%Y-%m-%d') AS sDate, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub,
        ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ANM_SEX AS sex, ANM_NEUTERING_ST AS ntr, 
        ANM_CHIP_ST AS chip, ANM_COLOR AS color, ANM_WEIGHT AS weight, ANM_BIRTH_YEAR AS bYear, ANM_BIRTH_MONTH AS bMonth, 
-       ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt, POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb
+       ANM_AGE_UNKNOWN AS ageUnknown, ANM_FEATURE AS feature, POST_VCNT AS vcnt, POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb
        FROM master_anm_post_db WHERE POST_ST = 2 ORDER BY POST_NO DESC limit 0,10;`;
 
     db.query(query, (error, rows, fields) =>{
@@ -340,9 +340,9 @@ app.get("/data/protection/:id", (req,res)=>{
         db.query('SELECT POST_NO AS postNo, USER_ID AS userId, USER_NO AS userNo, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, ' +
             'DATE_FORMAT (CAST( POST_REG_YMD AS date),\'%Y-%m-%d\') AS rDate, DATE_FORMAT (CAST( POST_UDT_YMD AS date),\'%Y-%m-%d\') AS uDate, ' +
             'DATE_FORMAT (CAST( ANM_RSC_YMD AS date),\'%Y-%m-%d\') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),\'%Y-%m-%d\') AS sDate, ' +
-            'POST_MEMO AS postMemo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ' +
+            'POST_MEMO AS memo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ' +
             'ANM_SEX AS sex, ANM_NEUTERING_ST AS ntr, ANM_CHIP_ST AS chip, ANM_COLOR AS color, ANM_WEIGHT AS weight, ' +
-            'ANM_BIRTH_YEAR AS bYear, ANM_BIRTH_MONTH AS bMonth, ANM_AGE_SUPPOSE AS ageSt, ANM_FEATURE AS feature, POST_VCNT AS vcnt, ' +
+            'ANM_BIRTH_YEAR AS bYear, ANM_BIRTH_MONTH AS bMonth, ANM_AGE_UNKNOWN AS ageUnknown, ANM_FEATURE AS feature, POST_VCNT AS vcnt, ' +
             'POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb, ANM_NM AS name, ANM_COLOR AS color, ANM_FEATURE AS feature ' +
             'FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
             if (error) throw error;
@@ -399,16 +399,16 @@ app.put("/data/protection", (req,res) =>{
     const {
         USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
-        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_SUPPOSE,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
     const values = [
         USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
-        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_SUPPOSE,ANM_NM,ANM_COLOR,ANM_FEATURE];
+        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE];
     db.query(
         'INSERT INTO master_anm_post_db(POST_ST,' +
         'USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,' +
         'ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,' +
-        'ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_SUPPOSE,ANM_NM,ANM_COLOR,ANM_FEATURE) values (2,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',values, (error, rows, fields) =>{
+        'ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE) values (2,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',values, (error, rows, fields) =>{
         if (error) {
             console.error("(server)보호글 등록 중 에러:", error);
             res.status(500).send("보호글을 등록하는 도중 에러가 발생했습니다.");
@@ -425,16 +425,16 @@ app.put("/data/protection/:id", (req,res) =>{
         const {
             USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_UDT_YMD,ANM_RSC_YMD,
             ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
-            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_SUPPOSE,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
         const values = [
             USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_UDT_YMD,ANM_RSC_YMD,
             ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
-            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_SUPPOSE,ANM_NM,ANM_COLOR,ANM_FEATURE];
+            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE];
         db.query(
             'UPDATE master_anm_post_db SET ' +
             'USER_NO=?,USER_ID=?,POST_ST_SUB=?,POST_MEMO=?,POST_PHOTO_URL=?,POST_PHOTO_THUMB=?,' +
             'POST_UDT_YMD=?,ANM_RSC_YMD=?,ANM_STAY_YMD=?,ANM_SPC=?,ANM_SPC_SUB=?,ANM_REGION=?,ANM_REGION_SUB=?,' +
-            'ANM_SEX=?,ANM_NEUTERING_ST=?,ANM_CHIP_ST=?,ANM_WEIGHT=?,ANM_BIRTH_YEAR=?,ANM_BIRTH_MONTH=?,ANM_AGE_SUPPOSE=?,' +
+            'ANM_SEX=?,ANM_NEUTERING_ST=?,ANM_CHIP_ST=?,ANM_WEIGHT=?,ANM_BIRTH_YEAR=?,ANM_BIRTH_MONTH=?,ANM_AGE_UNKNOWN=?,' +
             'ANM_NM=?,ANM_COLOR=?,ANM_FEATURE=? '  +
             `WHERE POST_NO=${id}`,values, (error, rows, fields) =>{
                 if (error) {

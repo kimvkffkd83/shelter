@@ -97,7 +97,7 @@ const TextEditor = forwardRef((props,ref)=> {
      return(
          <>
              <ReactQuill
-                 className="post__item__textarea"
+                 className="post__item__editor"
                  placeholder="내용을 입력하세요"
                  thema="snow"
                  modules = {modules}
