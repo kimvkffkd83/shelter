@@ -32,7 +32,6 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
     //[yyyy-mm-dd]
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
-    const [additionalDate, setAdditionalDate] = useState(0);
 
     const isEmpty = ()=>{
         let flag  = {pass : true, comment : ''};
@@ -45,6 +44,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
         flag = vdt.chkInputIsEmpty(flag, reagionSubRef,'지역상세를 작성해주세요.');
         flag = vdt.chkSelectIsEmpty(flag, stSubSubRef,'공고상태를 선택해주세요.');
         flag = vdt.chkInputIsEmpty(flag, cDateRef,'구조일을 선택해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, sDateRef,'공고기간을 선택해주세요.');
         return flag;
     }
     const isOverLength = ()=>{
@@ -73,7 +73,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             const arr = Array.from(files);
             for(let i = 0 ; i < arr.length ; i++){
                 if(arr[i].size >= maxFileSize){
-                    alert("10MB 이하의 이미지만 업로드 할 수 있습니다.");
+                    alert("10Mb 이하의 이미지만 업로드 할 수 있습니다.");
                     e.target.value = '';
                     break;
                 }
@@ -122,8 +122,9 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             return;
         }
 
-        if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
-            alert("구조일을 다시 선택해주세요.");
+        if(vdt.chkIsEarlier(cDateRef.current.value, sDateRef.current.value)) {
+            sDateRef.current.focus();
+            alert("공고기간은 구조일 이전일 수 없습니다.");
             return;
         }
 
@@ -255,26 +256,41 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
         return cvt.stSubDateCvt(stSub);
     }
 
-    const setStayDate = ()=>{
+    const setStayDate = (plus, type)=>{
         //빈칸 검사
         let flag  = {pass : true, comment : ''};
-        flag = vdt.chkSelectIsEmpty(flag, stSubSubRef,'공고상태를 선택해주세요.');
         flag = vdt.chkInputIsEmpty(flag, cDateRef,'구조일을 선택해주세요.');
-
-        //날짜 검사
-        if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
-            document.querySelector(`div[id=cDateErr]`).style.display = 'flex';
-            cDateRef.current.focus();
-        }else{
-            document.querySelector(`div[id=cDateErr]`).style.display = 'none';
+        if(!flag.pass){
+            alert(flag.comment)
+            return;
+        }
+        const cDate = new Date(cDateRef.current.value);
+        if(type === 'd'){
+            const addDate = new Date(cDate.setDate(cDate.getDate() + plus));
+            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
+        }else if(type === 'm'){
+            const addDate = new Date(cDate.setMonth(cDate.getMonth() + plus));
+            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
         }
 
-        if(isEditable.type === "1" && flag.pass){
-            const cDate = new Date(cDateRef.current.value);
-            const plusDate = calStayDate(stSubSubRef.current.value);
-            setAdditionalDate(plusDate);
-            const addDate = new Date(cDate.setDate(cDate.getDate() + plusDate));
-            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
+   }
+
+    const chkStayDate = ()=>{
+        //날짜 검사
+        if(isEditable.type === 1){
+            if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
+                document.querySelector(`div[id=cDateErr]`).style.display = 'flex';
+                cDateRef.current.focus();
+            }else{
+                document.querySelector(`div[id=cDateErr]`).style.display = 'none';
+            }
+        }else{
+            if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
+                document.querySelector(`div[id=cDateErr]`).style.display = 'flex';
+                cDateRef.current.focus();
+            }else{
+                document.querySelector(`div[id=cDateErr]`).style.display = 'none';
+            }
         }
     }
 
@@ -519,7 +535,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                             <span className="post__item__title">공고상태</span>
                             <div className="post__item__contents">
                                 <select id="st_sub" className="post__item__select" ref={stSubSubRef}
-                                        defaultValue={post?.stSub} onChange={setStayDate}>
+                                        defaultValue={post?.stSub}>
                                     <option value="">전체</option>
                                     <option value="a">공고중</option>
                                     <option value="b">입양가능</option>
@@ -539,33 +555,40 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                         <div className="post__item">
                             <span className="post__item__title">구조일</span>
                             <div className="post__item__contents">
-                                <input id="cDate" className="post__item__date" type="date" ref={cDateRef}
-                                       onChange={setStayDate} defaultValue={post?.cDate}
-                                       readOnly = {isEditable.type === 2}
-                                       disabled = {isEditable.type === 2}
+                                <input id="cDate" className="post__item__date"
+                                       type="date" ref={cDateRef}
+                                       defaultValue={post?.cDate ?? newDateStr}
+                                       readOnly={isEditable.type === 2}
+                                       disabled={isEditable.type === 2}
                                 />
                             </div>
                         </div>
-                        <div id="cDateErr" className="post__item post__item-error">
-                            <span className="post__item__title"></span>
-                            <div className="post__item__contents">
-                                <span>구조일은 등록일 이전이어야 합니다.</span>
+                        {
+                            isEditable.type === 1 &&
+                            <div className="post__item">
+                                <span className="post__item__title"></span>
+                                <div className="post__item__contents">
+                                    <button className="btn__default w50" onClick={() => setStayDate(7, 'd')}> +7일
+                                    </button>
+                                    <button className="btn__default w50" onClick={() => setStayDate(10, 'd')}> +10일
+                                    </button>
+                                    <button className="btn__default w50" onClick={() => setStayDate(1, 'm')}> +1달
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        }
                         <div className="post__item">
                             <span className="post__item__title">공고기간</span>
                             <div className="post__item__contents">
-                                <input id="sDate" className={`post__item__date ${isEditable.type === 1 ? 'w70' : ''}`}
+                                <input id="sDate" className='post__item__date'
                                        type="date" ref={sDateRef}
-                                       defaultValue={post?.sDate}
-                                       readOnly = {isEditable.type === 1}
-                                       disabled = {isEditable.type === 1}/>
-                                {
-                                    additionalDate > 0 &&
-                                    <div id="addDate">
-                                        <span>[+{additionalDate}일]</span>
-                                    </div>
-                                }
+                                       defaultValue={post?.sDate ?? newDateStr}/>
+                            </div>
+                        </div>
+                        <div id="sDateErr" className="post__item post__item-error">
+                            <span className="post__item__title"></span>
+                            <div className="post__item__contents">
+                                <span>구조일은 등록일 이전이어야 합니다.</span>
                             </div>
                         </div>
                     </div>
@@ -579,7 +602,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                             </div>
                             <div className="post__item">
                                 <div className="post__item__image__box">
-                                    {
+                                {
                                         isEditable.type === 1 &&
                                         <input id="img" className="post__item__file" type="file" accept="image/*"
                                                multiple
