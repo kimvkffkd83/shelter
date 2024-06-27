@@ -2,7 +2,7 @@ import AnmView from "./AnmView.jsx";
 import React, {forwardRef, useState} from "react";
 import Filter from "../../component/Filter.jsx";
 
-const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, dataViewAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
+const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, dataWhenAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
     return (
         <>
             <div className="filter__content">
@@ -27,9 +27,9 @@ const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAct
                 <div className="filter__box">
                     <div className="filter__item">
                         <label htmlFor="date" className="filter__label">날짜:</label>
-                        <input type="date" className="filter__input"/>
+                        <input id="preDate" type="date" className="filter__input" onChange={dataWhenAction}/>
                         ~
-                        <input type="date" className="filter__input"/>
+                        <input id="aftDate" type="date" className="filter__input" onChange={dataWhenAction}/>
                     </div>
                     <Filter id="search" selected={0}/>
                     <div className="filter__item">

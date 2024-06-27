@@ -30,6 +30,15 @@ function Protection() {
             [e.target.id]: e.target.value
         }));
     }
+
+    //날짜로 검색
+    const dataWhenAction = (e) =>{
+        setQuery(prevQuery => ({
+            ...prevQuery,
+            [e.target.id]: e.target.value.replaceAll('-','')
+        }));
+    }
+
     const searchRef = useRef();
     //검색 버튼으로 검색 시
     const dataSearchAction = (e) =>{
@@ -84,11 +93,6 @@ function Protection() {
     const setEditState = (childState) =>{
         setIsEditable(childState);
     }
-
-    const setViewState = (childState)=>{
-        setIsSingleView(childState);
-    }
-
 
     const [post, setPost] = useState([]);
     const getView = async (postNo)=>{
@@ -149,11 +153,6 @@ function Protection() {
         if(e.target.value*pageNo >totalCnt) setPageNo(1);
     }
 
-    const dataViewAction = () =>{
-
-    }
-
-
     return (
         <>
             {(isEditable.editable) ?
@@ -176,7 +175,7 @@ function Protection() {
                                 dataSelectAction={dataSelectAction}
                                 dataSearchAction={dataSearchAction}
                                 dataCntAction={dataCntAction}
-                                dataViewAction={dataViewAction}
+                                dataWhenAction={dataWhenAction}
                                 view={view}
                                 write={write}
                                 update={update}
