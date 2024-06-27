@@ -52,5 +52,13 @@
       {"value": "y", "text": "유"},
       {"value": "n", "text": "무"}
     ]
-}
+  },
+  {
+    "id": "search",
+    "label": "검색",
+    "options": [
+      {"value": "spcSub", "text": "세부종"},
+      {"value": "feature", "text": "특징"}
+    ]
+  }
 ]

@@ -1,11 +1,8 @@
 import AnmView from "./AnmView.jsx";
-import React, {useState} from "react";
+import React, {forwardRef, useState} from "react";
 import Filter from "../../component/Filter.jsx";
 
-const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, write, update, remove, isAdmin})=>{
-    //0이면 갤러리형, 1이면 리스트형 보기
-    const [viewSt, setViewSt] = useState(0);
-
+const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, dataViewAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
     return (
         <>
             <div className="filter__content">
@@ -18,18 +15,13 @@ const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, 
                 </div>
                 <div className="filter__box">
                     <div className="filter__item">
-                        <label htmlFor="cnt" className="filter__label">보기:</label>
+                        <span>전체 : <strong>{totalCnt}</strong> / 현재 페이지 : <strong>{pageNo}</strong></span>
+                        <label htmlFor="cnt" className="filter__label">/ 보기:</label>
                         <select id="cnt" className="filter__select" onChange={dataCntAction}>
-                            <option value={viewSt === 0 ? 16 : 10}>{viewSt === 0 ? "16개" : "10개"}</option>
-                            <option value={viewSt === 0 ? 24 : 20}>{viewSt === 0 ? "24개" : "20개"}</option>
-                            <option value={viewSt === 0 ? 32 : 30}>{viewSt === 0 ? "32개" : "30개"}</option>
+                            <option value={16}>16개</option>
+                            <option value={24}>24개</option>
+                            <option value={32}>32개</option>
                         </select>
-                    </div>
-                    <div className="filter__item">
-                        <button type="button" className="filter__item__btn" onClick={remove}>
-                            <span
-                                className="material-symbols-outlined">{viewSt === 0 ? "gallery_thumbnail" : "lists"}</span>
-                        </button>
                     </div>
                 </div>
                 <div className="filter__box">
@@ -39,15 +31,15 @@ const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, 
                         ~
                         <input type="date" className="filter__input"/>
                     </div>
+                    <Filter id="search" selected={0}/>
                     <div className="filter__item">
-                        <input type="text" className="filter__input"/>
-                        <button type="button" className="filter__item__btn">
+                        <input type="text" className="filter__input" ref={ref}/>
+                        <button type="button" className="filter__item__btn" onClick={dataSearchAction}>
                             <span className="material-symbols-outlined">search</span>
                         </button>
                     </div>
                 </div>
                 <div className="filter__box">
-                    <span>전체 : <strong>{totalCnt}</strong> / 현재 페이지 : <strong>{pageNo}</strong></span>
                     {isAdmin &&
                         <div className="box__adm">
                             <div className="box__adm__btns">
@@ -61,7 +53,6 @@ const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, 
             </div>
             <div className="gallery__content">
                 <AnmView
-                    viewSt={viewSt}
                     board={board}
                     view={view}
                     update={update}
@@ -70,5 +61,5 @@ const List = ({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, view, 
             </div>
         </>
     )
-}
+})
 export default List;

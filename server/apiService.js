@@ -326,8 +326,10 @@ app.post('/data/protection',(req,res) =>{
     let sex = req.body.query?.sex?? '';
     let ntr = req.body.query?.ntr?? '';
     let chip = req.body.query?.chip?? '';
+    let target = req.body.query?.target?? '';
+    let text = req.body.query?.text?? '';
 
-    db.query(`CALL sheter_p_anm_past_lists(${spc},${region},'${st}','${sex}','${ntr}','${chip}',${queryNo},${rowMax});`, (error, rows, fields) =>{
+    db.query(`CALL sheter_p_anm_past_lists(${spc},${region},'${st}','${sex}','${ntr}','${chip}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
         if (error) throw error;
         res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });

@@ -210,6 +210,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                     arr.push(img.src);
                 })
                 data["POST_PHOTO_URL"]=arr.join(',');
+                //등록일은 수정할 필요 없음
                 delete data.POST_REG_YMD;
                 protection.update(post?.postNo, data).then((res)=>{
                     if(res.status === 500 || res.status === 404 ){
@@ -218,7 +219,6 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                         getList().then(()=>{
                             alert('게시글이 수정되었습니다');
                             getView(post?.postNo).then(changeEditable({"editable" : false, "type" : 0}));
-                            //수정 후 데이터 업데이트... 해야함
                         });
                     }
                 })

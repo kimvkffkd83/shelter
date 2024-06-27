@@ -362,6 +362,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .table__board{
+    width: 100%;
     padding: 8px;
     text-align: center;
 }
@@ -610,21 +611,28 @@ input[type=number]::-webkit-inner-spin-button {
 /* //board */
 
 /* info */
+.info__box{
+    height: 550px;
+    position: relative;
+}
+
+.info__blur{
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(255, 255, 255, 0) 30%,  rgba(255, 255, 255, 1) 90%);
+}
 .info__img{
     display: block;
+    position: absolute;
     content:'';
-    height: 550px;
+    width: 100%;
+    height: 100%;
     background-image: url("../../public/img/info/info__img.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-}
-.info__box{
-    position: absolute;
-    z-index: 100;
-    width: 65%;
-    height: 550px;
-    background-image: linear-gradient(rgba(255, 255, 255, 0) 30%,  rgba(255, 255, 255, 1) 90%);
 }
 .info__contents{
     position: relative;
@@ -761,7 +769,18 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 4px 16px;
 }
 /* //Organizion */
+/* Map */
+.map__img{
+    display: block;
+    content:'';
+    height: 800px;
+    background-image: url("../../public/img/info/info__map.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
+/* //Map */
 /*  Protection */
 .filter__content{
     display: inline-flex;

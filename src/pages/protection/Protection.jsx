@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../../css/Main.css"
 import Write from "./Write.jsx";
 import Paging from "../../component/common/Paging.jsx";
@@ -23,13 +23,23 @@ function Protection() {
 
     const location = useLocation();
     const [query, setQuery] = useState({});
+    //select로 검색 시
     const dataSelectAction = (e) =>{
         setQuery(prevQuery => ({
             ...prevQuery,
             [e.target.id]: e.target.value
         }));
     }
-
+    const searchRef = useRef();
+    //검색 버튼으로 검색 시
+    const dataSearchAction = (e) =>{
+        const a = document.querySelector('select[id=search]')
+        setQuery(prevQuery => ({
+            ...prevQuery,
+            target: a.value,
+            text:searchRef.current.value,
+        }));
+    }
 
     //게시판 리스트 조회
     const [board, setBoard] = useState([]);
@@ -139,6 +149,11 @@ function Protection() {
         if(e.target.value*pageNo >totalCnt) setPageNo(1);
     }
 
+    const dataViewAction = () =>{
+
+    }
+
+
     return (
         <>
             {(isEditable.editable) ?
@@ -159,12 +174,15 @@ function Protection() {
                                 pageNo={pageNo}
                                 board={board}
                                 dataSelectAction={dataSelectAction}
+                                dataSearchAction={dataSearchAction}
                                 dataCntAction={dataCntAction}
+                                dataViewAction={dataViewAction}
                                 view={view}
                                 write={write}
                                 update={update}
                                 remove={remove}
                                 isAdmin={isAdmin}
+                                ref={searchRef}
                             />
 
                             <div className="board__paging">
