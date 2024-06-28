@@ -21,7 +21,9 @@
       {"addr" : "/missing",
         "addrKR" : "실종공고",
         "subMenu" : [
-          {"addr" : "/missing","addrKR" :"유기동물신고"}
+          {"addr" : "/missing","addrKR" :"전체"},
+          {"addr" : "/missing?stSub=lost","addrKR" :"실종"},
+          {"addr" : "/missing?stSub=see","addrKR" :"목격"}
         ]
       },
       {"addr" : "/adopt",

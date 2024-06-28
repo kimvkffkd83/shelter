@@ -19,7 +19,7 @@ const cvt = {
             default : return 0;
         }
     },
-    stSubCvt: (stSub)=>{
+    stSubPrtcCvt: (stSub)=>{
         switch (stSub){
             case 'a': return '공고중';
             case 'b': return '입양가능';
@@ -33,6 +33,14 @@ const cvt = {
             case 'j': return '안락사';
             case 'k': return '방생';
             case 'l': return '탈주';
+            default : return '';
+        }
+    },
+    stSubMissCvt: (stSub)=>{
+        switch (stSub){
+            case 'a': return '실종';
+            case 'b': return '목격';
+            case 'c': return '귀가';
             default : return '';
         }
     },

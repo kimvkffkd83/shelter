@@ -34,8 +34,8 @@ function SubLayout(){
         if(pathArray.length > 2) {
             subIndex = subMenu.findIndex(subMenu => subMenu.addr === location.pathname)
         }
-        //보호 공고 계시판은 예외
-        if(pathArray[1] === 'protection'){
+        //보호 공고/ 실종 공고 게시판은 예외
+        if(pathArray[1] === 'protection' || pathArray[1] === 'missing'){
             subIndex = subMenu.findIndex(subMenu => subMenu.addr === location.pathname+location.search)
         }
 

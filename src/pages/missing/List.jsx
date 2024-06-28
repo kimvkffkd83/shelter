@@ -8,10 +8,14 @@ const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAct
             <div className="filter__content">
                 <div className="filter__box">
                     <Filter id="region" selected={0} onChange={dataSelectAction} />
-                    <Filter id="st" selected={0} onChange={dataSelectAction} />
-                    <Filter id="sex" selected={0} onChange={dataSelectAction} />
-                    <Filter id="ntr" selected={0} onChange={dataSelectAction} />
-                    <Filter id="chip" selected={0} onChange={dataSelectAction} />
+                    <Filter id="spc" selected={0} onChange={dataSelectAction} />
+                    <Filter id="search" selected="name"/>
+                    <div className="filter__item">
+                        <input type="text" className="filter__input" ref={ref}/>
+                        <button type="button" className="filter__item__btn" onClick={dataSearchAction}>
+                            <span className="material-symbols-outlined">search</span>
+                        </button>
+                    </div>
                 </div>
                 <div className="filter__box">
                     <div className="filter__item">
@@ -31,13 +35,7 @@ const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAct
                         ~
                         <input id="aftDate" type="date" className="filter__input" onChange={dataWhenAction}/>
                     </div>
-                    <Filter id="search" selected={0}/>
-                    <div className="filter__item">
-                        <input type="text" className="filter__input" ref={ref}/>
-                        <button type="button" className="filter__item__btn" onClick={dataSearchAction}>
-                            <span className="material-symbols-outlined">search</span>
-                        </button>
-                    </div>
+
                 </div>
                 <div className="filter__box">
                     {isAdmin &&

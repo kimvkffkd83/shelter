@@ -1,8 +1,7 @@
 import React, {useRef, useState} from "react";
-import protection from "../../api/Protection.jsx";
+import missing from "../../api/Missing.jsx";
 import photoUpload from "../../api/photoUpload.jsx";
 import vdt from "../../js/validation.js";
-import cvt from "../../js/converter.js";
 import ColorPicker from "../../component/ColorPicker.jsx";
 import Species from "../../jsons/Species.json"
 
@@ -16,14 +15,12 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     const bYearRef = useRef();
     const bMonthRef = useRef();
     const ageUnknownRef = useRef();
+    const weightUnknownRef = useRef();
     const weightRef = useRef();
     const reagionRef = useRef();
     const reagionSubRef = useRef();
-    const stSubSubRef = useRef();
     const cDateRef = useRef();
-    const sDateRef = useRef();
     const imgRef = useRef();
-    const memoRef = useRef();
     const nameRef = useRef();
     const featureRef = useRef();
 
@@ -33,18 +30,24 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     //[yyyy-mm-dd]
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
+
+    const [spanName, setSpanName] = useState('실종')
+    const changeSpanName = (e) =>{
+        setSpanName(e.target.value === 'a'? '실종' : '목격')
+    }
+
     const isEmpty = ()=>{
         let flag  = {pass : true, comment : ''};
         flag = vdt.chkInputIsEmpty(flag, spcSubRef,'세부 종을 작성해주세요.');
         if(!ageUnknownRef.current.checked) {
             flag = vdt.chkInputIsEmpty(flag, bYearRef,'생년을 작성해주세요.');
         }
-        flag = vdt.chkInputIsEmpty(flag, weightRef,'체중을 작성해주세요.');
-        flag = vdt.chkSelectIsEmpty(flag, reagionRef,'구조 지역을 선택해주세요.');
+        if(!weightUnknownRef.current.checked) {
+            flag = vdt.chkInputIsEmpty(flag, weightRef,'체중을 작성해주세요.');
+        }
+        flag = vdt.chkSelectIsEmpty(flag, reagionRef,`${spanName} 지역을 선택해주세요.`);
         flag = vdt.chkInputIsEmpty(flag, reagionSubRef,'지역상세를 작성해주세요.');
-        flag = vdt.chkSelectIsEmpty(flag, stSubSubRef,'공고상태를 선택해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, cDateRef,'구조일을 선택해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, sDateRef,'공고기간을 선택해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, cDateRef,`${spanName}일을 선택해주세요.`);
         return flag;
     }
 
@@ -119,12 +122,6 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             return;
         }
 
-        if(vdt.chkIsEarlier(cDateRef.current.value, sDateRef.current.value)) {
-            sDateRef.current.focus();
-            alert("공고기간은 구조일 이전일 수 없습니다.");
-            return;
-        }
-
         if(window.confirm(isEditable.type === 1 ? '등록하시겠습니까?' : '수정하시겠습니까?')){
             const selectedIndexes = [];
             const colorChips = document.querySelectorAll('.color_chip');
@@ -135,7 +132,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                     chip.classList.contains('__orange-selected') || chip.classList.contains('__brown-selected') ||
                     chip.classList.contains('__grass-selected') || chip.classList.contains('__green-selected') ||
                     chip.classList.contains('__red-selected') || chip.classList.contains('__blue-selected')) {
-                        selectedIndexes.push(Number(index)+1);
+                    selectedIndexes.push(Number(index)+1);
                 }
             });
 
@@ -148,12 +145,11 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             const data = {
                 "USER_NO" : 1,
                 "USER_ID" : 'se6651',
-                "POST_ST_SUB" : stSubSubRef.current.value,
+                "POST_ST_SUB" : selectedValues.stSub,
                 "POST_PHOTO_THUMB" : thumbnail,
                 "POST_REG_YMD" : newDate,
                 "POST_UDT_YMD" : newDate,
                 "ANM_RSC_YMD" : cDateRef.current.value.replaceAll('-',''),
-                "ANM_STAY_YMD" : sDateRef.current.value.replaceAll('-',''),
                 "ANM_SPC" : selectedValues.spc,
                 "ANM_SPC_SUB" : spcSubRef.current.value,
                 "ANM_REGION" : reagionRef.current.value,
@@ -165,14 +161,15 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                 "ANM_BIRTH_YEAR": ageUnknownRef.current.checked? 0 : bYearRef.current.value,
                 "ANM_BIRTH_MONTH":ageUnknownRef.current.checked? 0 : bMonthRef.current.value===''? 0 :bMonthRef.current.value,
                 "ANM_AGE_UNKNOWN":ageUnknownRef.current.checked? 1 : 0,
+                "ANM_WEIGHT_UNKNOWN":weightUnknownRef.current.checked? 1 : 0,
                 //선택입력
                 "ANM_NM":selectedTags[1]? nameRef.current.value : '',
-                "POST_MEMO" : selectedTags[2]? memoRef.current.value : '',
-                "ANM_FEATURE":selectedTags[3]? featureRef.current.value:'',
-                "ANM_COLOR": selectedTags[4]? selectedIndexes.join(',') : '',
+                "ANM_FEATURE":selectedTags[2]? featureRef.current.value:'',
+                "ANM_COLOR": selectedTags[3]? selectedIndexes.join(',') : '',
             }
 
             console.log("data",data);
+
             //등록
             if(isEditable.type === 1){
                 //이미지 등록
@@ -181,10 +178,10 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                     formData.append('img', file);
                 });
 
-                photoUpload.upload('protection',formData).then((res)=>{
+                photoUpload.upload('missing',formData).then((res)=>{
                     data["POST_PHOTO_URL"] = res.urls;
                     if(isEditable.type === 1){
-                        protection.write(data).then((res)=>{
+                        missing.write(data).then((res)=>{
                             if(res.status === 500){
                                 alert(res.data);
                             }else {
@@ -209,7 +206,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                 data["POST_PHOTO_URL"]=arr.join(',');
                 //등록일은 수정할 필요 없음
                 delete data.POST_REG_YMD;
-                protection.update(post?.postNo, data).then((res)=>{
+                missing.update(post?.postNo, data).then((res)=>{
                     if(res.status === 500 || res.status === 404 ){
                         alert(res.data);
                     }else{
@@ -248,47 +245,12 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
         bMonthRef.current.value = '';
         document.querySelector(`div[id=bYearErr]`).style.display = 'none';
     }
-
-    const calStayDate = (stSub) =>{
-        return cvt.stSubDateCvt(stSub);
-    }
-
-    const setStayDate = (plus, type)=>{
-        //빈칸 검사
-        let flag  = {pass : true, comment : ''};
-        flag = vdt.chkInputIsEmpty(flag, cDateRef,'구조일을 선택해주세요.');
-        if(!flag.pass){
-            alert(flag.comment)
-            return;
-        }
-        const cDate = new Date(cDateRef.current.value);
-        if(type === 'd'){
-            const addDate = new Date(cDate.setDate(cDate.getDate() + plus));
-            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
-        }else if(type === 'm'){
-            const addDate = new Date(cDate.setMonth(cDate.getMonth() + plus));
-            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
-        }
-
-   }
-
-    const chkStayDate = ()=>{
-        //날짜 검사
-        if(isEditable.type === 1){
-            if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
-                document.querySelector(`div[id=cDateErr]`).style.display = 'flex';
-                cDateRef.current.focus();
-            }else{
-                document.querySelector(`div[id=cDateErr]`).style.display = 'none';
-            }
-        }else{
-            if(vdt.chkIsEarlier(cDateRef.current.value, newDateStr)){
-                document.querySelector(`div[id=cDateErr]`).style.display = 'flex';
-                cDateRef.current.focus();
-            }else{
-                document.querySelector(`div[id=cDateErr]`).style.display = 'none';
-            }
-        }
+    const weightToggle = () =>{
+        let toggle = weightUnknownRef.current.checked;
+        weightRef.current.disabled = toggle;
+        weightRef.current.readonly = toggle;
+        weightRef.current.value = '';
+        document.querySelector(`div[id=bWeightErr]`).style.display = 'none';
     }
 
     const initialSelectedTags = ()=>{
@@ -296,14 +258,13 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
 
         if(isEditable.type === 2){
             if(post.name?.length > 0) init[1] = true;
-            if(post.memo?.length > 0) init[2] = true;
-            if(post.feature?.length > 0) init[3] = true;
-            if(post.color?.length > 0) init[4] = true;
+            if(post.feature?.length > 0) init[2] = true;
+            if(post.color?.length > 0) init[3] = true;
         }
         return init;
     }
-    const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
 
+    const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
 
     const TagItem = ({ label, isSelected, onToggle }) => {
         return (
@@ -347,6 +308,25 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                 <div className="gallery__form-editable w40" ref={radioRef}>
                     <div className="gallery__form__title">필수 입력 정보</div>
                     <div className="gallerty__form__contents">
+                        <div className="post__item">
+                            <span className="post__item__title">상태</span>
+                            <div className="post__item__contents">
+                                <div className="radio__box">
+                                    <input id="st_sub_miss" className="input__radio" name="stSub" type="radio" value="a"
+                                           defaultChecked={post?.st ? post?.st === "1" : true}
+                                           onChange={changeSpanName}
+                                    />
+                                    <label className="post__item__label" htmlFor="st_sub_miss">실종</label>
+                                </div>
+                                <div className="radio__box">
+                                    <input id="st_sub_see" className="input__radio" name="stSub" type="radio" value="b"
+                                           defaultChecked={post?.st === "2"}
+                                           onChange={changeSpanName}
+                                    />
+                                    <label className="post__item__label" htmlFor="st_sub_see">목격</label>
+                                </div>
+                            </div>
+                        </div>
                         <div className="post__item">
                             <span className="post__item__title">종</span>
                             <div className="post__item__contents">
@@ -479,7 +459,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                 <input id="ageUnknown" className="post__item__checkbox" type="checkbox"
                                        ref={ageUnknownRef} onChange={ageToggle}
                                        defaultChecked={post?.ageUnknown === '1'}/>
-                                <label className="post__item__label" htmlFor="ageUnknown">미상</label>
+                                <label className="post__item__label" htmlFor="ageUnknown">모름</label>
                             </div>
                         </div>
                         <div id="bYearErr" className="post__item post__item-error">
@@ -496,6 +476,12 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                        ref={weightRef} defaultValue={post?.weight}
                                        onBlur={() => chkWhenBlur(vdt.chkWeight, weightRef, "bWeightErr")}/>
                             </div>
+                            <div className="select__box">
+                                <input id="weightUnknown" className="post__item__checkbox" type="checkbox"
+                                       ref={weightUnknownRef} onChange={weightToggle}
+                                       defaultChecked={post?.weightUnknown === '1'}/>
+                                <label className="post__item__label" htmlFor="weightUnknown">모름</label>
+                            </div>
                         </div>
                         <div id="bWeightErr" className="post__item post__item-error">
                             <span className="post__item__title"></span>
@@ -504,7 +490,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                             </div>
                         </div>
                         <div className="post__item">
-                            <span className="post__item__title">구조 지역</span>
+                            <span className="post__item__title">{spanName} 지역</span>
                             <div className="post__item__contents">
                                 <select id="region" className="post__item__select" ref={reagionRef}
                                         defaultValue={post?.region}>
@@ -529,28 +515,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                             </div>
                         </div>
                         <div className="post__item">
-                            <span className="post__item__title">공고상태</span>
-                            <div className="post__item__contents">
-                                <select id="st_sub" className="post__item__select" ref={stSubSubRef}
-                                        defaultValue={post?.stSub}>
-                                    <option value="">전체</option>
-                                    <option value="a">공고중</option>
-                                    <option value="b">입양가능</option>
-                                    <option value="c">입양예정</option>
-                                    <option value="d">귀가예정</option>
-                                    <option value="e">임시보호</option>
-                                    <option value="f">입양완료</option>
-                                    <option value="g">귀가</option>
-                                    <option value="h">기증</option>
-                                    <option value="i">안락사</option>
-                                    <option value="j">자연사</option>
-                                    <option value="k">방생</option>
-                                    <option value="l">탈주</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="post__item">
-                            <span className="post__item__title">구조일</span>
+                            <span className="post__item__title">{spanName}일</span>
                             <div className="post__item__contents">
                                 <input id="cDate" className="post__item__date"
                                        type="date" ref={cDateRef}
@@ -558,28 +523,6 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                        readOnly={isEditable.type === 2}
                                        disabled={isEditable.type === 2}
                                 />
-                            </div>
-                        </div>
-                        {
-                            isEditable.type === 1 &&
-                            <div className="post__item">
-                                <span className="post__item__title"></span>
-                                <div className="post__item__contents">
-                                    <button className="btn__default w50" onClick={() => setStayDate(7, 'd')}> +7일
-                                    </button>
-                                    <button className="btn__default w50" onClick={() => setStayDate(10, 'd')}> +10일
-                                    </button>
-                                    <button className="btn__default w50" onClick={() => setStayDate(1, 'm')}> +1달
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        <div className="post__item">
-                            <span className="post__item__title">공고기간</span>
-                            <div className="post__item__contents">
-                                <input id="sDate" className='post__item__date'
-                                       type="date" ref={sDateRef}
-                                       defaultValue={post?.sDate ?? newDateStr}/>
                             </div>
                         </div>
                         <div id="sDateErr" className="post__item post__item-error">
@@ -595,11 +538,11 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                         <div className="gallery__form__title">대표사진 업로드(필수)</div>
                         <div className="gallerty__form__contents">
                             <div className="warning__box">
-                            <span className="warning__text">※ 등록 이후에는 사진 삭제, 대표사진 변경만 가능합니다.</span>
+                                <span className="warning__text">※ 등록 이후에는 사진 삭제, 대표사진 변경만 가능합니다.</span>
                             </div>
                             <div className="post__item">
                                 <div className="post__item__image__box">
-                                {
+                                    {
                                         isEditable.type === 1 &&
                                         <input id="img" className="post__item__file" type="file" accept="image/*"
                                                multiple
@@ -608,21 +551,21 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                     {
                                         imgUrl?.length > 0 &&
                                         <div className="post__item__preview">
-                                        {
-                                            imgUrl.map((url, idx) => (
-                                                <div key={idx} className="post__item__preview_box">
-                                                    <img className="post__item__preview_img" src={url} alt="선택한 이미지 파일"
-                                                         onClick={()=>changeThumbnail(idx)}/>
-                                                    {
-                                                        idx === thumbnail &&
-                                                        <div className="post__item__preview_img_thumbnail">대표</div>
-                                                    }
-                                                    <div className="post__item__preview_img_delete" onClick={()=>deleteImage(idx)}>
-                                                        <span className="material-symbols-outlined">delete</span>
+                                            {
+                                                imgUrl.map((url, idx) => (
+                                                    <div key={idx} className="post__item__preview_box">
+                                                        <img className="post__item__preview_img" src={url} alt="선택한 이미지 파일"
+                                                             onClick={()=>changeThumbnail(idx)}/>
+                                                        {
+                                                            idx === thumbnail &&
+                                                            <div className="post__item__preview_img_thumbnail">대표</div>
+                                                        }
+                                                        <div className="post__item__preview_img_delete" onClick={()=>deleteImage(idx)}>
+                                                            <span className="material-symbols-outlined">delete</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))
-                                        }
+                                                ))
+                                            }
                                         </div>
                                     }
                                 </div>
@@ -634,9 +577,8 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                         <div className="gallerty__form__contents">
                             <div className="tag__box">
                                 <TagItem label="이름" isSelected={selectedTags[1]} onToggle={() => handleSelectToggle(1)} />
-                                <TagItem label="비고(기관용)" isSelected={selectedTags[2]} onToggle={() => handleSelectToggle(2)} />
-                                <TagItem label="비고(회원용)" isSelected={selectedTags[3]} onToggle={() => handleSelectToggle(3)} />
-                                <TagItem label="색상" isSelected={selectedTags[4]} onToggle={() => handleSelectToggle(4)} />
+                                <TagItem label="특징" isSelected={selectedTags[2]} onToggle={() => handleSelectToggle(2)} />
+                                <TagItem label="색상" isSelected={selectedTags[3]} onToggle={() => handleSelectToggle(3)} />
                             </div>
                             <div className="tag__contents">
                                 <div id="tag1" className='post__item tag__target'
@@ -652,18 +594,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                 </div>
                                 <div id="tag2" className='post__item tag__target'
                                      style={{display: selectedTags[2] ? 'flex' : 'none'}}>
-                                    <span className="post__item__title">비고(기관용)</span>
-                                    <div className="post__item__contents">
-                                        <textarea id="memo" className="post__item__textarea" ref={memoRef}
-                                                  defaultValue={post?.memo} placeholder="100자 이내"
-                                                  onKeyUp={() => vdt.chkInputLength(memoRef, 100)}
-                                                  onKeyDown={() => vdt.chkInputLength(memoRef, 100)}
-                                                  onBlur={() => vdt.chkInputLength(memoRef, 100)}/>
-                                    </div>
-                                </div>
-                                <div id="tag3" className='post__item tag__target'
-                                     style={{display: selectedTags[3] ? 'flex' : 'none'}}>
-                                    <span className="post__item__title">비고(회원용)</span>
+                                    <span className="post__item__title">특징</span>
                                     <div className="post__item__contents">
                                         <textarea id="feature" className="post__item__textarea" ref={featureRef}
                                                   defaultValue={post?.feature} placeholder="100자 이내"
@@ -672,8 +603,8 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                                   onBlur={() => vdt.chkInputLength(featureRef, 100)}/>
                                     </div>
                                 </div>
-                                <div id="tag4" className='post__item tag__target'
-                                     style={{display: selectedTags[4] ? 'flex' : 'none'}}>
+                                <div id="tag3" className='post__item tag__target'
+                                     style={{display: selectedTags[3] ? 'flex' : 'none'}}>
                                     <div className="post__item__title">색상</div>
                                     <div className="post__item__contents">
                                         <ColorPicker initialSelectedColors={post?.color?.split(",")}/>

@@ -8,7 +8,7 @@ import Notice from "../pages/info/Notice.jsx";
 import Info from "../pages/info/Info.jsx";
 import Organization from "../pages/info/Organization.jsx";
 import Map from "../pages/info/Map.jsx";
-import Missing from "../pages/missing/missing.jsx";
+import Missing from "../pages/missing/Missing.jsx";
 import Protection from "../pages/protection/Protection.jsx";
 import AnmView from "../pages/protection/AnmView.jsx";
 import Error from "../pages/main/Error.jsx";
@@ -26,6 +26,8 @@ function App() {
                 </Route>
                <Route path="missing" element={<SubLayout/>}>
                    <Route index element={<Missing />} />
+                   <Route path="?stSub=lost" element={<Missing />} />
+                   <Route path="?stSub=see" element={<Missing />} />
                </Route>
                <Route path="protection" element={<SubLayout/>}>
                    <Route index element={<Protection />} />

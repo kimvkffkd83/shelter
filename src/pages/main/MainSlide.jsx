@@ -24,7 +24,7 @@ function MainSlide(){
                                 <div className="slide__box">
                                     <img className="slide__img" src={urlArray? urlArray[item.photoThumb ?? 0] : ''} alt="사진오류"/>
                                 </div>
-                                <h1 className="slide__title">{cvt.stSubCvt(item.stSub)}</h1>
+                                <h1 className="slide__title">{cvt.stSubPrtcCvt(item.stSub)}</h1>
                                 <div className="slide__info">
                                 <span
                                     className="slide__info__text">{cvt.spcCvt(item.spc)} / {cvt.regionCvt(item.region)} </span><br/>

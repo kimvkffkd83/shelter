@@ -1,5 +1,15 @@
 [
   {
+    "id": "spc",
+    "label": "종",
+    "options": [
+      {"value": "0", "text": "전체"},
+      {"value": "1", "text": "개"},
+      {"value": "2", "text": "고양이"},
+      {"value": "3", "text": "기타"}
+    ]
+  },
+  {
     "id": "region",
     "label": "지역",
     "options": [
@@ -58,7 +68,8 @@
     "label": "검색",
     "options": [
       {"value": "spcSub", "text": "세부종"},
-      {"value": "feature", "text": "특징"}
+      {"value": "feature", "text": "특징"},
+      {"value": "name", "text": "이름"}
     ]
   }
 ]

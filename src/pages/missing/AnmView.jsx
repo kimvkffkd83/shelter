@@ -22,7 +22,7 @@ function AnmView({ board, view, update,remove, isAdmin }) {
                     <div className="gallery__img__box">
                         <img className="gallery__img" src={urlArray ? urlArray[data.photoThumb ?? 0] : ''} alt="사진오류"/>
                     </div>
-                    <h1 className="gallery__title">{cvt.stSubPrtcCvt(data.stSub)}</h1>
+                    <h1 className="gallery__title">{cvt.stSubMissCvt(data.stSub)}</h1>
                     <div className="gallery__info">
                                     <span
                                         className="gallery__info__text">{cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} </span><br/>
@@ -40,12 +40,12 @@ function AnmView({ board, view, update,remove, isAdmin }) {
                     <div className="table__content__no-data">
                         <span>게시글이 없습니다.</span>
                     </div> :
-                        board?.map((data, idx) => {
-                            const urlArray = data.photoUrl?.split(',');
-                            return (
-                                    galleryView(idx, data, urlArray)
-                            )
-                        })
+                    board?.map((data, idx) => {
+                        const urlArray = data.photoUrl?.split(',');
+                        return (
+                            galleryView(idx, data, urlArray)
+                        )
+                    })
             }
         </>
     )

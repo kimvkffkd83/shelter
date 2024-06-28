@@ -11,7 +11,7 @@ const Filter = ({id, selected, onChange})=>{
     return (
         <div className="filter__item">
             <label htmlFor={id} className="filter__label">{item?.label}:</label>
-            <select id={id} className="filter__select" onChange={onChange}>
+            <select id={id} className="filter__select" onChange={onChange} defaultValue={selected}>
                 {item?.options.map((option, idx) => (
                     <option key={idx} value={option.value}>{option.text}</option>
                 ))}

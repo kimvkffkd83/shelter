@@ -119,7 +119,6 @@ app.get("/data/notice",(req,res) => {
 app.post("/data/notice", (req,res) =>{
     const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
     const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_REG_DATE,NTC_UDT_DATE];
-    // console.log("convertedArray",convertedArray);
     db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
         if (error) {
             console.error("(server)공지사항 등록 중 에러:", error);
@@ -166,8 +165,6 @@ app.put('/data/notice/vcnt',(req,res) =>{
 app.put('/data/notice/display',(req,res) =>{
     const id = req.body.ntcNo;
     const display = req.body.visible;
-    console.log("id",id);
-    console.log("display",display);
     const oppoDisplay = display === 'y'? 'n' : display === 'n'? 'y' : false;
     if(id && oppoDisplay) {
         db.query(`UPDATE master_notice_db SET NTC_DISPLAY='${oppoDisplay}' WHERE NTC_NO=?`,id,(err,rows) =>{
@@ -265,7 +262,6 @@ app.post('/data/notice/hideSelection',(req, res) =>{
 // 공지사항 게시글 수정
 app.put('/data/notice/:id', (req, res) =>{
     const id = req.params.id;
-    console.log("req.body",req.body);
     const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_UDT_DATE} = req.body;
     const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_UDT_DATE, id];
 
@@ -312,12 +308,12 @@ app.post('/data/protection',(req,res) =>{
     const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
     const queryNo = (pageNo-1)*rowMax;
 
-    let spc = 0;
+    let spc = '';
     if(req.query.ctgr){
         switch (req.query.ctgr){
-            case 'dog': spc = 1; break;
-            case 'cat': spc = 2; break;
-            case 'etc': spc = 3; break;
+            case 'dog': spc = '1'; break;
+            case 'cat': spc = '2'; break;
+            case 'etc': spc = '3'; break;
             default: spc='';
         }
     }
@@ -331,7 +327,7 @@ app.post('/data/protection',(req,res) =>{
     let target = req.body.query?.target?? '';
     let text = req.body.query?.text?? '';
 
-    db.query(`CALL sheter_p_anm_past_lists(${spc},${region},'${st}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
+    db.query(`CALL sheter_p_anm_prtc_lists('${spc}',${region},'${st}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
         if (error) throw error;
         res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
@@ -444,6 +440,160 @@ app.put("/data/protection/:id", (req,res) =>{
                 if (error) {
                     console.error("(server)보호글 등록 중 에러:", error);
                     res.status(500).send("보호글을 등록하는 도중 에러가 발생했습니다.");
+                }else{
+                    res.send({ insertedId: res.insertId });
+                }
+            });
+    }else{
+        res.send('There is no id.');
+    }
+})
+
+//실종 모든 게시글 수
+app.get("/data/missing/tcnt", (req, res) =>{
+    db.query('SELECT COUNT(*) AS cnt FROM master_anm_post_db WHERE POST_ST = 1', (error, tcnt) =>{
+        if (error) throw error;
+        res.send(tcnt);
+    })
+})
+
+//실종 모든 게시글
+app.post('/data/missing',(req,res) =>{
+    const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;
+    const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
+    const queryNo = (pageNo-1)*rowMax;
+
+    let stSub = '';
+    if(req.query.stSub){
+        switch (req.query.stSub){
+            case 'lost': stSub = 'a'; break;
+            case 'see': stSub = 'b'; break;
+            default: stSub='';
+        }
+    }
+    let region = req.body.query?.region?? 0;
+    let spc = req.body.query?.spc?? '';
+    let sex = req.body.query?.sex?? '';
+    let ntr = req.body.query?.ntr?? '';
+    let chip = req.body.query?.chip?? '';
+    let preDate = req.body.query?.preDate?? '';
+    let aftDate = req.body.query?.aftDate?? '';
+    let target = req.body.query?.target?? '';
+    let text = req.body.query?.text?? '';
+
+    db.query(`CALL sheter_p_anm_miss_lists('${spc}','${region}','${stSub}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
+        if (error) throw error;
+        res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
+    });
+})
+
+// 실종 게시글 확인
+app.get("/data/missing/:id", (req,res)=>{
+    const id = req.params.id;
+    if(id) {
+        db.query('SELECT POST_NO AS postNo, USER_ID AS userId, USER_NO AS userNo, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, ' +
+            'DATE_FORMAT (CAST( POST_REG_YMD AS date),\'%Y-%m-%d\') AS rDate, DATE_FORMAT (CAST( POST_UDT_YMD AS date),\'%Y-%m-%d\') AS uDate, ' +
+            'DATE_FORMAT (CAST( ANM_RSC_YMD AS date),\'%Y-%m-%d\') AS cDate, DATE_FORMAT (CAST( ANM_STAY_YMD AS date),\'%Y-%m-%d\') AS sDate, ' +
+            'POST_MEMO AS memo, ANM_SPC AS spc, ANM_SPC_SUB AS spcSub, ANM_REGION AS region, ANM_REGION_SUB AS regionSub, ANM_NM AS name, ' +
+            'ANM_SEX AS sex, ANM_NEUTERING_ST AS ntr, ANM_CHIP_ST AS chip, ANM_COLOR AS color, ANM_WEIGHT AS weight, ' +
+            'ANM_BIRTH_YEAR AS bYear, ANM_BIRTH_MONTH AS bMonth, ANM_AGE_UNKNOWN AS ageUnknown, ANM_WEIGHT_UNKNOWN AS weightUnknown, ANM_FEATURE AS feature, POST_VCNT AS vcnt, ' +
+            'POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb, ANM_NM AS name, ANM_COLOR AS color, ANM_FEATURE AS feature ' +
+            'FROM master_anm_post_db WHERE POST_NO=?',id, (error, rows, fields) =>{
+            if (error) throw error;
+            res.send(rows);
+        });
+    }else{
+        res.send('There is no id.');
+    }
+})
+
+
+// 실종 게시글 삭제
+app.delete('/data/missing/:id', (req, res) =>{
+    const id = req.params.id;
+    console.log('(server)지울 no',id);
+
+    if(id) {
+        db.query('DELETE FROM master_anm_post_db WHERE post_no=?', id, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)공지사항 삭제 중 에러:", error);
+                res.status(500).send(`${id}번 공지사항을 삭제하는 도중 에러가 발생했습니다.`);
+                return;
+            }
+            if (res.affectedRows === 0) {
+                res.status(404).send("해당하는 공지사항이 없습니다.");
+                return;
+            }
+            res.send({ affectedRows: res.affectedRows });
+        });
+    }else{
+        res.send('There is no id.');
+    }
+})
+
+//실종 조회수+
+app.put('/data/missing/vcnt',(req,res) =>{
+    const id = req.body.postNo;
+    if(id) {
+        db.query('UPDATE master_anm_post_db SET POST_VCNT = POST_VCNT+1 WHERE POST_NO=?',id,(err,rows) =>{
+            if (err) {
+                console.error("(server)조회수 추가 중 에러:", err);
+                res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
+                return;
+            }
+            res.send(rows);
+        })
+    }else{
+        res.send('There is no id.');
+    }
+})
+
+//실종 게시글 등록
+app.put("/data/missing", (req,res) =>{
+    const {
+        USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
+        ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
+        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_WEIGHT_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+    const values = [
+        USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
+        ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
+        ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_WEIGHT_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE];
+    db.query(
+        'INSERT INTO master_anm_post_db(POST_ST,' +
+        'USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,' +
+        'ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,' +
+        'ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_WEIGHT_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE) values (1,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',values, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)실종글 등록 중 에러:", error);
+                res.status(500).send("실종글을 등록하는 도중 에러가 발생했습니다.");
+            }else{
+                res.send({ insertedId: res.insertId });
+            }
+        });
+})
+
+//실종 게시글 수정
+app.put("/data/missing/:id", (req,res) =>{
+    const id = req.params.id;
+    if(id) {
+        const {
+            USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_UDT_YMD,ANM_RSC_YMD,
+            ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
+            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+        const values = [
+            USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_UDT_YMD,ANM_RSC_YMD,
+            ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
+            ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE];
+        db.query(
+            'UPDATE master_anm_post_db SET ' +
+            'USER_NO=?,USER_ID=?,POST_ST_SUB=?,POST_MEMO=?,POST_PHOTO_URL=?,POST_PHOTO_THUMB=?,' +
+            'POST_UDT_YMD=?,ANM_RSC_YMD=?,ANM_STAY_YMD=?,ANM_SPC=?,ANM_SPC_SUB=?,ANM_REGION=?,ANM_REGION_SUB=?,' +
+            'ANM_SEX=?,ANM_NEUTERING_ST=?,ANM_CHIP_ST=?,ANM_WEIGHT=?,ANM_BIRTH_YEAR=?,ANM_BIRTH_MONTH=?,ANM_AGE_UNKNOWN=?,' +
+            'ANM_NM=?,ANM_COLOR=?,ANM_FEATURE=? '  +
+            `WHERE POST_NO=${id}`,values, (error, rows, fields) =>{
+                if (error) {
+                    console.error("(server)실종글 등록 중 에러:", error);
+                    res.status(500).send("실종글을 등록하는 도중 에러가 발생했습니다.");
                 }else{
                     res.send({ insertedId: res.insertId });
                 }
