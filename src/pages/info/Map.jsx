@@ -4,6 +4,7 @@ import "../../css/Main.css"
 function Map() {
     return (
         <>
+            <div className="map__img"/>
         </>
     )
 }

@@ -4,8 +4,10 @@ import "../../css/Main.css"
 function Info() {
     return (
         <>
-            <div className="info__box"/>
-            <div className="info__img"/>
+            <div className="info__box">
+                <div className="info__blur"/>
+                <div className="info__img"/>
+            </div>
             <div className="info__contents">
                 <div className="info__header">동행동물 보호소에 오신 것을 환영합니다!</div>
                 <div className="info__text">
