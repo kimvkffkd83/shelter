@@ -12,6 +12,7 @@ import Missing from "../pages/missing/Missing.jsx";
 import Protection from "../pages/protection/Protection.jsx";
 import AnmView from "../pages/protection/AnmView.jsx";
 import Error from "../pages/main/Error.jsx";
+import Adoption from "../pages/adoption/Adoption.jsx";
 
 function App() {
    return(
@@ -34,6 +35,12 @@ function App() {
                    <Route path="?ctgr=dog" element={<Protection />} />
                    <Route path="?ctgr=cat" element={<Protection />} />
                    <Route path="?ctgr=etc" element={<Protection />} />
+               </Route>
+               <Route path="adopt" element={<SubLayout/>}>
+                   <Route index element={<Adoption />} />
+                   <Route path="application" element={<Adoption />} />
+                   <Route path="temporary" element={<Adoption />} />
+                   <Route path="review" element={<Adoption />} />
                </Route>
                <Route path="*" element={<Error />} />
            </Route>

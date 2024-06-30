@@ -474,6 +474,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                                 <input id="weight" className="post__item__input" type="number"
                                        placeholder="소수점 아래 2자리까지 입력 가능"
                                        ref={weightRef} defaultValue={post?.weight}
+                                       disabled={post?.weightUnknown === '1'} readOnly={post?.weightUnknown === '1'}
                                        onBlur={() => chkWhenBlur(vdt.chkWeight, weightRef, "bWeightErr")}/>
                             </div>
                             <div className="select__box">
