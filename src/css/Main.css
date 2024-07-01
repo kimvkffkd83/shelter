@@ -1218,3 +1218,24 @@ tr{
 .__green-selected{background-color:var(--green);border-color: var(--green);}
 .__red-selected{background-color: var(--red);border-color: var(--red);}
 .__blue-selected{background-color: var(--blue);border-color: var(--blue);}
+
+.tab__manage__box{
+    display: flex;
+}
+.tab__manage__list{
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+.tab__manage__view{
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+
+
+
+

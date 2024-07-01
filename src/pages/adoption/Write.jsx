@@ -91,25 +91,10 @@ function Write({post,data,changeEditable}){
                     <span className="post__item__text">{newDateStr}</span>
                 </div>
             </div>
-            {/*props.data.type === 1 &&
-                <div className="post__item">
-                    <div className="post__item__title"></div>
-                    <div className="post__item__text">
-                        <label name="date" className="post__item__label" htmlFor="date">현재</label>
-                        <input name="date" className="post__item__radio" type="radio" defaultChecked></input>
-                        <label name="date" className="post__item__label" htmlFor="date">예약</label>
-                        <input name="date" className="post__item__radio" type="radio"></input>
-                    </div>
-                </div>
-            */}
             <div className="post__item">
                 <span className="post__item__title">내용</span>
                 <div className="post__item__contents">
                     <Editor ref={contentsRef} defaultValue={post?.contents}/>
-                    {/*<textarea className="post__item__textarea"*/}
-                    {/*          ref={contentsRef} defaultValue={props.post?.contents}*/}
-                    {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}
-                    {/*/>*/}
                 </div>
             </div>
             <div className="box__btns">

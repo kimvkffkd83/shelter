@@ -41,14 +41,13 @@ app.get("/data/main/slide",(req,res)=>{
        ANM_AGE_UNKNOWN AS ageUnknown, ANM_FEATURE AS feature, POST_VCNT AS vcnt, POST_PHOTO_URL AS photoUrl, POST_PHOTO_THUMB AS photoThumb
        FROM master_anm_post_db WHERE POST_ST = 2 ORDER BY POST_NO DESC limit 0,10;`;
 
-    db.query(query, (error, rows, fields) =>{
+    db.query(query, (error, rows) =>{
         if (error) {
             console.error(`(server) 보호 목록 조회 중 에러:`, error);
             res.status(500).send(`보호 목록을 조회하는 도중 에러가 발생했습니다.`);
             return;
         }
         res.send(rows);
-        console.log(`보호 list: `,rows);
     });
 })
 
@@ -86,7 +85,6 @@ app.get("/data/main/:board/list",(req,res) =>{
             return;
         }
         res.send(rows);
-        console.log(`${board} list: `,rows);
     });
 })
 
@@ -601,4 +599,13 @@ app.put("/data/missing/:id", (req,res) =>{
     }else{
         res.send('There is no id.');
     }
+})
+
+//입양 탭 조회
+app.get("/data/adoption",(req,res) => {
+    const sql = 'select ADOPT_TITLE AS title, ADOPT_TAB_ORDER as tabOrder from master_adopt_db order by ADOPT_TAB_ORDER;';
+    db.query(sql, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
 })
