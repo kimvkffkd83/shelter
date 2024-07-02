@@ -603,8 +603,59 @@ app.put("/data/missing/:id", (req,res) =>{
 
 //입양 탭 조회
 app.get("/data/adoption",(req,res) => {
-    const sql = 'select ADOPT_TITLE AS title, ADOPT_TAB_ORDER as tabOrder from master_adopt_db order by ADOPT_TAB_ORDER;';
+    const sql = 'select ADOPT_NO AS no, ADOPT_TITLE AS title, ADOPT_CONTENTS as contents, ADOPT_TAB_ORDER as tabOrder from master_adopt_db order by ADOPT_TAB_ORDER;';
     db.query(sql, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 탭 순서 변경
+app.put('/data/adoption/order/:id',(req, res)=>{
+    const id = req.params.id;
+    const orderNo = req.body.orderNo;
+    db.query('UPDATE master_adopt_db SET ADOPT_TAB_ORDER=? WHERE ADOPT_NO=?;',[orderNo, id], (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 탭 등록
+app.post('/data/adoption', (req, res) =>{
+    const id = req.params.id;
+    const {title, contents, userNo, userId, regDate, udtDate, orderNo} = req.body;
+    const values = [title, contents, userNo, userId, regDate, udtDate, orderNo];
+    db.query('INSERT INTO master_adopt_db(ADOPT_TITLE, ADOPT_CONTENTS, USER_NO, USER_ID, ADOPT_REG_YMD, ADOPT_UDT_YMD, ADOPT_TAB_ORDER) values (?,?,?,?,?,?,?);',
+        values, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 탭 정보 수정
+app.put('/data/adoption/:id',(req, res)=>{
+    const id = req.params.id;
+    const {title, contents, userNo, userId, udtDate} = req.body;
+    const values = [title, contents, userNo, userId, udtDate,id];
+    db.query('UPDATE master_adopt_db SET ADOPT_TITLE=?,ADOPT_CONTENTS=?,USER_NO=?,USER_ID=?,ADOPT_UDT_YMD=? WHERE ADOPT_NO=?',values, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 단일 탭 정보 조회
+app.get("/data/adoption/:id",(req,res) => {
+    const id = req.params.id;
+    db.query('select ADOPT_NO AS no, ADOPT_TITLE AS title, ADOPT_CONTENTS as contents, ADOPT_REG_YMD AS regDate, ADOPT_UDT_YMD AS udtDate, USER_ID AS userId from master_adopt_db where ADOPT_NO=?',id, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 탭 삭제
+app.delete("/data/adoption/:id",(req,res) => {
+    const id = req.params.id;
+    db.query('DELETE FROM master_adopt_db WHERE ADOPT_NO=?;',id, (error, rows) =>{
         if (error) throw error;
         res.send(rows);
     });

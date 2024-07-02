@@ -1221,19 +1221,99 @@ tr{
 
 .tab__manage__box{
     display: flex;
+    flex-wrap: wrap;
 }
 .tab__manage__list{
-    width: 100%;
+    flex: 30%;
     margin: 10px;
     padding: 10px;
     border: 1px solid #eee;
 }
 .tab__manage__view{
-    width: 100%;
+    flex: 65%;
     margin: 10px;
     padding: 10px;
     border: 1px solid #eee;
 }
+.tab__manage__btns{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+.tab__header{
+    display: flex;
+    position: relative;
+    height: 1000px;
+}
+.tab__title{
+    flex: 1;
+    height: 40px;
+    margin: 0 4px;
+    padding: 4px 0 8px 0;
+    font-size: 120%;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.tab__title:hover{
+    background-color: var(--bright-hover);
+}
+
+.tab__title__selected{
+    background: #fff;
+    border: 1px solid #eee;
+}
+
+.tab__title__selected:hover{
+    background: #fff;
+}
+
+.tab__content{
+    position: absolute;
+    top: 34px;
+    width: calc(100% - 8px);
+    height: 950px;
+    margin: 0 4px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+}
+
+.tab__manage__content{
+    padding: 0 10px;
+}
+
+.tab__block__static{
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px;
+    font-size: 120%;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+.tab__block__static:hover{
+    background: var(--bright-hover);
+}
+
+.tab__block__dynimic{
+    display: flex;
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px;
+    font-size: 120%;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    cursor: grab;
+}
+
+
+
+
+
 
 
 
