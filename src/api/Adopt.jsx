@@ -7,54 +7,63 @@ const api = axios.create({
 });
 
 const API = {
-    list: async () =>{
+    list :  async (query, pageNo, rowMax) =>{
         try {
-            const res = await api.get(``);
+            const res =  await api.post( '', {pageNo, rowMax, query});
             return res.data;
         } catch (error) {
             console.error("Error while fetching adopt list data:", error);
             throw error;
         }
     },
-    listUpdate : async (no, orderNo) => {
+    tabList: async () =>{
         try {
-            const res = await api.put(`order/${no}`, {orderNo});
+            const res = await api.get(`tab`);
+            return res.data;
+        } catch (error) {
+            console.error("Error while fetching adopt list data:", error);
+            throw error;
+        }
+    },
+    tabListUpdate : async (no, orderNo) => {
+        try {
+            const res = await api.put(`tab/order/${no}`, {orderNo});
             return res;
         } catch (error) {
             console.error("Error while updating data:", error);
             throw error;
         }
     },
-    view : async (no) =>{
+    tabView : async (no) =>{
         try {
-            const res = await api.get(`${no}`);
+            const res = await api.get(`tab/${no}`);
             return res.data;
         } catch (error) {
             console.error("Error while view data:", error);
             throw error;
         }
     },
-    write :  async (data) =>{
+    tabWrite :  async (data) =>{
         try {
-            const res = await api.post(``, data);
+            const res = await api.post(`tab`, data);
             return res.data;
         } catch (error) {
             console.error("Error while view data:", error);
             throw error;
         }
     },
-    update : async (no, data) =>{
+    tabUpdate : async (no, data) =>{
         try {
-            const res = await api.put(`${no}`, data);
+            const res = await api.put(`tab/${no}`, data);
             return res.data;
         } catch (error) {
             console.error("Error while view data:", error);
             throw error;
         }
     },
-    remove : async (no) =>{
+    tabRemove : async (no) =>{
         try {
-            const res = await api.delete(`${no}`);
+            const res = await api.delete(`tab/${no}`);
             return res.data;
         } catch (error) {
             console.error("Error while view data:", error);

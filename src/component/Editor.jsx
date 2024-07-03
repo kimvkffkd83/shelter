@@ -16,7 +16,6 @@ const TextEditor = forwardRef((props,ref)=> {
          input.click();
          input.addEventListener("change", async (e)=>{
              e.preventDefault();
-             const route = 'notice'
              const file = input.files?.[0];
              const formData = new FormData();
              formData.append('img', file);
@@ -33,9 +32,9 @@ const TextEditor = forwardRef((props,ref)=> {
                      return;
                  }
 
-                 photoUpload.upload(route,formData).then((res) => {
+                 photoUpload.upload(props.route,formData).then((res) => {
                      const range = editor.getSelection();
-                     editor.insertEmbed(range.index, "image", res.data.url)
+                     editor.insertEmbed(range.index, "image", res.urls)
                  }).catch ((error) =>{
                      alert(error.message);
                  })
@@ -44,6 +43,7 @@ const TextEditor = forwardRef((props,ref)=> {
      }
      const toolbarOption = [
          [{'align':[]}, {'color':[]}, {'background':[]}],
+         [{ 'size': ['small','large', 'huge'] }],
          ['bold',
          'italic',
          'underline',
@@ -82,7 +82,8 @@ const TextEditor = forwardRef((props,ref)=> {
         'background',
         'float',
         'height',
-        'width'
+        'width',
+        'size'
     ]
 
     //모듈화 하기 까다로워서 chk 로직 그대로 둠

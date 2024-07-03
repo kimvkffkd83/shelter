@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import TabManager from "./TabManager.jsx";
 import Adopt from "../../api/Adopt.jsx";
 import dp from "dompurify";
+import fileDownload from "../../api/fileDownload.jsx";
 function Adoption() {
     const isAdmin = true;
 
     const [activeTab, setActiveTab] = useState(1);
-    const contentsRef = useRef()
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -17,16 +17,46 @@ function Adoption() {
     const [list, setList] = useState([]);
 
     useEffect(() => {
-        Adopt.list().then((res)=> {
+        Adopt.tabList().then((res)=> {
             setList(res);
         });
-    } ,[]);
+    } ,[isEditable]);
+
+    useEffect(() => {
+        const box = document.getElementById("tabContent")
+        const text = document.getElementById("editedText")
+        if(box && text) box.style.height = text.clientHeight + 'px';
+    }, [activeTab, isEditable]);
 
     const write = ()=>{
         setIsEditable({"editable" : true, "type" : 1});
     }
     const setEditState = (childState) =>{
         setIsEditable(childState);
+    }
+
+    const downloadFile = (fileName)=> {
+        fileDownload.download(fileName).then((res) => {
+            fetch(res.url, {method: 'GET'})
+                .then((res) => {
+                    return res.blob();
+                })
+                .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName+'.hwp';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout((_) => {
+                        window.URL.revokeObjectURL(url);
+                    }, 60000);
+                    a.remove();
+                })
+                .catch((err) => {
+                    console.error('err: ', err);
+                });
+        })
     }
 
     return (
@@ -37,11 +67,15 @@ function Adoption() {
                 :
                 <>
                     <>
-                        <span><strong>양식 다운로드</strong></span>
+                        <h3>양식 다운로드</h3>
                         <ul>
                             <li>
-                                <span className="file__title"></span>
-                                <button className="btn__download"></button>
+                                <label className="file__title" htmlFor="download1">입양 설문지(개) : </label>
+                                <button className="btn__download" id="download1" onClick={()=>downloadFile('adoptFormDog')}>다운로드</button>
+                            </li>
+                            <li>
+                                <label className="file__title" htmlFor="download2">입양 설문지(고양이) : </label>
+                                <button className="btn__download" id="download2" onClick={()=>downloadFile('adoptFormCat')}>다운로드</button>
                             </li>
                         </ul>
                     </>
@@ -61,11 +95,13 @@ function Adoption() {
                                         onClick={() => handleTabClick(tab.no)}>{tab.title}</button>
                             ))
                         }
-                        <div className="tab__content">
+                    </div>
+                    <div id="tabContent" className="tab__content">
+                        <div id="editedText" className="edited_text">
                             {
                                 list.filter(tab => tab.no === activeTab).map(tab => (
-                                    <div key={tab.no} className="clearfix"
-                                    dangerouslySetInnerHTML={{__html: dp.sanitize(tab.contents)}}/>
+                                    <div key={tab.no} className="custom_editor clearfix w80"
+                                         dangerouslySetInnerHTML={{__html: dp.sanitize(tab.contents)}}/>
                                 ))
                             }
                         </div>

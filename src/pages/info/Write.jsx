@@ -105,8 +105,8 @@ function Write(props){
             */}
             <div className="post__item">
                 <span className="post__item__title">내용</span>
-                <div className="post__item__contents">
-                    <Editor ref={contentsRef} defaultValue={props.post?.contents}/>
+                <div className="post__item__contents post__item__contents_editor">
+                    <Editor ref={contentsRef} route={'notice'} defaultValue={props.post?.contents}/>
                     {/*<textarea className="post__item__textarea"*/}
                     {/*          ref={contentsRef} defaultValue={props.post?.contents}*/}
                     {/*          onKeyUp={chkTextLength} onKeyDown={chkTextLength} onBlur={chkTextLength}*/}

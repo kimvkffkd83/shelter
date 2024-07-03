@@ -25,14 +25,14 @@ const TabManager = ({setEditState})=>{
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
     useEffect(() => {
-        Adopt.list().then((res)=> {
+        Adopt.tabList().then((res)=> {
             setList(res);
             setTempList(res);
         });
     }, [reset]);
 
     const getView = (no)=>{
-        Adopt.view(no).then((res)=>{
+        Adopt.tabView(no).then((res)=>{
             setPost(res[0]);
         })
     }
@@ -79,7 +79,7 @@ const TabManager = ({setEditState})=>{
             tabOrder: item.tabOrder
         }));
 
-        Adopt.list().then((res)=> {
+        Adopt.tabList().then((res)=> {
             //같으면 저장할 필요 없음
             if(JSON.stringify(res)===JSON.stringify(filtered)){
                 setIsListEditable((prevState) => !prevState);
@@ -92,7 +92,7 @@ const TabManager = ({setEditState})=>{
                 });
 
                 change.forEach(async (c) =>{
-                    await Adopt.listUpdate(c.no, c.orderNo)
+                    await Adopt.tabListUpdate(c.no, c.orderNo)
                 })
                 setReset((prevState) => !prevState);
                 setIsListEditable((prevState) => !prevState);
@@ -147,7 +147,7 @@ const TabManager = ({setEditState})=>{
 
             if(isPostEditable.type === 1){
                 //등록
-                Adopt.write(data).then((res)=>{
+                Adopt.tabWrite(data).then((res)=>{
                     setReset((prevState) => !prevState);
                     setIsPostEditable({"editable" : false, "type" : 0});
                 })
@@ -155,7 +155,7 @@ const TabManager = ({setEditState})=>{
                 //수정
                 delete data.regDate;
                 delete data.orderNo;
-                Adopt.update(post.no,data).then((res)=>{
+                Adopt.tabUpdate(post.no,data).then((res)=>{
                     getView(post.no);
                     setReset((prevState) => !prevState);
                     setIsPostEditable({"editable" : false, "type" : 0});
@@ -169,7 +169,7 @@ const TabManager = ({setEditState})=>{
             return;
         }else{
             if(window.confirm("정말로 삭제하시겠습니까?")){
-                Adopt.remove(post.no).then((res)=>{
+                Adopt.tabRemove(post.no).then((res)=>{
                     console.log(res)
                     setPost([]);
                     setReset((prevState) => !prevState);
@@ -186,6 +186,7 @@ const TabManager = ({setEditState})=>{
 
     return (
         <div className="tab__manage__box">
+            <h3>탭 순서 변경</h3>
             <div className="tab__manage__list">
                 <div className="box__adm__btns">
                     <button className="btn__adm__icon btn__adm__write" onClick={changeListEditable}>
@@ -204,12 +205,14 @@ const TabManager = ({setEditState})=>{
                 </div>
                 <div id="target" className="tab__manage__content">
                     {
-                        isListEditable?
-                            showDynamicList():
+                        isListEditable ?
+                            showDynamicList() :
                             showStaticList()
                     }
                 </div>
             </div>
+            <br />
+            <h3>탭 미리보기</h3>
             <div className="tab__manage__view">
                 <div className="box__adm__btns">
                     {
@@ -253,12 +256,14 @@ const TabManager = ({setEditState})=>{
                                 <div className="post__item__contents">{post.userId ?? 'se6651'}</div>
                             </div>
                             <div className="post__item">
-                                <span className="post__item__title">{isPostEditable.type === 1 ? '등록일':'수정일'}</span>
-                                <div className="post__item__contents">{post.udtDate?? newDate}</div>
+                                <span className="post__item__title">{isPostEditable.type === 1 ? '등록일' : '수정일'}</span>
+                                <div className="post__item__contents">{post.udtDate ?? newDate}</div>
                             </div>
                             <div className="post__item">
                                 <span className="post__item__title">내용</span>
-                                <Editor ref={contentsRef} defaultValue={post.contents}/>
+                                <div className="post__item__contents">
+                                    <Editor ref={contentsRef} route={'adopt'} defaultValue={post.contents}/>
+                                </div>
                             </div>
                         </>
                         :
@@ -277,14 +282,16 @@ const TabManager = ({setEditState})=>{
                             </div>
                             <div className="post__item">
                                 <span className="post__item__title">내용</span>
-                                <div className="post__item__contents clearfix"
-                                     dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}/>
+                                <div className="post__item__contents">
+                                    <div className="custom_editor clearfix"
+                                         dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}/>
+                                </div>
                             </div>
                         </>
                 }
             </div>
             <div className="tab__manage__btns">
-                <button className="btn__adm" onClick={goBack}> 돌아가기 </button>
+                <button className="btn__adm" onClick={goBack}> 돌아가기</button>
             </div>
         </div>
     )
