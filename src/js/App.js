@@ -10,9 +10,10 @@ import Organization from "../pages/info/Organization.jsx";
 import Map from "../pages/info/Map.jsx";
 import Missing from "../pages/missing/Missing.jsx";
 import Protection from "../pages/protection/Protection.jsx";
-import AnmView from "../pages/protection/AnmView.jsx";
 import Error from "../pages/main/Error.jsx";
 import Adoption from "../pages/adoption/Adoption.jsx";
+import Application from "../pages/adoption/Application.jsx";
+import Review from "../pages/adoption/Review.jsx";
 
 function App() {
    return(
@@ -38,9 +39,9 @@ function App() {
                </Route>
                <Route path="adopt" element={<SubLayout/>}>
                    <Route index element={<Adoption />} />
-                   <Route path="application" element={<Adoption />} />
+                   <Route path="application" element={<Application />} />
                    <Route path="temporary" element={<Adoption />} />
-                   <Route path="review" element={<Adoption />} />
+                   <Route path="review" element={<Review />} />
                </Route>
                <Route path="*" element={<Error />} />
            </Route>

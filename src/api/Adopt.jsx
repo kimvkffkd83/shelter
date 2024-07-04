@@ -7,9 +7,9 @@ const api = axios.create({
 });
 
 const API = {
-    list :  async (query, pageNo, rowMax) =>{
+    reviewList :  async (query, pageNo, rowMax) =>{
         try {
-            const res =  await api.post( '', {pageNo, rowMax, query});
+            const res =  await api.post( 'review', {pageNo, rowMax, query});
             return res.data;
         } catch (error) {
             console.error("Error while fetching adopt list data:", error);

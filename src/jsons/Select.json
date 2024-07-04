@@ -71,5 +71,23 @@
       {"value": "feature", "text": "특징"},
       {"value": "name", "text": "이름"}
     ]
+  },
+  {
+    "id": "searchReview",
+    "label": "검색",
+    "options": [
+      {"value": "title", "text": "제목"},
+      {"value": "content", "text": "내용"},
+      {"value": "id", "text": "아이디"}
+    ]
+  },
+  {
+    "id": "reviewType",
+    "label": "타입",
+    "options": [
+      {"value": "", "text": "전체"},
+      {"value": "a", "text": "입양"},
+      {"value": "b", "text": "임시보호"}
+    ]
   }
 ]

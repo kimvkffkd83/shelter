@@ -601,32 +601,18 @@ app.put("/data/missing/:id", (req,res) =>{
     }
 })
 //입양 후기 리스트 조회
-app.post("/data/adoption", (req,res) =>{
+app.post("/data/adoption/review", (req,res) =>{
     const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;
     const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
     const queryNo = (pageNo-1)*rowMax;
 
-    let spc = '';
-    if(req.query.ctgr){
-        switch (req.query.ctgr){
-            case 'dog': spc = '1'; break;
-            case 'cat': spc = '2'; break;
-            case 'etc': spc = '3'; break;
-            default: spc='';
-        }
-    }
-    let region = req.body.query?.region?? 0;
-    let st = req.body.query?.st?? '';
-    let sex = req.body.query?.sex?? '';
-    let ntr = req.body.query?.ntr?? '';
-    let chip = req.body.query?.chip?? '';
-    let preDate = req.body.query?.preDate?? '';
-    let aftDate = req.body.query?.aftDate?? '';
+    let st = req.body.query?.reviewType?? '';
     let target = req.body.query?.target?? '';
     let text = req.body.query?.text?? '';
-    db.query('select adopt_post_no as no, user_id as id, adopt_post_title as title, adopt_post_vcnt as vcnt, adopt_reg_ymd as regDate from master_adopt_review_db limit ${queryNo},10',  (error, rows) =>{
+
+    db.query(`CALL sheter_p_adopt_review_list('${st}','${target}','${text}',${queryNo},${rowMax})`,  (error, rows) =>{
         if (error) throw error;
-        res.send(rows);
+        res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
 })
 
