@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useLocation} from "react-router-dom";
 import api from "../../api/Adopt.jsx";
-import Write from "../adoption/Write.jsx";
 import View from "../adoption/View.jsx";
 import List from "../adoption/List.jsx";
 import Paging from "../../component/common/Paging.jsx";
+import Write from "./Write.jsx";
 
 const Review = () =>{
     const isAdmin = true;
@@ -51,12 +51,13 @@ const Review = () =>{
         });
     }
 
+    //View 에서 isSingleView 때문에 두번 랜더링 되는 문제 있음.
     useEffect( () => {
         const list = async () => {
             await getList();
         }
         list();
-    }, [pageNo, rowMax, query]);
+    }, [isEditable, isSingleView, pageNo, rowMax, query]);
 
     //
     // //사이드바
@@ -79,38 +80,36 @@ const Review = () =>{
     //     }
     // }, [location.state]);
     //
+    const setEditState = (childState) =>{
+        setIsEditable(childState);
+    }
+
+    const [post, setPost] = useState([]);
+    const getView = async (postNo)=>{
+        await api.reviewVcnt(postNo);
+        const res = await api.reviewView(postNo);
+
+        if (res.length === 0) {
+            alert("존재하지 않는 게시글입니다");
+            setPost([]);
+        } else {
+            console.log("post res : ", res);
+            setPost(res[0]);
+        }
+    }
+
+    const view = async (e)=>{
+        e.stopPropagation();
+        const postNo = e.currentTarget.dataset.postNo;
+        await getView(postNo).then(()=>{
+            setIsSingleView({single : true , postNo : postNo})
+        });
+    }
     //
-    //
-    // const setEditState = (childState) =>{
-    //     setIsEditable(childState);
-    // }
-    //
-    // const [post, setPost] = useState([]);
-    // const getView = async (postNo)=>{
-    //     await api.vcnt(postNo);
-    //     const res = await api.view(postNo);
-    //
-    //     if (res.length === 0) {
-    //         alert("존재하지 않는 게시글입니다");
-    //         setPost([]);
-    //     } else {
-    //         console.log("post res : ", res);
-    //         setPost(res[0]);
-    //     }
-    // }
-    //
-    // const view = async (e)=>{
-    //     e.stopPropagation();
-    //     const postNo = e.currentTarget.dataset.postNo;
-    //     await getView(postNo).then(()=>{
-    //         setIsSingleView({single : true , postNo : postNo})
-    //     });
-    // }
-    //
-    // const write = ()=>{
-    //     setPost([]);
-    //     setIsEditable({"editable" : true, "type" : 1});
-    // }
+    const write = ()=>{
+        setPost([]);
+        setIsEditable({"editable" : true, "type" : 1});
+    }
     //
     // const update = async (e,postNo) =>{
     //     e.stopPropagation();
@@ -133,32 +132,25 @@ const Review = () =>{
     //     }
     // }
     //
-    // const undo = ()=>{
-    //     setPost([]);
-    //     setIsSingleView({single : false, postNo : 0});
-    // }
-    //
-    //
-    // const dataCntAction = (e)=>{
-    //     setRowMax(e.target.value);
-    //     if(e.target.value*pageNo >totalCnt) setPageNo(1);
-    // }
+    const undo = ()=>{
+        setPost([]);
+        setIsSingleView({single : false, postNo : 0});
+    }
 
     return (
         <>
             {(isEditable.editable) ?
-                <></> :
-                // <Write post={post} isEditable={isEditable} changeEditable={setEditState}
-                //        getView={getView} getList={getList}/> :
+                <Write post={post} isEditable={isEditable} changeEditable={setEditState}
+                       getView={getView} getList={getList}/> :
                 <>
-                    {/*{(isSingleView.single) ?*/}
-                    {/*    <View*/}
-                    {/*        isAdmin={isAdmin}*/}
-                    {/*        post={post}*/}
-                    {/*        remove={remove}*/}
-                    {/*        undo={undo}*/}
-                    {/*        setEditState = {setEditState}*/}
-                    {/*    /> :*/}
+                    {(isSingleView.single) ?
+                        <View
+                            isAdmin={isAdmin}
+                            post={post}
+                            // remove={remove}
+                            undo={undo}
+                            setEditState = {setEditState}
+                        /> :
                         <>
                             <List
                                 totalCnt={totalCnt}
@@ -166,10 +158,8 @@ const Review = () =>{
                                 board={board}
                                 dataSelectAction={dataSelectAction}
                                 dataSearchAction={dataSearchAction}
-                                // dataCntAction={dataCntAction}
-                                // dataWhenAction={dataWhenAction}
-                                // view={view}
-                                // write={write}
+                                view={view}
+                                write={write}
                                 // update={update}
                                 // remove={remove}
                                 isAdmin={isAdmin}
@@ -182,7 +172,7 @@ const Review = () =>{
                                 }
                             </div>
                         </>
-            {/*}*/}
+            }
                 </>
             }
         </>

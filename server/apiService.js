@@ -98,11 +98,11 @@ app.get("/data/notice/tcnt", (req, res) =>{
 
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",(req,res) => {
-    const isUdmin = true;
+    const isAdmin = true;
     const pageNo =  req.query?.pageNo?? 1;
     const queryNo = (pageNo-1)*10;
     let sql = '';
-    if(isUdmin){
+    if(isAdmin){
         sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt, NTC_DISPLAY AS display FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
     }else{
         sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt FROM master_notice_db WHERE NTC_DISPLAY='y' ORDER BY NTC_NO DESC limit ${queryNo},10`;
@@ -601,7 +601,7 @@ app.put("/data/missing/:id", (req,res) =>{
     }
 })
 //입양 후기 리스트 조회
-app.post("/data/adoption/review", (req,res) =>{
+app.post("/data/adoption/review/list", (req,res) =>{
     const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;
     const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
     const queryNo = (pageNo-1)*rowMax;
@@ -616,6 +616,46 @@ app.post("/data/adoption/review", (req,res) =>{
     });
 })
 
+//입양 후기 작성
+app.post("/data/adoption/review", (req,res) =>{
+    const {USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE} = req.body;
+    const values = [USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE];
+    db.query(
+        'INSERT INTO master_adopt_review_db(USER_NO,USER_ID,ADOPT_POST_TITLE,ADOPT_POST_CONTENTS,ADOPT_REG_YMD,ADOPT_UDT_YMD) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)입양 후기 글 등록 중 에러:", error);
+                res.status(500).send("입양 후기 글을 등록하는 도중 에러가 발생했습니다.");
+            }else{
+                res.send({ insertedId: res.insertId });
+            }
+        });
+})
+
+//입양 후기 단일 뷰 조회
+app.get("/data/adoption/review/:id",(req,res) => {
+    const id = req.params.id;
+    db.query('select adopt_post_no AS no, ADOPT_POST_TITLE AS title, ADOPT_POST_CONTENTS as contents, DATE_FORMAT (CAST( ADOPT_REG_YMD AS date),\'%Y-%m-%d\') AS regDate, DATE_FORMAT (CAST( ADOPT_UDT_YMD AS date),\'%Y-%m-%d\') AS udtDate, USER_ID AS userId from master_adopt_review_db where adopt_post_no=?',id, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//입양 후기 조회수+
+app.put('/data/adoption/review/vcnt',(req,res) =>{
+    const id = req.body.no;
+    if(id) {
+        db.query('UPDATE master_adopt_review_db SET ADOPT_POST_VCNT = ADOPT_POST_VCNT+1 WHERE adopt_post_no=?',id,(err,rows) =>{
+            if (err) {
+                console.error("(server)조회수 추가 중 에러:", err);
+                res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
+                return;
+            }
+            res.send(rows);
+        })
+    }else{
+        res.send('There is no id.');
+    }
+})
 
 //입양 탭 조회
 app.get("/data/adoption/tab",(req,res) => {

@@ -1,9 +1,9 @@
 import {useRef} from "react";
-import board from "../../api/Board.jsx";
+import adopt from "../../api/Adopt.jsx";
 import Editor from "../../component/Editor.jsx";
 import vdt from "../../js/validation.js";
 
-function Write({post,data,changeEditable}){
+function Write({post,isEditable,changeEditable}){
 
     const titleRef = useRef()
     const contentsRef = useRef()
@@ -26,19 +26,18 @@ function Write({post,data,changeEditable}){
         }
 
 
-        if(window.confirm(data.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
+        if(window.confirm(isEditable.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
             const data = {
                 "USER_NO" : 1,
                 "USER_ID" : 'se6651',
-                "NTC_TITLE" : titleRef.current.value,
-                "NTC_CONTENTS" : contentsRef.current.value,
-                "NTC_REG_DATE" : data.type === 1 ? newDate : post?.date.replaceAll('-',''),
-                "NTC_UDT_DATE" : newDate,
+                "POST_TITLE" : titleRef.current.value,
+                "POST_CONTENTS" : contentsRef.current.value,
+                "POST_REG_DATE" : isEditable.type === 1 ? newDate : post?.date.replaceAll('-',''),
+                "POST_UDT_DATE" : newDate,
             }
 
-            if(data.type === 1){
-                board.write(data).then((res)=>{
-                    console.log(res);
+            if(isEditable.type === 1){
+                adopt.reviewWrite(data).then((res)=>{
                     if(res.status === 500){
                         alert(res.data);
                     }else {
@@ -46,24 +45,25 @@ function Write({post,data,changeEditable}){
                         changeEditable({"editable": false, "type": 0});
                     }
                 })
-            }else if(data.type === 2){
-                data.NTC_NO = post?.ntcNo;
-                delete data.NTC_REG_DATE;
-                board.update(post?.ntcNo, data).then((res)=>{
-                    console.log(res);
-                    if(res.status === 500 || res.status === 404 ){
-                        alert(res.data);
-                    }else{
-                        alert('공지사항이 수정되었습니다');
-                        post.ntcNo = data.NTC_NO;
-                        post.userId = data.USER_ID;
-                        post.title = data.NTC_TITLE;
-                        post.contents = data.NTC_CONTENTS;
-                        post.date = newDateStr;
-                        changeEditable({"editable" : false, "type" : 0});
-                    }
-                })
             }
+            // else if(isEditable.type === 2){
+            //     data.NTC_NO = post?.ntcNo;
+            //     delete data.NTC_REG_DATE;
+            //     board.update(post?.ntcNo, data).then((res)=>{
+            //         console.log(res);
+            //         if(res.status === 500 || res.status === 404 ){
+            //             alert(res.data);
+            //         }else{
+            //             alert('공지사항이 수정되었습니다');
+            //             post.ntcNo = data.NTC_NO;
+            //             post.userId = data.USER_ID;
+            //             post.title = data.NTC_TITLE;
+            //             post.contents = data.NTC_CONTENTS;
+            //             post.date = newDateStr;
+            //             changeEditable({"editable" : false, "type" : 0});
+            //         }
+            //     })
+            // }
         }
     }
 
@@ -94,11 +94,11 @@ function Write({post,data,changeEditable}){
             <div className="post__item">
                 <span className="post__item__title">내용</span>
                 <div className="post__item__contents">
-                    <Editor ref={contentsRef} defaultValue={post?.contents}/>
+                    <Editor ref={contentsRef} route={'adopt'} defaultValue={post?.contents}/>
                 </div>
             </div>
             <div className="box__btns">
-                <button className="btn__default" onClick={action}>{data.type === 1 ? '등록' : '수정'}</button>
+                <button className="btn__default" onClick={action}>{isEditable.type === 1 ? '등록' : '수정'}</button>
                 <button className="btn__default" onClick={undo}>취소</button>
             </div>
         </div>

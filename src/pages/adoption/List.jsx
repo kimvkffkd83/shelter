@@ -1,7 +1,7 @@
 import React, {forwardRef} from "react";
 import Filter from "../../component/Filter.jsx";
 
-const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAction, dataWhenAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
+const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
     return (
         <>
             <div className="filter__content">
@@ -55,7 +55,7 @@ const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataCntAct
                                 <li key={index}
                                     className={`table__content ${post.display === 'n' ? 'table__content__hide' : ''}`}
                                     onClick={view}
-                                    data-ntc-no={post.ntcNo}>
+                                    data-post-no={post.no}>
                                     {/*{select &&*/}
                                     {/*    <input className="table__content__text w10" type="checkbox"*/}
                                     {/*           onClick={event => event.stopPropagation()} name='select'/>*/}

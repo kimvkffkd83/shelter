@@ -83,7 +83,7 @@
   },
   {
     "id": "reviewType",
-    "label": "타입",
+    "label": "유형",
     "options": [
       {"value": "", "text": "전체"},
       {"value": "a", "text": "입양"},

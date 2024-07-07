@@ -97,7 +97,7 @@ const View = ({isAdmin,post,remove,undo,setEditState})=>{
             <div className="box__btns">
                 <button className="btn__default" onClick={undo}>목록으로</button>
             </div>
-            {/*{isUdmin &&*/}
+            {/*{isAdmin &&*/}
             {/*    <div className="box__adm">*/}
             {/*        <div className="box__adm__btns">*/}
             {/*            <button className="btn__adm" onClick={update}>수정</button>*/}

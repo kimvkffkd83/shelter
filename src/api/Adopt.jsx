@@ -7,12 +7,39 @@ const api = axios.create({
 });
 
 const API = {
-    reviewList :  async (query, pageNo, rowMax) =>{
+    reviewList : async (query, pageNo, rowMax) =>{
         try {
-            const res =  await api.post( 'review', {pageNo, rowMax, query});
+            const res =  await api.post( 'review/list', {pageNo, rowMax, query});
             return res.data;
         } catch (error) {
             console.error("Error while fetching adopt list data:", error);
+            throw error;
+        }
+    },
+    reviewView : async (no) =>{
+        try {
+            const res = await api.get(`review/${no}`);
+            return res.data;
+        } catch (error) {
+            console.error("Error while view data:", error);
+            throw error;
+        }
+    },
+    reviewVcnt : async (no) =>{
+        try{
+            const res = await api.put(`review/vcnt`, {no});
+            return res;
+        } catch (error) {
+            console.error("Error while updating data vcnt:", error);
+            throw error;
+        }
+    },
+    reviewWrite : async (data) =>{
+        try {
+            const res = await api.post(`review`, data);
+            return res.data;
+        } catch (error) {
+            console.error("Error while view data:", error);
             throw error;
         }
     },

@@ -10,7 +10,7 @@ function View(props) {
         })
     }
 
-    const isUdmin = true;
+    const isAdmin = true;
 
     const update = () =>{
         props.changeEditable({"editable" : true, "type" : 2});
@@ -55,7 +55,7 @@ function View(props) {
                     <span className="post__title w80">{props.data?.title}</span>
                     <span className="post__user-id w10 tc">{props.data?.userId}</span>
                     <span className="post__date w20 tc">{props.data?.date}</span>
-                    {isUdmin &&
+                    {isAdmin &&
                         <div className="box__adm">
                             <div className="box__adm__btns">
                                 <button className="btn__adm__icon btn__adm__modify" onClick={update}>
