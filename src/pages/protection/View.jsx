@@ -10,6 +10,7 @@ const View = ({isAdmin,post,remove,undo,setEditState})=>{
                 <div className="post__header">
                             <span className="post__title w80">
                                 <strong>[{cvt.stSubPrtcCvt(post?.stSub)}] </strong>
+                                <strong>{post?.serialNo} </strong>
                                 {cvt.spcCvt(post?.spc)} / {cvt.regionCvt(post?.region)} / {cvt.sexCvt(post?.sex)}
                             </span>
                     <span className="post__user-id w10 tc">{post?.userId}</span>
@@ -75,6 +76,10 @@ const View = ({isAdmin,post,remove,undo,setEditState})=>{
                             <td className="table_item_content">{cvt.colorCvt(post?.color)}</td>
                             <td className="table_item_title">조회수</td>
                             <td className="table_item_content">{post?.vcnt}</td>
+                        </tr>
+                        <tr>
+                            <td className="table_item_title">일련번호</td>
+                            <td className="table_item_content">{post?.serialNo}</td>
                         </tr>
                         <tr>
                             <td className="table_item_title">특징</td>

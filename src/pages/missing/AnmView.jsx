@@ -22,12 +22,13 @@ function AnmView({ board, view, update,remove, isAdmin }) {
                     <div className="gallery__img__box">
                         <img className="gallery__img" src={urlArray ? urlArray[data.photoThumb ?? 0] : ''} alt="사진오류"/>
                     </div>
-                    <h1 className="gallery__title">{cvt.stSubMissCvt(data.stSub)}</h1>
+                    <h3 className="gallery__title">[{cvt.stSubPrtcCvt(data.stSub)}] {data.serialNo}</h3><br/>
                     <div className="gallery__info">
-                                    <span
-                                        className="gallery__info__text">{cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} </span><br/>
-                        <span
-                            className="gallery__info__text">{cvt.sexCvt(data.sex)} / {data.weight}kg / {data.bYear}년 {data.bMonth ? data.bMonth + '월' : ''}(추정)</span>
+                        <span className="gallery__info__text">
+                            {cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} / {cvt.sexCvt(data.sex)} </span><br/>
+                        <span className="gallery__info__text">
+                            {data.weight}kg / {data.bYear}년 {data.bMonth ? data.bMonth + '월' : ''}(추정)
+                        </span>
                     </div>
                 </article>
             </div>

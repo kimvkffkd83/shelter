@@ -2,7 +2,6 @@ import React from "react";
 import dp from "dompurify";
 
 const View = ({isAdmin,post,remove,undo,setEditState})=>{
-    debugger;
     console.log("post",post);
 
     return(
