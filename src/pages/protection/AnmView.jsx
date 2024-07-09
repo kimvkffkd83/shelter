@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import "../../css/Main.css"
 import cvt from "../../js/converter.js"
 function AnmView({ board, view, update,remove, isAdmin }) {

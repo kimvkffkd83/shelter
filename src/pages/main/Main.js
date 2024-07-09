@@ -12,7 +12,7 @@ function Main(){
                 </div>
                 <div className="main__box__board">
                     <MainBoard title="notice"/>
-                    <MainBoard title="feedback"/>
+                    <MainBoard title="review"/>
                 </div>
             </div>
             <div className="main__box__statistics">

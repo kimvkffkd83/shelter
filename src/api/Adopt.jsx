@@ -7,6 +7,24 @@ const api = axios.create({
 });
 
 const API = {
+    write:  async (data) =>{
+        try {
+            const res = await api.post(``, data);
+            return res.data;
+        } catch (error) {
+            console.error("Error while writing data", error);
+            throw error;
+        }
+    },
+    list : async (no) =>{
+        try {
+            const res = await api.get(`${no}`);
+            return res.data;
+        } catch (error) {
+            console.error("Error while view data:", error);
+            throw error;
+        }
+},
     reviewList : async (query, pageNo, rowMax) =>{
         try {
             const res =  await api.post( 'review/list', {pageNo, rowMax, query});
@@ -39,7 +57,7 @@ const API = {
             const res = await api.post(`review`, data);
             return res.data;
         } catch (error) {
-            console.error("Error while view data:", error);
+            console.error("Error while writing data:", error);
             throw error;
         }
     },

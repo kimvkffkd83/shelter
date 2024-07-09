@@ -51,7 +51,7 @@ app.get("/data/main/slide",(req,res)=>{
     });
 })
 
-//메인페이지에서 공지사항 조회
+//메인페이지에서 공지사항 조회 << 이거 분리할 예정
 app.get("/data/main/:board/list",(req,res) =>{
     const board = req.params.board;
     let tableName,noColumnName,titleColumnName,regDateColumnName;
@@ -64,11 +64,11 @@ app.get("/data/main/:board/list",(req,res) =>{
             titleColumnName = 'NTC_TITLE';
             regDateColumnName = 'NTC_REG_DATE';
             break;
-        case 'feedback':
-            tableName = 'master_feedback_db';
-            noColumnName = 'FDB_NO';
-            titleColumnName = 'FDB_TITLE';
-            regDateColumnName = 'FDB_REG_DATE';
+        case 'review':
+            tableName = 'master_adopt_review_db';
+            noColumnName = 'adopt_post_no';
+            titleColumnName = 'ADOPT_POST_TITLE';
+            regDateColumnName = 'ADOPT_REG_YMD';
             break;
         // 추가적인 경우에 따라 필요한 테이블과 컬럼 설정
         default:
@@ -600,6 +600,37 @@ app.put("/data/missing/:id", (req,res) =>{
         res.send('There is no id.');
     }
 })
+
+//입양 신청 하기
+app.post("/data/adoption", (req, res) =>{
+    const {USER_NO,USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO} = req.body;
+    const values = [USER_NO,USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO];
+    db.query(
+        'INSERT INTO master_adopt_db(USER_NO,USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO) values (?,?,?,?,?,?,?,?,?,?,?,?,?)',values, (error, rows, fields) =>{
+            if (error) {
+                console.error("(server)입양 신청 등록 중 에러:", error);
+                res.status(500).send("입양 신청을 등록하는 도중 에러가 발생했습니다.");
+            }else{
+                res.send({ insertedId: res.insertId });
+            }
+        });
+})
+
+//로그인한 회원이 신청한 입양 신청 리스트 보기
+app.get("/data/adoption/:no", (req, res) =>{
+    //보안상 문제가 생길텐뒤...
+    const no = req.params.no;
+    db.query(
+        'select USER_NO as no, USER_NM as name, USER_CALL as phone, USER_MAIL as mail, APP_TITLE as title, APP_CONTENTS as contents, APP_REG_YMD as rDate, APP_TYPE as type, ANM_SPC as spc, ANM_SERIAL_NO as sNo from master_adopt_db where USER_NO=?',no, (error, rows) =>{
+            if (error) {
+                console.error("(server)입양 신청 리스트 조회 중 에러:", error);
+                res.status(500).send("입양 신청 리스트를 조회 중 에러가 발생했습니다.");
+            }else{
+                res.send(rows);
+            }
+        })
+})
+
 //입양 후기 리스트 조회
 app.post("/data/adoption/review/list", (req,res) =>{
     const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;

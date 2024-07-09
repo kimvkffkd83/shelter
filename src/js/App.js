@@ -28,19 +28,13 @@ function App() {
                 </Route>
                <Route path="missing" element={<SubLayout/>}>
                    <Route index element={<Missing />} />
-                   <Route path="?stSub=lost" element={<Missing />} />
-                   <Route path="?stSub=see" element={<Missing />} />
                </Route>
                <Route path="protection" element={<SubLayout/>}>
                    <Route index element={<Protection />} />
-                   <Route path="?ctgr=dog" element={<Protection />} />
-                   <Route path="?ctgr=cat" element={<Protection />} />
-                   <Route path="?ctgr=etc" element={<Protection />} />
                </Route>
                <Route path="adopt" element={<SubLayout/>}>
                    <Route index element={<Adoption />} />
-                   <Route path="application" element={<Application />} />
-                   <Route path="temporary" element={<Adoption />} />
+                   <Route path="apply" element={<Application />} />
                    <Route path="review" element={<Review />} />
                </Route>
                <Route path="*" element={<Error />} />

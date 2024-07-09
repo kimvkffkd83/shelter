@@ -66,28 +66,26 @@ function Adoption() {
                 // <Write  post={post} data={[]} isEditable={isEditable} changeEditable={setEditState} />
                 :
                 <>
-                    <>
-                        <h3>양식 다운로드</h3>
-                        <div className="download__box">
-                            <div className="download__item">
-                                <label className="file__title" htmlFor="download1"><strong>입양 설문지(개) : </strong></label>
-                                <button className="file__btn" id="download1"
-                                        onClick={() => downloadFile('adoptFormDog')}>
-                                    <span className="material-symbols-outlined">download</span>
-                                    내려받기
-                                </button>
-                            </div>
-                            <div className="download__item">
-                                <label className="file__title" htmlFor="download2"><strong>입양 설문지(고양이)
-                                    : </strong></label>
-                                <button className="file__btn" id="download2"
-                                        onClick={() => downloadFile('adoptFormCat')}>
-                                    <span className="material-symbols-outlined">download</span>
-                                    내려받기
-                                </button>
-                            </div>
+                    <h3>양식 다운로드</h3>
+                    <div className="download__box">
+                        <div className="download__item">
+                            <label className="file__title" htmlFor="download1"><strong>입양 설문지(개) : </strong></label>
+                            <button className="file__btn" id="download1"
+                                    onClick={() => downloadFile('adoptFormDog')}>
+                                <span className="material-symbols-outlined">download</span>
+                                내려받기
+                            </button>
                         </div>
-                    </>
+                        <div className="download__item">
+                            <label className="file__title" htmlFor="download2"><strong>입양 설문지(고양이)
+                                : </strong></label>
+                            <button className="file__btn" id="download2"
+                                    onClick={() => downloadFile('adoptFormCat')}>
+                                <span className="material-symbols-outlined">download</span>
+                                내려받기
+                            </button>
+                        </div>
+                    </div>
 
                     <div>
                         <h3>과정 및 절차</h3>

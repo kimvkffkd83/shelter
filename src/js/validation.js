@@ -22,6 +22,27 @@ const vdt = {
         }
         return flag;
     },
+    chkPhoneNumber:(number) =>{
+        const temp = number.replaceAll('-','');
+        const ex = /^[0-9]{10,11}$/
+        return ex.test(temp);
+    },
+    chkKoreanName:(name)=>{
+        const ex = /^[/가-힣/]{2,}$/;
+        return ex.test(name);
+    },
+    chkMailAddress:(address) =>{
+        const ex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
+        return ex.test(address);
+    },
+    chkSerialNo:(no) =>{ //일련번호
+        const ex = /^\d{4}-\d{4}$/
+        return ex.test(no);
+    },
+    chkSerialNoV2:(no) =>{ //빈칸 or 일련번호
+        const ex = /^$|^\d{4}-\d{4}$/
+        return ex.test(no);
+    },
     chkBirthYear : (year) => { //잘못된 년도면 true
         const date = new Date();
         return (1900 > year || year > date.getFullYear());

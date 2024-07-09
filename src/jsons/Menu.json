@@ -30,8 +30,7 @@
         "addrKR" : "입양문의",
         "subMenu" : [
           {"addr" : "/adopt","addrKR" :"입양절차"},
-          {"addr" : "/adopt/application","addrKR" :"입양신청"},
-          {"addr" : "/adopt/temporary","addrKR" :"임시보호신청"},
+          {"addr" : "/adopt/apply","addrKR" :"입양/임시보호신청"},
           {"addr" : "/adopt/review","addrKR" :"입양/보호후기"}
         ]
       },

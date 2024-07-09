@@ -105,6 +105,14 @@ const cvt = {
             result = resArr.join(",");
         }
         return result;
-    }
+    },
+    phoneCvt: (number) =>{
+        //번호 입력 시 핸드폰 번호 형식으로 변경
+        return number
+            .replace(/[^0-9]/g, '') // 숫자가 아닌 문자 제거
+            .replace(/^(\d{3})(\d{3})(\d{4})$/g, "$1-$2-$3") // 10자리 숫자에 대한 패턴 매칭
+            .replace(/^(\d{3})(\d{4})(\d{4})$/g, "$1-$2-$3") // 11자리 숫자에 대한 패턴 매칭
+            .replace(/(\-{1,2})$/g, ""); // 끝에 붙은 하이픈 제거
+    },
 }
 export default cvt;
