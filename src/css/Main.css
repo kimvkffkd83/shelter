@@ -394,6 +394,9 @@ input[type=number]::-webkit-inner-spin-button {
 .table__content:hover{
     background-color: var(--bright-hover);
 }
+.table__content-hidden{
+    display: none;
+}
 
 .table__content__text {
     padding: 8px 0;

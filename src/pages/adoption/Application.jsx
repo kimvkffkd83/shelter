@@ -3,6 +3,9 @@ import vdt from "../../js/validation.js";
 import Editor from "../../component/Editor.jsx";
 import cvt from "../../js/converter.js";
 import adopt from "../../api/Adopt.jsx";
+import dp from "dompurify";
+import fh from "../../api/FileHandler.jsx";
+import api from "../../api/Adopt.jsx";
 
 const Application = ()=> {
     const isAdmin = true;
@@ -18,6 +21,26 @@ const Application = ()=> {
     const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
 
+    const [file, setFile] = useState('');
+    const selectFile = (e)=>{
+        e.preventDefault();
+        const file = e.target.files?.[0]
+        setFile(file);
+    }
+
+    const [reset, setReset] = useState(false);
+
+    const resetInput = ()=>{
+        //라디오버튼, 파일 인풋, 콘텐츠 리셋 필요
+        radioRef.current.value = '';
+        titleRef.current.value = '';
+        contentsRef.current.value = '';
+        serialRef.current.value = '';
+        nameRef.current.value = '';
+        phoneRef.current.value = '';
+        mailRef.current.value = '';
+        setFile('')
+    }
 
     const chkWhenBlur = (func, ref, id)=>{
         if(!func(ref.current.value)){
@@ -44,8 +67,6 @@ const Application = ()=> {
             return;
         }
 
-        //첨부파일 등록 확인해야함
-
         let chkP = true;
         const errs = document.getElementsByClassName('post__item-error')
         for (let err of errs) {
@@ -56,47 +77,67 @@ const Application = ()=> {
             return;
         }
 
-        if(window.confirm('신청하시겠습니까?')){
-
-        };
-
-        const selectedValues = {};
-        const inputs = radioRef.current.querySelectorAll('input[type="radio"]:checked');
-        inputs.forEach(input => {
-            selectedValues[input.name] = input.value;
-        });
-
-        const data = {
-            "USER_NO" : 1,
-            "USER_ID" : 'se6651',
-            "USER_NM" : nameRef.current.value,
-            "USER_CALL" : phoneRef.current.value.replaceAll('-',''),
-            "USER_MAIL" : mailRef.current.value,
-            "APP_TITLE" : titleRef.current.value,
-            "APP_CONTENTS" : contentsRef.current.value,
-            "APP_REG_YMD" : newDate,
-            "APP_UDT_YMD" : newDate,
-            "APP_ATTACH" : 'ASDF',
-            "APP_TYPE" : selectedValues.type,
-            "ANM_SPC" : selectedValues.spc,
-            "ANM_SERIAL_NO" : serialRef.current.value,
+        if(file === ''){
+            alert('신청서를 등록해주세요.')
+            return;
         }
 
-        console.log(data);
-        adopt.write(data).then((res)=>{
-            console.log(res);
-        })
+        if(window.confirm('신청 후에는 수정이 불가능합니다. 정말로 신청하시겠습니까?')){
+            const formData = new FormData();
+            formData.append('document', file);
+            fh.upload('adopt',formData).then((res)=>{
+                const selectedValues = {};
+                const inputs = radioRef.current.querySelectorAll('input[type="radio"]:checked');
+                inputs.forEach(input => {
+                    selectedValues[input.name] = input.value;
+                });
+
+                const data = {
+                    "USER_NO" : 1,
+                    "USER_ID" : 'se6651',
+                    "USER_NM" : nameRef.current.value,
+                    "USER_CALL" : phoneRef.current.value.replaceAll('-',''),
+                    "USER_MAIL" : mailRef.current.value,
+                    "APP_TITLE" : titleRef.current.value,
+                    "APP_CONTENTS" : contentsRef.current.value,
+                    "APP_REG_YMD" : newDate,
+                    "APP_UDT_YMD" : newDate,
+                    "APP_ATTACH" : res.urls,
+                    "APP_TYPE" : selectedValues.type,
+                    "ANM_SPC" : selectedValues.spc,
+                    "ANM_SERIAL_NO" : serialRef.current.value,
+                }
+
+                console.log(data);
+                adopt.write(data).then((res)=>{
+                    alert("신청이 완료되었습니다.")
+                    console.log(res);
+                    setReset((prevState) => !prevState);
+                })
+            });
+        };
     }
 
     const [list, setList] = useState([]);
+    const [cnt, setCnt] = useState(0);
+
+    const getList = async ()=>{
+        await adopt.list(1).then((res) =>{
+            setList(res.lists);
+            setCnt(res.totalCount);
+        });
+    }
 
     useEffect(()=>{
-        adopt.list(1).then((res) =>{
-            console.log(res);
-            setList(res);
-        });
-    },[])
+        getList();
+        resetInput();
+    },[reset])
 
+
+
+    const toggleView = (no) =>{
+
+    }
     return (
         <>
             <div>
@@ -225,7 +266,8 @@ const Application = ()=> {
                     <div className="post__item">
                         <span className="post__item__title">신청서 첨부</span>
                         <div className="post__item__contents">
-                            <input type="file"/>
+                            <input type="file" accept=".hwp"
+                                   onChange={selectFile}/>
                         </div>
                     </div>
                     <div className="post__item">
@@ -241,45 +283,53 @@ const Application = ()=> {
                     </div>
                 </div>
             </div>
-            <h3>입양신청내역(0)</h3>
+            <h3>입양신청내역({cnt})</h3>
             <div>
                 <ul className="table__board">
                     <li className="table__header">
-                        {/*{select &&*/}
-                        {/*    <div className="table__header__text w10"><span*/}
-                        {/*        className="material-symbols-outlined">check</span></div>*/}
-                        {/*}*/}
                         <div className="table__header__text w10">번호</div>
-                        <div className="table__header__text w50">제목</div>
-                        <div className="table__header__text w10">작성자</div>
+                        <div className="table__header__text w10">상태</div>
+                        <div className="table__header__text w10">유형</div>
+                        <div className="table__header__text w10">희망 종</div>
+                        <div className="table__header__text w20">일련번호</div>
+                        <div className="table__header__text w30">제목</div>
                         <div className="table__header__text w20">등록일</div>
-                        <div className="table__header__text w10">조회</div>
                     </li>
                     <>
-                    {
-                        list?.length === 0 ?
-                            <div className="table__content__no-data">
+                        {
+                            list?.length === 0 ?
+                                <div className="table__content__no-data">
                                 <span>게시글이 없습니다.</span>
                             </div> :
                             list.map((post, index) => (
-                                <li key={index}>
-                                    {/*{select &&*/}
-                                    {/*    <input className="table__content__text w10" type="checkbox"*/}
-                                    {/*           onClick={event => event.stopPropagation()} name='select'/>*/}
-                                    {/*}*/}
-                                    {/*<div className="table__content__text w10">{index + ((pageNo - 1) * 10) + 1}</div>*/}
-                                    {/*<div className="table__content__text w50 tl text-overflow">{post.title}</div>*/}
-                                    {/*<div className="table__content__text w10">{post.userId}</div>*/}
-                                    {/*<div className="table__content__text w20">{post.date}</div>*/}
-                                    {/*<div className="table__content__text w10">{post.vcnt}</div>*/}
-                                </li>
+                                <div key={index}>
+                                    <li
+                                        className='table__content'
+                                        onClick={() => toggleView(post.no)}
+                                    >
+                                        <div className="table__content__text w10">{index + post.no}</div>
+                                        <div className="table__content__text w10">{cvt.adtSt(post.aSt)}</div>
+                                        <div className="table__content__text w10">{cvt.adtType(post.type)}</div>
+                                        <div className="table__content__text w10">{cvt.spcCvt(post.spc)}</div>
+                                        <div className="table__content__text w20">{post.sNo}</div>
+                                        <div className="table__content__text w30 tl text-overflow">{post.title}</div>
+                                        <div className="table__content__text w20">{post.rDate}</div>
+                                    </li>
+                                    <li className="table__content table__content-hidden">
+                                        <div className="table__content__text"
+                                             dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}/>
+                                    </li>
+                                    <li className="table__content table__content-hidden">
+                                        <div className="table__content__text">{post.attachment}</div>
+                                    </li>
+                                </div>
                             ))
-                    }
+                        }
                     </>
                 </ul>
             </div>
         </>
-)
+    )
 }
 
 export default Application;

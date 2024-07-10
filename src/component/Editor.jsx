@@ -90,7 +90,6 @@ const TextEditor = forwardRef((props,ref)=> {
     const lengthLimit = 1000;
     const chkTextLength = ()=> {
         if (ref && ref.current && ref.current.editor.getLength()> lengthLimit) {
-            console.log("text", ref.current.editor.getText())
             ref.current.editor.deleteText(lengthLimit,lengthLimit+1)
         }
     }

@@ -44,10 +44,28 @@ const cvt = {
             default : return '';
         }
     },
+    adtType:(type) =>{
+        switch (type){
+            case 'a': return '입양';
+            case 'b': return '임시보호';
+            default : return '';
+        }
+    },
+    adtSt:(st) =>{
+        switch (st){
+            case 'a': return '신청중';
+            case 'b': return '검토중';
+            case 'c': return '검토완료';
+            default : return '';
+        }
+    },
     spcCvt : (stSub)=>{
         switch (stSub){
+            case 1 :
             case '1': return '개';
+            case 2:
             case '2': return '고양이';
+            case 3:
             case '3': return '기타';
             default : return '';
         }

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import TabManager from "./TabManager.jsx";
 import Adopt from "../../api/Adopt.jsx";
 import dp from "dompurify";
-import fileDownload from "../../api/fileDownload.jsx";
+import fh from "../../api/FileHandler.jsx";
 function Adoption() {
     const isAdmin = true;
 
@@ -36,7 +36,7 @@ function Adoption() {
     }
 
     const downloadFile = (fileName)=> {
-        fileDownload.download(fileName).then((res) => {
+        fh.download(fileName).then((res) => {
             fetch(res.url, {method: 'GET'})
                 .then((res) => {
                     return res.blob();

@@ -63,7 +63,7 @@ const API = {
     },
     tabList: async () =>{
         try {
-            const res = await api.get(`tab`);
+            const res = await api.get(`tab/list`);
             return res.data;
         } catch (error) {
             console.error("Error while fetching adopt list data:", error);
@@ -80,6 +80,8 @@ const API = {
         }
     },
     tabView : async (no) =>{
+
+        console.log("4")
         try {
             const res = await api.get(`tab/${no}`);
             return res.data;
