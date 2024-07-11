@@ -17,6 +17,7 @@ const Application = ()=> {
     const nameRef = useRef();
     const phoneRef = useRef();
     const mailRef = useRef();
+    const fileRef = useRef();
     const date = new Date();
     const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
     const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
@@ -31,14 +32,15 @@ const Application = ()=> {
     const [reset, setReset] = useState(false);
 
     const resetInput = ()=>{
-        //라디오버튼, 파일 인풋, 콘텐츠 리셋 필요
-        radioRef.current.value = '';
+        document.getElementById("type_adopt").checked = true
+        document.getElementById("spc_dog").checked = true
         titleRef.current.value = '';
-        contentsRef.current.value = '';
         serialRef.current.value = '';
         nameRef.current.value = '';
         phoneRef.current.value = '';
         mailRef.current.value = '';
+        fileRef.current.value = '';
+        contentsRef.current.editor.deleteText(0,contentsRef.current.editor.getLength());
         setFile('')
     }
 
@@ -133,11 +135,38 @@ const Application = ()=> {
         resetInput();
     },[reset])
 
-
+    const [activeRow, setActiveRow] = useState(0);
 
     const toggleView = (no) =>{
-
+        if(activeRow === 0 || activeRow !== no){
+            setActiveRow(no)
+        }else{
+            setActiveRow(0)
+        }
     }
+
+    const downloadFile = (fileName)=> {
+        fetch(fileName, {method: 'GET'})
+            .then((res) => {
+                return res.blob();
+            })
+            .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '신청서.hwp';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout((_) => {
+                    window.URL.revokeObjectURL(url);
+                }, 60000);
+                a.remove();
+            })
+            .catch((err) => {
+                console.error('err: ', err);
+            });
+    }
+
     return (
         <>
             <div>
@@ -266,14 +295,14 @@ const Application = ()=> {
                     <div className="post__item">
                         <span className="post__item__title">신청서 첨부</span>
                         <div className="post__item__contents">
-                            <input type="file" accept=".hwp"
+                            <input type="file" accept=".hwp" ref={fileRef}
                                    onChange={selectFile}/>
                         </div>
                     </div>
                     <div className="post__item">
                         <span className="post__item__title">내용</span>
                         <div className="post__item__contents post__item__contents_editor">
-                            <Editor ref={contentsRef} route={'notice'}/>
+                            <Editor ref={contentsRef} route={'adopt'}/>
                         </div>
                     </div>
                     {/* 개인정보 처리 방침*/}
@@ -305,9 +334,9 @@ const Application = ()=> {
                                 <div key={index}>
                                     <li
                                         className='table__content'
-                                        onClick={() => toggleView(post.no)}
+                                        onClick={() => toggleView(index+1)}
                                     >
-                                        <div className="table__content__text w10">{index + post.no}</div>
+                                        <div className="table__content__text w10">{index+1}</div>
                                         <div className="table__content__text w10">{cvt.adtSt(post.aSt)}</div>
                                         <div className="table__content__text w10">{cvt.adtType(post.type)}</div>
                                         <div className="table__content__text w10">{cvt.spcCvt(post.spc)}</div>
@@ -315,13 +344,39 @@ const Application = ()=> {
                                         <div className="table__content__text w30 tl text-overflow">{post.title}</div>
                                         <div className="table__content__text w20">{post.rDate}</div>
                                     </li>
-                                    <li className="table__content table__content-hidden">
-                                        <div className="table__content__text"
-                                             dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}/>
-                                    </li>
-                                    <li className="table__content table__content-hidden">
-                                        <div className="table__content__text">{post.attachment}</div>
-                                    </li>
+                                    {
+                                        index+1 === activeRow &&
+                                        <div className="post__table">
+                                            <table className="table__default w90">
+                                                <tbody className="table__default__body">
+                                                <tr>
+                                                    <td className="table_item_title">작성자</td>
+                                                    <td className="table_item_content">{post.name}</td>
+                                                    <td className="table_item_title">제목</td>
+                                                    <td className="table_item_content">{post.title}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="table_item_title">연락처</td>
+                                                    <td className="table_item_content">{post.phone}</td>
+                                                    <td className="table_item_title">메일</td>
+                                                    <td className="table_item_content">{post.mail}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="table_item_title">첨부파일</td>
+                                                    <td className="table_item_content" colSpan={3}>
+                                                        <button onClick={()=>downloadFile(post.attachment)}>다운로드</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="table_item_title">내용</td>
+                                                    <td className="table_item_content" colSpan={3}
+                                                        dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}
+                                                    ></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
                                 </div>
                             ))
                         }

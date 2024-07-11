@@ -136,6 +136,8 @@ const Review = () =>{
         setPost([]);
         setIsSingleView({single : false, postNo : 0});
     }
+    
+    //댓글 기능 추가해야함
 
     return (
         <>

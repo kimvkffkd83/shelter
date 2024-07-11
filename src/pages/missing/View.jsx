@@ -73,11 +73,11 @@ const View = ({isAdmin,post,remove,undo,setEditState})=>{
                         </tr>
                         <tr>
                             <td className="table_item_title">일련번호</td>
-                            <td className="table_item_content">{post?.serialNo}</td>
+                            <td className="table_item_content" colSpan={3}>{post?.serialNo}</td>
                         </tr>
                         <tr>
                             <td className="table_item_title">특징</td>
-                            <td className="table_item_content">{post?.feature}</td>
+                            <td className="table_item_content" colSpan={3}>{post?.feature}</td>
                         </tr>
                         </tbody>
                     </table>
