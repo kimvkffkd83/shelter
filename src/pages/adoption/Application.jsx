@@ -19,8 +19,8 @@ const Application = ()=> {
     const mailRef = useRef();
     const fileRef = useRef();
     const date = new Date();
-    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
-    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    const newDate = cvt.dateYmdCvt(date);
+    const newDateStr = cvt.dateYmdDashCvt(date);
 
     const [file, setFile] = useState('');
     const selectFile = (e)=>{
@@ -173,7 +173,7 @@ const Application = ()=> {
                 <div className="box__post">
                     <div className="flex_container">
                         <div className="w50">
-                            <h4> 희망자 인적사항</h4>
+                            <h4>희망자 인적사항</h4>
                             <div className="post__item">
                                 <span className="post__item__title">성명</span>
                                 <div className="post__item__contents">
@@ -369,12 +369,36 @@ const Application = ()=> {
                                                 </tr>
                                                 <tr>
                                                     <td className="table_item_title">내용</td>
-                                                    <td className="table_item_content" colSpan={3}
+                                                    <td className="table_item_content" colSpan={4}
                                                         dangerouslySetInnerHTML={{__html: dp.sanitize(post.contents)}}
                                                     ></td>
                                                 </tr>
+                                                {
+                                                    post.aSt === 'b' &&
+                                                    <tr>
+                                                        <td colSpan={4}>
+                                                            <div className="warning__text">
+                                                                신청해주셔서 감사합니다. 현재 신청서를 검토중입니다.<br/>
+                                                                약 3일 정도 소요 예정입니다.
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                {
+                                                post.aSt === 'c' &&
+                                                    <tr>
+                                                        <td colSpan={4}>
+                                                            <div className="warning__text">
+                                                                등록해주신 신청서 검토가 완료되었습니다.<br/>
+                                                                선정된 분께는 기재해주신 연락처로 별도 연락이 진행될 예정입니다.<br/>
+                                                                감사합니다.
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
                                                 </tbody>
                                             </table>
+
                                         </div>
                                     }
                                 </div>

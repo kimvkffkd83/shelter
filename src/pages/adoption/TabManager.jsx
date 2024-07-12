@@ -4,6 +4,7 @@ import Adopt from "../../api/Adopt.jsx";
 import vdt from "../../js/validation.js";
 import Editor from "../../component/Editor.jsx";
 import dp from "dompurify";
+import cvt from "../../js/converter.js";
 const TabManager = ({setEditState})=>{
     const [list, setList] = useState([]);
     const [tempList, setTempList] = useState([]);
@@ -21,8 +22,7 @@ const TabManager = ({setEditState})=>{
     const contentsRef = useRef();
 
     const date = new Date();
-    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
-    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    const newDate = cvt.dateYmdCvt(date);
 
     useEffect(() => {
         Adopt.tabList().then((res)=> {

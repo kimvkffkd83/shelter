@@ -2,14 +2,15 @@ import {useRef} from "react";
 import adopt from "../../api/Adopt.jsx";
 import Editor from "../../component/Editor.jsx";
 import vdt from "../../js/validation.js";
+import cvt from "../../js/converter.js";
 
 function Write({post,isEditable,changeEditable}){
 
     const titleRef = useRef()
     const contentsRef = useRef()
     const date = new Date();
-    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
-    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    const newDate = cvt.dateYmdCvt(date);
+    const newDateStr = cvt.dateYmdDashCvt(date);
 
     const validatation = ()=>{
         let flag  = {pass : true, comment : ''};

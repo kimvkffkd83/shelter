@@ -747,3 +747,38 @@ app.delete("/data/adoption/tab/:id",(req,res) => {
         res.send(rows);
     });
 })
+//봉사 신청 가능한 봉사활동 리스트
+app.get("/data/volunteer",(req,res) => {
+    db.query('SELECT TIME_NO as tNo, TIME_ST AS St, TIME_YMD as time, TIME_TYPE as type, ANM_SPC as spc, MAX_CNT as maxCnt, NOW_CNT as nowCnt FROM master_volunteer_time_db',(error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//봉사 해당 날짜에 신청가능한 봉사활동 리스트
+//추후 프로시저로 변경해서 지원자 목록까지 추가할 것
+app.get("/data/volunteer/:date",(req,res) => {
+    const date = req.params.date;
+    db.query('SELECT TIME_NO as tNo, TIME_ST AS St, TIME_YMD as time, TIME_TYPE as type, ANM_SPC as spc, MAX_CNT as maxCnt, NOW_CNT as nowCnt  FROM master_volunteer_time_db WHERE TIME_YMD=? AND NOW_CNT != MAX_CNT',date,(error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+//봉사 특정날짜 봉사 신청하기
+app.post("/data/volunteer/apply",(req,res) =>{
+    const {USER_NO,USER_ID,USER_NM,USER_CALL,TIME_NO,REG_YMD} = req.body;
+    const values = [USER_NO,USER_ID,USER_NM,USER_CALL,TIME_NO,REG_YMD];
+    db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?)',values,(error, rows) =>{
+        if (error) throw error;
+        res.send(rows);
+    });
+})
+
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@ import photoUpload from "../../api/photoUpload.jsx";
 import vdt from "../../js/validation.js";
 import ColorPicker from "../../component/ColorPicker.jsx";
 import Species from "../../jsons/Species.json"
+import cvt from "../../js/converter.js";
 
 const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     console.log("post:",post);
@@ -25,10 +26,8 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     const featureRef = useRef();
 
     const date = new Date();
-    //[yyyymmdd]
-    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
-    //[yyyy-mm-dd]
-    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    const newDate = cvt.dateYmdCvt(date);
+    const newDateStr = cvt.dateYmdDashCvt(date);
 
 
     const [spanName, setSpanName] = useState('실종')

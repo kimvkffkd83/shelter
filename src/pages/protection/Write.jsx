@@ -28,10 +28,8 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     const featureRef = useRef();
 
     const date = new Date();
-    //[yyyymmdd]
-    const newDate = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
-    //[yyyy-mm-dd]
-    const newDateStr = date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    const newDate = cvt.dateYmdCvt(date);
+    const newDateStr = cvt.dateYmdDashCvt(date);
 
     const isEmpty = ()=>{
         let flag  = {pass : true, comment : ''};
@@ -262,13 +260,13 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             return;
         }
         const cDate = new Date(cDateRef.current.value);
+        let addDate='';
         if(type === 'd'){
-            const addDate = new Date(cDate.setDate(cDate.getDate() + plus));
-            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
+            addDate = new Date(cDate.setDate(cDate.getDate() + plus));
         }else if(type === 'm'){
-            const addDate = new Date(cDate.setMonth(cDate.getMonth() + plus));
-            sDateRef.current.value = addDate.getFullYear()+"-"+(addDate.getMonth() + 1).toString().padStart(2, '0')+"-"+addDate.getDate().toString().padStart(2, '0');
+            addDate = new Date(cDate.setMonth(cDate.getMonth() + plus));
         }
+        sDateRef.current.value = cvt.dateYmdDashCvt(addDate);
 
    }
 

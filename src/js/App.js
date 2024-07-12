@@ -14,6 +14,9 @@ import Error from "../pages/main/Error.jsx";
 import Adoption from "../pages/adoption/Adoption.jsx";
 import Application from "../pages/adoption/Application.jsx";
 import Review from "../pages/adoption/Review.jsx";
+import Guide from "../pages/volunteer/Guide.jsx";
+import Reservation from "../pages/volunteer/Reservation.jsx";
+import Question from "../pages/volunteer/Question.jsx";
 
 function App() {
    return(
@@ -36,6 +39,11 @@ function App() {
                    <Route index element={<Adoption />} />
                    <Route path="apply" element={<Application />} />
                    <Route path="review" element={<Review />} />
+               </Route>
+               <Route path="volunteer" element={<SubLayout/>}>
+                   <Route index element={<Guide />} />
+                   <Route path="application" element={<Reservation />} />
+                   <Route path="question" element={<Question />} />
                </Route>
                <Route path="*" element={<Error />} />
            </Route>

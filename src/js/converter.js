@@ -70,6 +70,17 @@ const cvt = {
             default : return '';
         }
     },
+    spcIconCvt : (stSub)=>{
+        switch (stSub){
+            case 1 :
+            case '1': return '🐶';
+            case 2:
+            case '2': return '😺';
+            case 3:
+            case '3': return '기타';
+            default : return '';
+        }
+    },
     sexCvt : (sex) =>{
         switch (sex) {
             case 'm':
@@ -132,5 +143,24 @@ const cvt = {
             .replace(/^(\d{3})(\d{4})(\d{4})$/g, "$1-$2-$3") // 11자리 숫자에 대한 패턴 매칭
             .replace(/(\-{1,2})$/g, ""); // 끝에 붙은 하이픈 제거
     },
+    timeTypeCvt:(type) =>{
+        switch (type){
+            case 'a' : return '오전';
+            case 'b' : return '오후';
+        }
+    },
+    timeAvailableCvt:(st)=>{
+        switch (st){
+            case 'a' : return '신청가능';
+            case 'b' : return '신청마감';
+            case 'c' : return '신청불가';
+        }
+    },
+    dateYmdCvt:(date) =>{
+        return date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0');
+    },
+    dateYmdDashCvt:(date) =>{
+        return date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    }
 }
 export default cvt;

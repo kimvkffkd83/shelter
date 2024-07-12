@@ -37,10 +37,9 @@
       {"addr" : "/volunteer",
         "addrKR" : "자원봉사",
         "subMenu" : [
-          {"addr" : "/volunteer/guide","addrKR" :"봉사안내"},
+          {"addr" : "/volunteer","addrKR" :"봉사안내"},
           {"addr" : "/volunteer/application","addrKR" :"봉사신청"},
-          {"addr" : "/volunteer/proposal","addrKR" :"연계신청"},
-          {"addr" : "/volunteer/inquiry","addrKR" :"봉사문의"}
+          {"addr" : "/volunteer/question","addrKR" :"봉사문의"}
         ]
       }
   ]
