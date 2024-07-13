@@ -70,17 +70,6 @@ const cvt = {
             default : return '';
         }
     },
-    spcIconCvt : (stSub)=>{
-        switch (stSub){
-            case 1 :
-            case '1': return '🐶';
-            case 2:
-            case '2': return '😺';
-            case 3:
-            case '3': return '기타';
-            default : return '';
-        }
-    },
     sexCvt : (sex) =>{
         switch (sex) {
             case 'm':
@@ -161,6 +150,19 @@ const cvt = {
     },
     dateYmdDashCvt:(date) =>{
         return date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
+    },
+    nameStarCvt:(name) =>{
+        if (name.length === 1) {
+            return name;
+        } else if (name.length === 2) {
+            return name.slice(0, 1) + '*';
+        } else {
+            return name.slice(0, 1) + '*'.repeat(name.length - 2) + name.slice(-1)
+        }
+    },
+    phoneStarCvt:(phone)=> {
+        const temp = cvt.phoneCvt(phone)
+        return temp.substring(0, temp.length - 4) + "****";
     }
 }
 export default cvt;

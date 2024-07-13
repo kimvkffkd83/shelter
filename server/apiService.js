@@ -754,10 +754,10 @@ app.delete("/data/adoption/tab/:id",(req,res) => {
 
 //봉사 신청 가능한 봉사활동 전체 리스트
 app.get("/data/volunteer",(req,res) => {
-    db.query('SELECT timeDB.TIME_NO as tNo, timeDB.SSN_NO as sNo, timeDB.TIME_DATE_YMD as time, timeDB.TIME_ST AS tSt,\n' +
-        '       timeDB.TIME_OPEN tOpen, timeDB.TIME_MAX_CNT as maxCnt, timeDB.TIME_NOW_CNT as nowCnt, ssnDB.SSN_TITLE AS title\n' +
-        'FROM master_volunteer_time_db1 timeDB LEFT OUTER JOIN master_volunteer_session_db1 ssnDB ON timeDB.SSN_NO = ssnDB.SSN_NO\n' +
-        '    WHERE TIME_ST = 1 AND TIME_OPEN = 1;\n',(error, rows) =>{
+    db.query('SELECT timeDB.TIME_NO as tNo, timeDB.SSN_NO as sNo, timeDB.TIME_DATE_YMD as time, timeDB.TIME_ST AS tSt, \n' +
+        'timeDB.TIME_OPEN tOpen, timeDB.TIME_MAX_CNT as maxCnt, timeDB.TIME_NOW_CNT as nowCnt, ssnDB.SSN_TITLE AS title \n' +
+        'FROM master_volunteer_time_db timeDB LEFT OUTER JOIN master_volunteer_session_db ssnDB ON timeDB.SSN_NO = ssnDB.SSN_NO \n' +
+        'WHERE TIME_OPEN = 1;\n',(error, rows) =>{
         if (error) throw error;
         res.send(rows);
     });
@@ -775,9 +775,9 @@ app.get("/data/volunteer/:date",(req,res) => {
 
 //봉사 특정날짜 봉사 신청하기
 app.post("/data/volunteer/apply",(req,res) =>{
-    const {USER_NO,USER_ID,USER_NM,USER_CALL,TIME_NO,REG_YMD} = req.body;
-    const values = [USER_NO,USER_ID,USER_NM,USER_CALL,TIME_NO,REG_YMD];
-    db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?)',values,(error, rows) =>{
+    const {USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD} = req.body;
+    const values = [USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD];
+    db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?,?,?)',values,(error, rows) =>{
         if (error) throw error;
         res.send(rows);
     });

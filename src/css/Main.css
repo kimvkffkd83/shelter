@@ -1449,10 +1449,18 @@ tr{
     background-color: #fff;
 }
 
+.file__btn:hover{
+    color: #fff;
+    background-color:var(--bright-color);
+}
+
+.file__btn:hover > span {
+    color: #fff;
+}
+
 .file__btn > span {
     color: var(--bright-color);
 }
-
 
 
 
@@ -1519,6 +1527,7 @@ tr{
 }
 .react-calendar__tile {
     height: 120px;
+    position: relative;
     /*max-height: 120px;*/
     max-width: 100%;
     padding: 10px 6.6667px;
@@ -1558,6 +1567,9 @@ tr{
     padding: 6px 0;
 }
 
+.calender__tile__item{
+}
+
 .calender__tile__title{
     font-size: 80%;
 }
@@ -1575,6 +1587,22 @@ tr{
     color: var(--negative-hover);
 }
 
+.calender__tile__covor{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    width: calc(972.188px / 7);
+    margin-top: 20px;
+    height: 100px;
+    top: -1px;
+    color: var(--negative-hover);
+    background-image:
+            linear-gradient(rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 1) 15%,
+            rgba(255, 255, 255, 1) 85%, rgba(255, 255, 255, 0) 90%);
+}
+
 /* //react-calendar */
 
 .vol__img{
@@ -1587,4 +1615,25 @@ tr{
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.vol__list__table{
+    width: 100%;
+    margin: 4px 16px;
+    padding: 0;
+
+    border: 1px solid #888;
+    border-radius: 8px;
+}
+
+.vol__list__tr{
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+.vol__list__tr:last-child{
+    border-bottom: none;
+}
+.vol__list__td{
+    padding: 4px 8px;
+    text-align: center;
 }

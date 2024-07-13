@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import Volunteer from "../../api/Volunteer.jsx";
 import cvt from "../../js/converter.js";
 import vdt from "../../js/validation.js";
+import {logDOM} from "@testing-library/react";
 
 const Reservation = ()=>{
     const today = new Date();
@@ -32,21 +33,6 @@ const Reservation = ()=>{
         getList();
     }, []);
 
-    //종+타임 조합 (개오전 / 고양이오후 등) str 만드는 cvt
-    const timeTitleStr = (spc,type,maxCnt)=>{
-        let str = '';
-        str += cvt.spcIconCvt(spc);
-        str += cvt.timeTypeCvt(type);
-        str += `(${maxCnt}/`;
-        return str;
-    }
-
-    const timeListStr = (spc,type,maxCnt)=>{
-        let str = '';
-        str += cvt.spcCvt(spc);
-        str += cvt.timeTypeCvt(type);
-        return str;
-    }
 
     //오늘부터 일주일까지만 신청가능 상태를 뿌릐고
     //해당 날짜가 마감됐을 시 신청마감으로 변경되어 떠야함
@@ -55,17 +41,6 @@ const Reservation = ()=>{
     //  신청 전에 해당 날짜, 타임 마감 유무 먼저 체킹하기
     //  해당키의 maxCnt 보면 될듯?(프로시저 내부에서 해보자)
     //  key, datekey, 등록일, 이름, 연락처 받기
-
-    // const applyAction = (date)=>{
-    //     console.log(date)
-    // }
-    //
-    // const ApplyBtn = (date)=> {
-    //     console.log(date);
-    //     return(
-    //         <button onClick={()=>applyAction(date)}>신청하기</button>
-    //     )
-    // }
 
     const [selectedDate, setSelectedDate] = useState(null);
     const selectDate = (date)=>{
@@ -79,7 +54,8 @@ const Reservation = ()=>{
             Volunteer.dayList(cvt.dateYmdCvt(date)).then((res) =>{
                 setDayAbleList(res.ableList);
                 setDayRegList(res.regList);
-                setSelectedTime(res[0]?.tNo)
+                setSelectedTimeNo(res.ableList[0]?.tNo)
+                setSelectedSsnNo(res.ableList[0]?.sNo)
                 console.log(res);
             })
         }
@@ -93,41 +69,57 @@ const Reservation = ()=>{
         const day = cvt.dateYmdCvt(new Date(date.date));
         return(
             <>
-                {
-                    <div className="calender__tile__box">{
+                <div className="calender__tile__box">
+                    {
                         aList.map((item,idx)=>{
                             if(day === item.time) return (
-                                <p key={idx}
-                                   className={`calender__tile__title ${item.maxCnt === item.nowCnt ? ' calender__tile__title-end' : ''}`}>
-                                    {
-                                        item.title + "(" + item.maxCnt + "/"
-                                    }
-                                    <span className='calender__tile__title-remain'>{item.nowCnt}</span>
-                                    )
-                                </p>
+                                <div key={idx}
+                                    className="calender__tile__item">
+                                    <p
+                                       className={`calender__tile__title ${item.maxCnt === item.nowCnt ? ' calender__tile__title-end' : ''}`}>
+                                        {
+                                            item.title + "(" + item.maxCnt + "/"
+                                        }
+                                        <span className='calender__tile__title-remain'>{item.nowCnt}</span>
+                                        )
+                                    </p>
+                                </div>
                             )
                         })
                     }
-                    </div>
-                }
+                </div>
+                <>
+                    {
+                        date.date <= today &&
+                        <div className="calender__tile__covor">마감완료</div>
+                    }
+                </>
             </>
         )
     }
 
-    const [selectedTime,setSelectedTime] = useState(dayAbleList[0]?.tNo || 0);
-    const handleChange = (event) => {
-        console.log(event.target.value)
-        setSelectedTime(event.target.value);
+    const [selectedTimeNo,setSelectedTimeNo] = useState(dayAbleList[0]?.tNo || 0);
+    const [selectedSsnNo,setSelectedSsnNo] = useState(dayAbleList[0]?.sNo || 0);
+    const handleChange = (e) => {
+        console.log(e.target.value)
+        console.log(e.target.dataset.sNo)
+        setSelectedTimeNo(e.target.value);
+        setSelectedSsnNo(e.target.dataset.sNo);
     };
 
     const apply = ()=>{
+        const locale = selectedTimeNo.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
+        const cvtDate = new Date(locale);
+
         const data = {
-            "USER_NO" : 4,
-            "USER_ID" : 'normal1',
-            "USER_NM" : nameRef.current.value,
-            "USER_CALL" : phoneRef.current.value.replaceAll("-",''),
-            "TIME_NO" : selectedTime,
-            "REG_YMD" : newDate
+            "USER_NO": 6,
+            "USER_ID": 'normal3',
+            "TIME_NO": selectedTimeNo,
+            "SSN_NO": selectedSsnNo,
+            "USER_NM": nameRef.current.value,
+            "USER_CALL": phoneRef.current.value.replaceAll("-", ''),
+            "RSV_YMD": cvt.dateYmdCvt(selectedDate),
+            "REG_YMD": newDate
         }
 
         console.log(data);
@@ -144,8 +136,10 @@ const Reservation = ()=>{
                 next2Label={null}
                 nextLabel={<span className="material-symbols-outlined">chevron_right</span>}
                 showNeighboringMonth={false}
+                // tileContent = {
+                //     ({date}) => date < today ? <AvailableStr date={date} /> : null}
                 tileContent = {
-                    ({date}) => date > today ? <AvailableStr date={date} /> : null}
+                    ({date}) => <AvailableStr date={date} /> }
                 onClickDay = {
                     (value) => selectDate(value)
                 }
@@ -172,18 +166,22 @@ const Reservation = ()=>{
                                                             {
                                                                 dayAbleList.map((day, idx) => (
                                                                     <div key={idx}
-                                                                         className={`radio__box-wide${selectedTime === day.tNo ? ' radio__box-wide-selected' : ''}`}
-                                                                         onClick={() => setSelectedTime(day.tNo)}
+                                                                         className={`radio__box-wide${selectedTimeNo === day.tNo ? ' radio__box-wide-selected' : ''}`}
+                                                                         onClick={() => {
+                                                                             setSelectedTimeNo(day.tNo);
+                                                                             setSelectedSsnNo(day.sNo);
+                                                                         }}
                                                                     >
                                                                         <input type="radio"
                                                                                id={`${day.time}${idx}`}
                                                                                className="input__radio-wide"
                                                                                name={day.time}
                                                                                onChange={handleChange}
-                                                                               checked={selectedTime === day.tNo}
+                                                                               checked={selectedTimeNo === day.tNo}
+                                                                               data-ssn-no={day.sNo}
                                                                                value={day.tNo}/>
                                                                         <label className="input__radio__label-wide"
-                                                                               htmlFor={`${day.time}${idx}`}>{timeListStr(day.spc, day.type)}</label>
+                                                                               htmlFor={`${day.time}${idx}`}>{day.title}</label>
                                                                     </div>
                                                                 ))
                                                             }
@@ -241,9 +239,26 @@ const Reservation = ()=>{
                                             <div className="post__item post__item-no-data">
                                                 ⚠️ 해당 날짜에 조회 가능한 봉사자가 없습니다.
                                             </div> :
-                                            <>
-
-                                            </>
+                                            <table className="vol__list__table">
+                                                <tr className="vol__list__tr">
+                                                    <td className="vol__list__td w10">번호</td>
+                                                    <td className="vol__list__td w20">성명</td>
+                                                    <td className="vol__list__td w30">연락처</td>
+                                                    <td className="vol__list__td w20">구분</td>
+                                                    <td className="vol__list__td w30">시간</td>
+                                                </tr>
+                                                {
+                                                    dayRegList.map((item, idx)=>(
+                                                        <tr key={idx} className="vol__list__tr">
+                                                            <td className="vol__list__td w10">{idx+1}</td>
+                                                            <td className="vol__list__td w20">{cvt.nameStarCvt(item.name)}</td>
+                                                            <td className="vol__list__td w30">{cvt.phoneStarCvt(item.phone)}</td>
+                                                            <td className="vol__list__td w20">{item.title}</td>
+                                                            <td className="vol__list__td w30">{item.time}</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </table>
                                     }
                                 </div>
                             </div>
