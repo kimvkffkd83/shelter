@@ -72,12 +72,15 @@ const Reservation = ()=>{
         setSelectedDate(new Date(date))
     }
 
-    const [dayList, setDayList] = useState([])
+    const [dayAbleList, setDayAbleList] = useState([])
+    const [dayRegList, setDayRegList] = useState([])
     const getDayList = (date) =>{
         if(date){
             Volunteer.dayList(cvt.dateYmdCvt(date)).then((res) =>{
-                setDayList(res);
-                console.log(res)
+                setDayAbleList(res.ableList);
+                setDayRegList(res.regList);
+                setSelectedTime(res[0]?.tNo)
+                console.log(res);
             })
         }
     }
@@ -97,8 +100,7 @@ const Reservation = ()=>{
                                 <p key={idx}
                                    className={`calender__tile__title ${item.maxCnt === item.nowCnt ? ' calender__tile__title-end' : ''}`}>
                                     {
-                                        timeTitleStr(item.spc, item.type, item.maxCnt)
-
+                                        item.title + "(" + item.maxCnt + "/"
                                     }
                                     <span className='calender__tile__title-remain'>{item.nowCnt}</span>
                                     )
@@ -112,7 +114,11 @@ const Reservation = ()=>{
         )
     }
 
-    const [selectedTime,setSelectedTime] = useState();
+    const [selectedTime,setSelectedTime] = useState(dayAbleList[0]?.tNo || 0);
+    const handleChange = (event) => {
+        console.log(event.target.value)
+        setSelectedTime(event.target.value);
+    };
 
     const apply = ()=>{
         const data = {
@@ -148,32 +154,37 @@ const Reservation = ()=>{
                 {
                     selectedDate &&
                     <>
-                        {
-                            dayList.length === 0 || selectedDate < today?
-                                <>
-                                    해당 날짜에는 신청할 수 있는 봉사활동이 없습니다.
-                                </> :
-                                <>
-                                    <div className="box__post">
-                                        <div className="flex_container">
-                                            <div className="w50">
-                                                <h4>신청 정보 입력</h4>
+
+                        <div className="box__post">
+                            <div className="flex_container">
+                                <div className="w50">
+                                    <h4>신청 정보 입력</h4>
+                                    {
+                                        dayAbleList.length === 0 || selectedDate < today ?
+                                            <div className="post__item post__item-no-data">
+                                                ⚠️ 해당 날짜에는 신청할 수 있는 봉사활동이 없습니다.
+                                            </div> :
+                                            <>
                                                 <div className="post__item">
                                                     <span className="post__item__title">선택</span>
                                                     <div className="post__item__contents">
-                                                        <div className="button-div__box" defaultValue={0}>
+                                                        <div className="post__item__radio__box">
                                                             {
-                                                                dayList.map((day, idx) => (
-                                                                    <>
-                                                                        <input type="radio" key={idx}
+                                                                dayAbleList.map((day, idx) => (
+                                                                    <div key={idx}
+                                                                         className={`radio__box-wide${selectedTime === day.tNo ? ' radio__box-wide-selected' : ''}`}
+                                                                         onClick={() => setSelectedTime(day.tNo)}
+                                                                    >
+                                                                        <input type="radio"
                                                                                id={`${day.time}${idx}`}
-                                                                               defaultChecked={idx === 0}
+                                                                               className="input__radio-wide"
                                                                                name={day.time}
-                                                                               onClick={() => setSelectedTime(day.tNo)}
+                                                                               onChange={handleChange}
+                                                                               checked={selectedTime === day.tNo}
                                                                                value={day.tNo}/>
-                                                                        <label className="post__item__label"
+                                                                        <label className="input__radio__label-wide"
                                                                                htmlFor={`${day.time}${idx}`}>{timeListStr(day.spc, day.type)}</label>
-                                                                    </>
+                                                                    </div>
                                                                 ))
                                                             }
                                                         </div>
@@ -182,8 +193,8 @@ const Reservation = ()=>{
                                                 <div className="post__item">
                                                     <span className="post__item__title">날짜</span>
                                                     <div className="post__item__contents">
-                                                        <span
-                                                            className="post__item__text">{cvt.dateYmdDashCvt(selectedDate)}</span>
+                                        <span
+                                            className="post__item__text">{cvt.dateYmdDashCvt(selectedDate)}</span>
                                                     </div>
                                                 </div>
                                                 <div className="post__item">
@@ -220,14 +231,23 @@ const Reservation = ()=>{
                                                 <div className="post__item">
                                                     <button onClick={apply}>신청하기</button>
                                                 </div>
-                                            </div>
-                                            <div className="w50">
-                                                여기에 해당날짜 지원자 목록뜨게
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                        }
+                                            </>
+                                    }
+                                </div>
+                                <div className="w50">
+                                    <h4>지원 정보</h4>
+                                    {
+                                        dayRegList.length === 0 ?
+                                            <div className="post__item post__item-no-data">
+                                                ⚠️ 해당 날짜에 조회 가능한 봉사자가 없습니다.
+                                            </div> :
+                                            <>
+
+                                            </>
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </>
                 }
             </div>

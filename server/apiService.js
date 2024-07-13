@@ -747,9 +747,17 @@ app.delete("/data/adoption/tab/:id",(req,res) => {
         res.send(rows);
     });
 })
-//봉사 신청 가능한 봉사활동 리스트
+
+
+
+
+
+//봉사 신청 가능한 봉사활동 전체 리스트
 app.get("/data/volunteer",(req,res) => {
-    db.query('SELECT TIME_NO as tNo, TIME_ST AS St, TIME_YMD as time, TIME_TYPE as type, ANM_SPC as spc, MAX_CNT as maxCnt, NOW_CNT as nowCnt FROM master_volunteer_time_db',(error, rows) =>{
+    db.query('SELECT timeDB.TIME_NO as tNo, timeDB.SSN_NO as sNo, timeDB.TIME_DATE_YMD as time, timeDB.TIME_ST AS tSt,\n' +
+        '       timeDB.TIME_OPEN tOpen, timeDB.TIME_MAX_CNT as maxCnt, timeDB.TIME_NOW_CNT as nowCnt, ssnDB.SSN_TITLE AS title\n' +
+        'FROM master_volunteer_time_db1 timeDB LEFT OUTER JOIN master_volunteer_session_db1 ssnDB ON timeDB.SSN_NO = ssnDB.SSN_NO\n' +
+        '    WHERE TIME_ST = 1 AND TIME_OPEN = 1;\n',(error, rows) =>{
         if (error) throw error;
         res.send(rows);
     });
@@ -759,9 +767,9 @@ app.get("/data/volunteer",(req,res) => {
 //추후 프로시저로 변경해서 지원자 목록까지 추가할 것
 app.get("/data/volunteer/:date",(req,res) => {
     const date = req.params.date;
-    db.query('SELECT TIME_NO as tNo, TIME_ST AS St, TIME_YMD as time, TIME_TYPE as type, ANM_SPC as spc, MAX_CNT as maxCnt, NOW_CNT as nowCnt  FROM master_volunteer_time_db WHERE TIME_YMD=? AND NOW_CNT != MAX_CNT',date,(error, rows) =>{
+    db.query('CALL sheter_p_volunteer_list(?)',date,(error, rows) =>{
         if (error) throw error;
-        res.send(rows);
+        res.send({"ableList":rows[0],"regList":rows[1]});
     });
 })
 
