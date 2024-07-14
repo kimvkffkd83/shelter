@@ -90,7 +90,7 @@ const Reservation = ()=>{
                 </div>
                 <>
                     {
-                        date.date <= today &&
+                        (date.date <= today)&&
                         <div className="calender__tile__covor">마감완료</div>
                     }
                 </>
@@ -101,31 +101,44 @@ const Reservation = ()=>{
     const [selectedTimeNo,setSelectedTimeNo] = useState(dayAbleList[0]?.tNo || 0);
     const [selectedSsnNo,setSelectedSsnNo] = useState(dayAbleList[0]?.sNo || 0);
     const handleChange = (e) => {
-        console.log(e.target.value)
-        console.log(e.target.dataset.sNo)
         setSelectedTimeNo(e.target.value);
         setSelectedSsnNo(e.target.dataset.sNo);
     };
 
+    const reset = () =>{
+        setSelectedDate(null);
+        getList();
+    }
+
     const apply = ()=>{
-        const locale = selectedTimeNo.toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
-        const cvtDate = new Date(locale);
+        if(window.confirm('신청하시겠습니까?')){
+            const data = {
+                "USER_NO": 4,
+                "USER_ID": 'normal1',
+                "TIME_NO": selectedTimeNo,
+                "SSN_NO": selectedSsnNo,
+                "USER_NM": nameRef.current.value,
+                "USER_CALL": phoneRef.current.value.replaceAll("-", ''),
+                "RSV_YMD": cvt.dateYmdCvt(selectedDate),
+                "REG_YMD": newDate
+            }
 
-        const data = {
-            "USER_NO": 6,
-            "USER_ID": 'normal3',
-            "TIME_NO": selectedTimeNo,
-            "SSN_NO": selectedSsnNo,
-            "USER_NM": nameRef.current.value,
-            "USER_CALL": phoneRef.current.value.replaceAll("-", ''),
-            "RSV_YMD": cvt.dateYmdCvt(selectedDate),
-            "REG_YMD": newDate
+            // 체크
+            Volunteer.chkBeforeApply(data).then((res) =>{
+                if(res[0].result === 0){
+                    alert("해당 날짜에 신청할 수 있는 봉사활동이 없습니다.");
+                }else{
+                    Volunteer.apply(data).then((res) =>{
+                        const selected = document.getElementsByClassName("radio__box-wide-selected");
+                        const selectedText = selected[0].children[1].innerHTML;
+                        alert(`${cvt.dateYmdDashCvt(selectedDate)} ${selectedText} 봉사활동 신청이 완료되었습니다.`)
+                        reset();
+                    }).catch ((error) =>{
+                        alert(error.message);
+                    })
+                }
+            });
         }
-
-        console.log(data);
-        Volunteer.apply(data).then((res) =>{
-            console.log(res);
-        })
     }
 
     return (
@@ -240,24 +253,26 @@ const Reservation = ()=>{
                                                 ⚠️ 해당 날짜에 조회 가능한 봉사자가 없습니다.
                                             </div> :
                                             <table className="vol__list__table">
-                                                <tr className="vol__list__tr">
-                                                    <td className="vol__list__td w10">번호</td>
-                                                    <td className="vol__list__td w20">성명</td>
-                                                    <td className="vol__list__td w30">연락처</td>
-                                                    <td className="vol__list__td w20">구분</td>
-                                                    <td className="vol__list__td w30">시간</td>
-                                                </tr>
-                                                {
-                                                    dayRegList.map((item, idx)=>(
-                                                        <tr key={idx} className="vol__list__tr">
-                                                            <td className="vol__list__td w10">{idx+1}</td>
-                                                            <td className="vol__list__td w20">{cvt.nameStarCvt(item.name)}</td>
-                                                            <td className="vol__list__td w30">{cvt.phoneStarCvt(item.phone)}</td>
-                                                            <td className="vol__list__td w20">{item.title}</td>
-                                                            <td className="vol__list__td w30">{item.time}</td>
-                                                        </tr>
-                                                    ))
-                                                }
+                                                <tbody>
+                                                    <tr className="vol__list__tr">
+                                                        <td className="vol__list__td w10">번호</td>
+                                                        <td className="vol__list__td w20">성명</td>
+                                                        <td className="vol__list__td w30">연락처</td>
+                                                        <td className="vol__list__td w20">구분</td>
+                                                        <td className="vol__list__td w30">시간</td>
+                                                    </tr>
+                                                    {
+                                                        dayRegList.map((item, idx)=>(
+                                                            <tr key={idx} className="vol__list__tr">
+                                                                <td className="vol__list__td w10">{idx+1}</td>
+                                                                <td className="vol__list__td w20">{cvt.nameStarCvt(item.name)}</td>
+                                                                <td className="vol__list__td w30">{cvt.phoneStarCvt(item.phone)}</td>
+                                                                <td className="vol__list__td w20">{item.title}</td>
+                                                                <td className="vol__list__td w30">{item.time}</td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
                                             </table>
                                     }
                                 </div>

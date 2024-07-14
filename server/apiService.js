@@ -778,11 +778,42 @@ app.post("/data/volunteer/apply",(req,res) =>{
     const {USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD} = req.body;
     const values = [USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD];
     db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?,?,?)',values,(error, rows) =>{
-        if (error) throw error;
+        if (error) {
+            if(error.sqlState === '45000'){
+                res.status(409).send(`해당 날짜에 더 이상 신청할 수 있는 봉사활동이 없습니다.`);
+                return;
+            }else{
+                res.status(500).send(`봉사활동을 신청하는 도중 에러가 발생했습니다.`);
+                return;
+            }
+        }
         res.send(rows);
     });
 })
 
+//봉사 특정날짜에 신청 가능한지 미리 체크
+app.post("/data/volunteer/chk",(req,res)=>{
+    const {RSV_YMD, USER_NO, TIME_NO} = req.body;
+    const values = [RSV_YMD, USER_NO, TIME_NO];
+    db.query(
+        'SELECT CASE\n' +
+        '           WHEN SUM(cnt) > 0 THEN 0\n' +
+        '           ELSE 1\n' +
+        '           END AS result\n' +
+        'FROM (\n' +
+        '         SELECT COUNT(*) AS cnt\n' +
+        '         FROM master_volunteer_reservation_db\n' +
+        '         WHERE RSV_DATE_YMD = ? AND USER_NO = ?\n' +
+        '\n' +
+        '         UNION ALL\n' +
+        '\n' +
+        '         SELECT COUNT(*) AS cnt\n' +
+        '         FROM master_volunteer_time_db\n' +
+        '         WHERE TIME_NO = ? AND TIME_NOW_CNT = TIME_MAX_CNT\n' +
+        '     ) AS combined_counts;',values,(error, rows) =>{
+        res.send(rows);
+    })
+})
 
 
 

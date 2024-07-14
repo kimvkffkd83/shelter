@@ -1593,14 +1593,14 @@ tr{
     align-items: center;
 
     position: absolute;
-    width: calc(972.188px / 7);
+    width: 80%;
     margin-top: 20px;
-    height: 100px;
-    top: -1px;
+    height: 60px;
+    top: 19px;
     color: var(--negative-hover);
-    background-image:
-            linear-gradient(rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 1) 15%,
-            rgba(255, 255, 255, 1) 85%, rgba(255, 255, 255, 0) 90%);
+    background-color: rgba(255,255,255,95%);
+    border: thick double var(--negative-hover);
+    border-radius: 20px;
 }
 
 /* //react-calendar */

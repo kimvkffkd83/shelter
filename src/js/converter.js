@@ -151,6 +151,11 @@ const cvt = {
     dateYmdDashCvt:(date) =>{
         return date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0');
     },
+    dateYmdDashWithWeek:(date) =>{
+        const WEEKDAY = ['일', '월', '화', '수', '목', '금', '토'];
+        let week = WEEKDAY[date.getDay()];
+        return date.getFullYear()+"-"+(date.getMonth() + 1).toString().padStart(2, '0')+"-"+date.getDate().toString().padStart(2, '0') + "(" + week + ")";
+    },
     nameStarCvt:(name) =>{
         if (name.length === 1) {
             return name;
