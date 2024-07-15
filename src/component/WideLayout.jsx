@@ -34,8 +34,8 @@ const WideLayout = () =>{
     },[location])
 
     return (
-        <div className="flex_container">
-            <div className="box__content">
+        <div className="flex_container-wide">
+            <div className="box__content-wide">
                 <h2 className="box__content__title">{menu.title}</h2>
                 <hr className="box__content__line"/>
                 <div className="box__content__board">

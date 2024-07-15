@@ -2,9 +2,11 @@ import express from "express";
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './db.js'
+import bcrypt from "bcrypt";
 
 const app = express();
 const port = 4000 //기본 포트 3000에서 변경해주기
+const salt = 5;
 
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(cors());
@@ -78,7 +80,7 @@ app.get("/data/main/:board/list",(req,res) =>{
 
     const query = `SELECT ${noColumnName} as boardNo, ${titleColumnName} AS title, DATE_FORMAT(CAST(${regDateColumnName} AS date), '%Y-%m-%d') AS date FROM ${tableName} ORDER BY ${noColumnName} DESC LIMIT 0,6`;
 
-    db.query(query, (error, rows, fields) =>{
+    db.query(query, (error, rows) =>{
         if (error) {
             console.error(`(server) ${board} 목록 조회 중 에러:`, error);
             res.status(500).send(`${board} 목록을 조회하는 도중 에러가 발생했습니다.`);
@@ -811,10 +813,63 @@ app.post("/data/volunteer/chk",(req,res)=>{
         '         FROM master_volunteer_time_db\n' +
         '         WHERE TIME_NO = ? AND TIME_NOW_CNT = TIME_MAX_CNT\n' +
         '     ) AS combined_counts;',values,(error, rows) =>{
-        res.send(rows);
+            if (error) {
+                console.error("(server)봉사활동 신청 가능 여부 체크 중 에러:", error);
+                res.status(500).send("공지사항을 등록하는 도중 에러가 발생했습니다.");
+                return;
+            }else{
+                res.send(rows);
+            }
     })
 })
 
+//유저 회원가입 시 아이디 중복 체크
+app.get('/data/user/chkIdDuplication/:id',(req, res)=>{
+    const id = req.params.id;
+    //중복이 있으면 1, 없으면 0
+    db.query(
+        'select\n' +
+        '    case\n' +
+        '        when count(*) > 0 THEN 1\n' +
+        '        ELSE 0\n' +
+        '        END AS result\n' +
+        'from master_user_db where USER_ID=?;',id, (error, rows) =>{
+            if (error) {
+                console.error("(server)아이디 중복 체크 중 에러:", error);
+                res.status(500).send(")아이디 중복 체크 중 에러가 발생했습니다.");
+                return;
+            }else{
+                res.send(rows);
+            }
+        }
+    )
+})
+
+//유저 회원 가입
+app.post('/data/user/nSignIn',async (req, res) =>{
+    //프로시저 내에서 중복 데이터 막기
+    const {name, id, pw, phone, mail} = req.body;
+
+    //비밀번호 암호화
+    const hashedPw = await bcrypt.hash(pw, salt);
+    const values = [id, hashedPw, name, phone, mail];
+
+    db.query(
+        'CALL sheter_p_user_normal_sign_up(?,?,?,?,?)',values,(error, rows) =>{
+            if (error) {
+                if(error.sqlState === '23000'){
+                    res.status(409).send(`아이디 혹은 이메일에 중복이 발생했습니다.`);
+                    return;
+                }else{
+                    res.status(500).send(`봉사활동을 신청하는 도중 에러가 발생했습니다.`);
+                    return;
+                }
+            }else{
+                res.send(rows);
+            }
+        }
+    )
+})
 
 
 

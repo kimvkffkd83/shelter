@@ -305,11 +305,34 @@ input[type=number]::-webkit-inner-spin-button {
 }
 /* //Main */
 
+/* WideLayout*/
+.flex_container-wide{
+    display: flex;
+    justify-content: center;
+}
+
+.box__content-wide{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 600px;
+    padding: 28px;
+}
+
+.box__content-wide > .box__content__board > .post__item{
+    margin: 10px 0;
+}
+
+/* //WiteLayout*/
+
 
 /* SubLayout */
 .flex_container{
     display: flex;
 }
+
 /* SideBar */
 .box__snb{
     width: 250px;
@@ -364,9 +387,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .box__content__title{
-    /*font-size: 120%;*/
-    /*font-weight: 500;*/
-    /*margin-bottom: 10px;*/
+
 }
 
 .box__content__line{

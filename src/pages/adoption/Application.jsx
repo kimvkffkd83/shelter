@@ -57,7 +57,7 @@ const Application = ()=> {
         let flag  = {pass : true, comment : ''};
         flag = vdt.chkInputIsEmpty(flag, nameRef,'성명을 작성해주세요.');
         flag = vdt.chkInputIsEmpty(flag, phoneRef,'연락처를 작성해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, mailRef,'이메일를 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, mailRef,'이메일을 작성해주세요.');
         flag = vdt.chkInputIsEmpty(flag, titleRef,'제목을 작성해주세요.');
         flag = vdt.chkInputIsEmpty(flag, contentsRef,'내용을 작성해주세요.');
         return flag;

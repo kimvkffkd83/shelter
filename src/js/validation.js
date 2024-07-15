@@ -22,6 +22,16 @@ const vdt = {
         }
         return flag;
     },
+    chkId:(id)=>{
+        // id 규칙: 영문 소문자+숫자 포함 6~12자(영문 소문자로 시작할 것.)
+        const ex = /^(?=.*[a-z])(?=.*\d)[a-z][a-z0-9]{5,11}$/
+        return ex.test(id);
+    },
+    chkPassword:(pw) =>{
+        // pw 규칙: 영문 대,소문자+숫자+특수문자 포함 8~16자, 사용가능 특수문자는 !@#$%^&*
+        const ex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,16}$/
+        return ex.test(pw);
+    },
     chkPhoneNumber:(number) =>{
         const temp = number.replaceAll('-','');
         const ex = /^[0-9]{10,11}$/
