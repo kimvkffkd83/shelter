@@ -87,7 +87,7 @@ const SignUp = () =>{
             mail : mailRef.current.value
         }
         console.log("data",data);
-        User.nSignIn(data).then((res)=>{
+        User.nSignUp(data).then((res)=>{
             console.log(res);
             //회원가입 이후 자동로그인(화면 전환)
         }).catch ((error) =>{

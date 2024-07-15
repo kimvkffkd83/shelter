@@ -1,4 +1,6 @@
 import express from "express";
+import jwt from "jsonwebtoken";
+import expressJwt from "express-jwt";
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './db.js'
@@ -7,6 +9,7 @@ import bcrypt from "bcrypt";
 const app = express();
 const port = 4000 //기본 포트 3000에서 변경해주기
 const salt = 5;
+const secretKey = 'shake-it-off-3000';
 
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(cors());
@@ -28,6 +31,97 @@ app.post("/text", (req, res) =>{
     };
     res.send(sendText);
 })
+
+//유저 회원가입 시 아이디 중복 체크
+app.get('/chkIdDuplication/:id',(req, res)=>{
+    const id = req.params.id;
+    //중복이 있으면 1, 없으면 0
+    db.query(
+        'select\n' +
+        '    case\n' +
+        '        when count(*) > 0 THEN 1\n' +
+        '        ELSE 0\n' +
+        '        END AS result\n' +
+        'from master_user_db where USER_ID=?;',id, (error, rows) =>{
+            if (error) {
+                console.error("(server)아이디 중복 체크 중 에러:", error);
+                res.status(500).send(")아이디 중복 체크 중 에러가 발생했습니다.");
+                return;
+            }else{
+                res.send(rows);
+            }
+        }
+    )
+})
+
+//유저 회원 가입
+app.post('/nSignUp',async (req, res) =>{
+    //프로시저 내에서 중복 데이터 막기
+    const {name, id, pw, phone, mail} = req.body;
+
+    //비밀번호 암호화
+    const hashedPw = await bcrypt.hash(pw, salt);
+    const values = [id, hashedPw, name, phone, mail];
+
+    db.query(
+        'CALL sheter_p_user_normal_sign_up(?,?,?,?,?)',values,(error, rows) =>{
+            if (error) {
+                if(error.sqlState === '23000'){
+                    res.status(409).send(`아이디 혹은 이메일에 중복이 발생했습니다.`);
+                    return;
+                }else{
+                    res.status(500).send(`봉사활동을 신청하는 도중 에러가 발생했습니다.`);
+                    return;
+                }
+            }else{
+                //수정 사항 rows 말고 단일 값으로 보낼 것
+                res.send(rows);
+            }
+        }
+    )
+})
+
+//유저 로그인
+app.post('/nLogin',async (req, res) =>{
+    //프로시저 내에서 중복 데이터 막기
+    const {id, pw} = req.body;
+
+    db.query('select USER_PW, USER_ST, USER_NM from master_user_db where USER_ID = ?;',id, async (error, rows) =>{
+            if (error) {
+                console.log(error);
+                res.status(500).send(`로그인 중 에러가 발생했습니다.`);
+                return;
+            }else{
+                if(rows.length === 0){
+                    //회원가입 안된 경우 401
+                    console.log('아이디 없음')
+                    res.status(401).send(`등록되지 않은 회원입니다.`);
+                    return;
+                }else{
+                    const user = rows[0];
+                    const isMatch = await bcrypt.compare(pw, user.USER_PW);
+                    if(isMatch){
+                        //올바른 로그인
+                        const token =
+                            jwt.sign({
+                                userId: id,
+                                userSt: user.USER_ST,
+                                userNm: user.USER_NM
+                            }, secretKey, { expiresIn: '1h' });
+                        res.send({ token });
+                    }else{
+                        //아이디는 일치하나 비밀번호가 틀린 경우 401
+                        console.log('비번 틀림')
+                        res.status(401).send(`등록되지 않은 회원입니다.`);
+                        return;
+                    }
+                }
+            }
+        }
+    )
+})
+
+app.use('/authorized', expressJwt.expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
 
 //서버 개시
 app.listen(port, ()=>{
@@ -822,57 +916,3 @@ app.post("/data/volunteer/chk",(req,res)=>{
             }
     })
 })
-
-//유저 회원가입 시 아이디 중복 체크
-app.get('/data/user/chkIdDuplication/:id',(req, res)=>{
-    const id = req.params.id;
-    //중복이 있으면 1, 없으면 0
-    db.query(
-        'select\n' +
-        '    case\n' +
-        '        when count(*) > 0 THEN 1\n' +
-        '        ELSE 0\n' +
-        '        END AS result\n' +
-        'from master_user_db where USER_ID=?;',id, (error, rows) =>{
-            if (error) {
-                console.error("(server)아이디 중복 체크 중 에러:", error);
-                res.status(500).send(")아이디 중복 체크 중 에러가 발생했습니다.");
-                return;
-            }else{
-                res.send(rows);
-            }
-        }
-    )
-})
-
-//유저 회원 가입
-app.post('/data/user/nSignIn',async (req, res) =>{
-    //프로시저 내에서 중복 데이터 막기
-    const {name, id, pw, phone, mail} = req.body;
-
-    //비밀번호 암호화
-    const hashedPw = await bcrypt.hash(pw, salt);
-    const values = [id, hashedPw, name, phone, mail];
-
-    db.query(
-        'CALL sheter_p_user_normal_sign_up(?,?,?,?,?)',values,(error, rows) =>{
-            if (error) {
-                if(error.sqlState === '23000'){
-                    res.status(409).send(`아이디 혹은 이메일에 중복이 발생했습니다.`);
-                    return;
-                }else{
-                    res.status(500).send(`봉사활동을 신청하는 도중 에러가 발생했습니다.`);
-                    return;
-                }
-            }else{
-                res.send(rows);
-            }
-        }
-    )
-})
-
-
-
-
-
-
