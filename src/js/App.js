@@ -17,6 +17,10 @@ import Review from "../pages/adoption/Review.jsx";
 import Guide from "../pages/volunteer/Guide.jsx";
 import Reservation from "../pages/volunteer/Reservation.jsx";
 import Question from "../pages/volunteer/Question.jsx";
+import Login from "../pages/user/Login.jsx";
+import WideLayout from "../component/WideLayout.jsx";
+import MyPage from "../pages/user/MyPage.jsx";
+import SignUp from "../pages/user/SignUp.jsx";
 
 function App() {
    return(
@@ -44,6 +48,15 @@ function App() {
                    <Route index element={<Guide />} />
                    <Route path="application" element={<Reservation />} />
                    <Route path="question" element={<Question />} />
+               </Route>
+               <Route path="login" element={<WideLayout />}>
+                   <Route index element={<Login />} />
+               </Route>
+               <Route path="signUp" element={<WideLayout />}>
+                   <Route index element={<SignUp />} />
+               </Route>
+               <Route path="myPage" element={<WideLayout />}>
+                   <Route index element={<MyPage />} />
                </Route>
                <Route path="*" element={<Error />} />
            </Route>

@@ -29,7 +29,12 @@ function Header (){
 
     return (
         <>
-            <div id="toolbar"></div>
+            <div id="toolbar">
+                <Link to="/login" className="toolbar__btn"> 로그인 </Link>
+                <Link to="/signUp" className="toolbar__btn"> 회원가입 </Link>
+                {/*<button className="toolbar__btn"> 로그아웃 </button>*/}
+                {/*<Link to="/myPage" className="toolbar__btn"> 마이 페이지 </Link>*/}
+            </div>
             <header id="header">
                 <div className="header__logo">
                     {<Link to="/" className="header__logo-link"/>}
@@ -38,6 +43,7 @@ function Header (){
                     <ul id="gnb">
                         {
                             MenuJson.mainMenu.map((menu, mainIndex) => (
+                                menu.subMenuYn === "true" &&
                                 <li key={mainIndex} className="gnb__menu" onMouseOver={() =>mouseEnter(mainIndex)} onMouseOut={mouseLeave}>
                                     <Link to={menu.addr} state={{index: mainIndex}}
                                           className="gnb__menu-link"
@@ -45,7 +51,7 @@ function Header (){
                                     <ul className={`lnb ${activeMenu === mainIndex ? 'lnb-show' : 'lnb-disabled'}`}
                                         onMouseEnter={() => mouseEnter(mainIndex)}
                                         onMouseLeave={mouseLeave}>
-                                        {menu.subMenu.map((subMenu, index) => (
+                                        {menu.subMenu?.map((subMenu, index) => (
                                             <li key={index} className="lnb__menu">
                                                 <Link to={subMenu.addr} state={{index: mainIndex}}
                                                       className="lnb__menu-link">{subMenu.addrKR}</Link>

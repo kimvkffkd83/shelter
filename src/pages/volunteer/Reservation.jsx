@@ -33,15 +33,6 @@ const Reservation = ()=>{
         getList();
     }, []);
 
-
-    //오늘부터 일주일까지만 신청가능 상태를 뿌릐고
-    //해당 날짜가 마감됐을 시 신청마감으로 변경되어 떠야함
-    //  해당 타일을 누르면 하단에 신청 폼이 뜨게
-    //  종과 타임을 고르고 이름, 연락처 기재
-    //  신청 전에 해당 날짜, 타임 마감 유무 먼저 체킹하기
-    //  해당키의 maxCnt 보면 될듯?(프로시저 내부에서 해보자)
-    //  key, datekey, 등록일, 이름, 연락처 받기
-
     const [selectedDate, setSelectedDate] = useState(null);
     const selectDate = (date)=>{
         setSelectedDate(new Date(date))
@@ -131,7 +122,7 @@ const Reservation = ()=>{
                     Volunteer.apply(data).then((res) =>{
                         const selected = document.getElementsByClassName("radio__box-wide-selected");
                         const selectedText = selected[0].children[1].innerHTML;
-                        alert(`${cvt.dateYmdDashCvt(selectedDate)} ${selectedText} 봉사활동 신청이 완료되었습니다.`)
+                        alert(`${cvt.dateYmdDashCvt(selectedDate)} [${selectedText} 섹션]\n봉사활동 신청이 완료되었습니다.`)
                         reset();
                     }).catch ((error) =>{
                         alert(error.message);
@@ -204,8 +195,7 @@ const Reservation = ()=>{
                                                 <div className="post__item">
                                                     <span className="post__item__title">날짜</span>
                                                     <div className="post__item__contents">
-                                        <span
-                                            className="post__item__text">{cvt.dateYmdDashCvt(selectedDate)}</span>
+                                                        <span className="post__item__text">{cvt.dateYmdDashCvt(selectedDate)}</span>
                                                     </div>
                                                 </div>
                                                 <div className="post__item">
