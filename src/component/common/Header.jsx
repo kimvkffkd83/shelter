@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import MenuJson from "../../jsons/Menu.json"
 import useRefFocusEffect from "../../js/useRefFocusEffect.js";
+import ath from "../../js/authority.js";
 
 function Header (){
     const {ref,showTopBtn} = useRefFocusEffect();
     const [activeMenu, setActiveMenu] = useState(false);
+    const movePage = useNavigate();
 
     useEffect(() => {
         const topBtn = document.getElementById("btn__top");
@@ -27,13 +29,31 @@ function Header (){
         setActiveMenu(null);
     }
 
+    const [isLoggedIn, setIsLoggedIn] = useState();
+    useEffect(() => {
+        setIsLoggedIn(ath.isLoggedIn())
+    }, [localStorage.getItem('token')]);
+
+    const logout = ()=>{
+        ath.logout();
+        movePage("/")
+    };
+
     return (
         <>
             <div id="toolbar">
-                <Link to="/login" className="toolbar__btn"> 로그인 </Link>
-                <Link to="/signUp" className="toolbar__btn"> 회원가입 </Link>
-                {/*<button className="toolbar__btn"> 로그아웃 </button>*/}
-                {/*<Link to="/myPage" className="toolbar__btn"> 마이 페이지 </Link>*/}
+                {
+                    isLoggedIn ?
+                        <>
+                            <button className="toolbar__btn" onClick={logout}> 로그아웃 </button>
+                            <Link to="/myPage" className="toolbar__btn"> 마이 페이지 </Link>
+                        </> :
+                        <>
+                            <Link to="/login" className="toolbar__btn"> 로그인 </Link>
+                            <Link to="/signUp" className="toolbar__btn"> 회원가입 </Link>
+                        </>
+                }
+
             </div>
             <header id="header">
                 <div className="header__logo">

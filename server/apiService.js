@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import expressJwt from "express-jwt";
+import {expressjwt} from "express-jwt";
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import db from './db.js'
@@ -121,7 +121,7 @@ app.post('/nLogin',async (req, res) =>{
     )
 })
 
-app.use('/authorized', expressJwt.expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
+app.use('/authorized', expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
 
 //서버 개시
 app.listen(port, ()=>{

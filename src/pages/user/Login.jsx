@@ -2,10 +2,12 @@ import cvt from "../../js/converter.js";
 import vdt from "../../js/validation.js";
 import React, {useRef} from "react";
 import User from "../../api/User.jsx";
+import {useNavigate} from "react-router-dom";
 
 const Login = () =>{
     const idRef = useRef();
     const pwRef = useRef();
+    const movePage = useNavigate();
 
     const validatation = ()=>{
         let flag  = {pass : true, comment : ''};
@@ -30,7 +32,7 @@ const Login = () =>{
         User.nLogin(data).then((res)=>{
             console.log(res);
             localStorage.setItem('token', res.token)
-            //로그인 이후 메인으로
+            movePage("/")
         }).catch ((error) =>{
             alert(error.message);
         })
