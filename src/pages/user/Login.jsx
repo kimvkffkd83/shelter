@@ -29,8 +29,10 @@ const Login = () =>{
         }
         console.log("data",data);
 
+        localStorage.removeItem('token');
         User.nLogin(data).then((res)=>{
             console.log(res);
+            //이거
             localStorage.setItem('token', res.token)
             movePage("/")
         }).catch ((error) =>{

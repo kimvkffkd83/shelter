@@ -1,20 +1,5 @@
 {
   "mainMenu" : [
-    {
-      "addr" : "/login",
-      "addrKR" :"로그인",
-      "subMenuYn": "false"
-    },
-    {
-      "addr" : "/signUp",
-      "addrKR" :"회원가입",
-      "subMenuYn": "false"
-    },
-    {
-      "addr" : "/myPage",
-      "addrKR" :"마이페이지",
-      "subMenuYn": "false"
-    },
     {"addr" : "/info",
       "addrKR" :"센터소개",
       "subMenuYn": "true",
@@ -61,6 +46,21 @@
         {"addr" : "/volunteer/application","addrKR" :"봉사신청"},
         {"addr" : "/volunteer/question","addrKR" :"봉사문의"}
       ]
+    },
+    {
+      "addr" : "/login",
+      "addrKR" :"로그인",
+      "subMenuYn": "false"
+    },
+    {
+      "addr" : "/signUp",
+      "addrKR" :"회원가입",
+      "subMenuYn": "false"
+    },
+    {
+      "addr" : "/myPage",
+      "addrKR" :"마이페이지",
+      "subMenuYn": "false"
     }
   ]
 }

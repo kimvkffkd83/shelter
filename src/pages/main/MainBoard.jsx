@@ -2,6 +2,7 @@ import React, {Component, useEffect} from "react";
 import Board from '../../api/Board.jsx';
 import Main from "../../api/Main.jsx";
 import {Link} from "react-router-dom";
+import cvt from "../../js/converter.js";
 
 class MainBoard extends Component{
     constructor(props) {
@@ -28,10 +29,10 @@ class MainBoard extends Component{
                             this.state.boardRows.map( (post, index) => (
                                 <Link to={'info/'+this.props.title} state={{"boardNo":post.boardNo}} className="main__post" key={index}>
                                     <span className="main__post-title text-overflow">
-                                        {this.props.title == 'notice' ?
-                                            '' :
-                                            <span
-                                                className="main__post-status"> {post.st == 0 ? "[입양]" : "[임시보호]"}</span>
+                                        {
+                                            this.props.title == 'notice' ?
+                                                '' :
+                                                <span className="main__post-status">[{cvt.adtType(post.st)}]</span>
                                         }{post.title}</span>
                                     <span className="main__post-date">{post.date}</span>
                                 </Link>
@@ -46,7 +47,8 @@ class MainBoard extends Component{
         //공지사항 데이터
         Main.boardList(this.props.title)
             .then((res) => {
-                this.setState({boardRows: res})
+                console.log(res);
+                this.setState({boardRows: res[0]})
             });
     }
 }

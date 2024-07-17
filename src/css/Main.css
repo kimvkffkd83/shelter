@@ -1045,6 +1045,9 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .btn__adm__icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 32px;
     height: 32px;
     margin: 4px;

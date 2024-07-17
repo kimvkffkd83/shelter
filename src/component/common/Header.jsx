@@ -30,8 +30,10 @@ function Header (){
     }
 
     const [isLoggedIn, setIsLoggedIn] = useState();
+    const [loggedNm, setLoggedNm] = useState('');
     useEffect(() => {
         setIsLoggedIn(ath.isLoggedIn())
+        setLoggedNm(ath.getNameFromToken())
     }, [localStorage.getItem('token')]);
 
     const logout = ()=>{
@@ -42,6 +44,12 @@ function Header (){
     return (
         <>
             <div id="toolbar">
+                {
+                    isLoggedIn && loggedNm &&
+                    <>
+                        <span>{loggedNm}님, 환영합니다!</span>
+                    </>
+                }
                 {
                     isLoggedIn ?
                         <>

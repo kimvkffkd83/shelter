@@ -6,26 +6,34 @@ import {useLocation} from "react-router-dom";
 import View from "./View.jsx";
 import Paging from "../../component/common/Paging.jsx";
 import List from "./List.jsx";
+import ath from "../../js/authority.js";
 
 function Notice() {
     const [board,setBoard] = useState([]);
     const [totalCnt , setTotalCnt] = useState(0);
     const [pageNo, setPageNo] = useState(1);
 
-    const isAdmin = true;
+    const [isAdmin ,setIsAdmin]= useState(ath.isAdmin());
+
+    useEffect(()=>{
+        console.log(isAdmin);
+        setIsAdmin(ath.isAdmin())
+    }, [localStorage.getItem('token')]);
+
 
     //type 0 : view, type 1 : write, type 2 : update
     const [isEditable, setIsEditable] = useState({editable : false, type : 0});
     const [isSingleView, setIsSingleView] = useState({single : false , ntcNo : 0})
     const [select, setSelect] = useState(false);
 
-    useEffect(() => {
+    const getList = () =>{
         Board.list(pageNo).then((res)=> {
-            setBoard(res);
+            setTotalCnt(res.totalCount);
+            setBoard(res.lists);
         });
-        Board.tcnt().then((res) =>{
-            setTotalCnt(res[0].cnt);
-        });
+    }
+    useEffect(() => {
+        getList();
     }, [isEditable, isSingleView, pageNo, select]);
 
     const setEditState = (childState) =>{
@@ -96,10 +104,12 @@ function Notice() {
     }
 
     const getView = (ntcNo)=>{
-        Board.vcnt(ntcNo).then((res) =>{
-            console.log(res);
-            }
-        )
+        //관리자는 조회수 올리지 않기
+        if(!isAdmin){
+            Board.vcnt(ntcNo).then((res) =>{
+                console.log(res);
+            })
+        }
         Board.view(ntcNo).then((res)=> {
             if(res.length === 0){
                 alert("존재하지 않는 게시글입니다")
@@ -131,7 +141,11 @@ function Notice() {
             <>
                 {
                     (isSingleView.single) ?
-                        <View data={post} changeSingle={setViewState} changeEditable={setEditState}/> :
+                        <View
+                            data={post}
+                            isAdmin={isAdmin}
+                            changeSingle={setViewState}
+                            changeEditable={setEditState}/> :
                         <>
                             <List
                                    totalCnt={totalCnt}

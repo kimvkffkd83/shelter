@@ -10,6 +10,8 @@ const app = express();
 const port = 4000 //기본 포트 3000에서 변경해주기
 const salt = 5;
 const secretKey = 'shake-it-off-3000';
+const refreshTokenSecret = 'rock-will:naver-die';
+const refreshTokens = [];
 
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(cors());
@@ -108,7 +110,13 @@ app.post('/nLogin',async (req, res) =>{
                                 userSt: user.USER_ST,
                                 userNm: user.USER_NM
                             }, secretKey, { expiresIn: '1h' });
-                        res.send({ token });
+                        const refreshToken = jwt.sign({
+                            userId: user._id,
+                            userSt: user.USER_ST,
+                            userNm: user.USER_NM
+                            }, refreshTokenSecret);
+                        refreshTokens.push(refreshToken);
+                        res.send({ token,refreshToken });
                     }else{
                         //아이디는 일치하나 비밀번호가 틀린 경우 401
                         console.log('비번 틀림')
@@ -119,6 +127,40 @@ app.post('/nLogin',async (req, res) =>{
             }
         }
     )
+})
+//토큰이 유효한지 확인
+app.get('/validToken',(req, res) =>{
+    const token = req.headers.authorization?.split(' ')[1];
+    if(token){
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+                return res.status(401).send('Invalid token');
+            }
+            return res.send({token})
+        })
+    }
+})
+
+//토큰 갱신
+app.post('/token', (req, res) =>{
+    const {token} = req.body;
+    if (!token) {
+        return res.sendStatus(401);
+    }
+    if (!refreshTokens.includes(token)) {
+        return res.sendStatus(403);
+    }
+    jwt.verify(token, refreshTokenSecret, (err, user) => {
+        if (err) {
+            return res.sendStatus(403);
+        }
+        const newToken = jwt.sign({ 
+            userId: user.userId,
+            userSt: user.USER_ST,
+            userNm: user.USER_NM
+        }, secretKey, { expiresIn: '1h' });
+        res.send({ token: newToken });
+    });
 })
 
 app.use('/authorized', expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
@@ -147,34 +189,9 @@ app.get("/data/main/slide",(req,res)=>{
     });
 })
 
-//메인페이지에서 공지사항 조회 << 이거 분리할 예정
 app.get("/data/main/:board/list",(req,res) =>{
     const board = req.params.board;
-    let tableName,noColumnName,titleColumnName,regDateColumnName;
-    
-    // board에 따른 테이블과 컬럼 설정
-    switch (board) {
-        case 'notice':
-            tableName = 'master_notice_db';
-            noColumnName = 'NTC_NO';
-            titleColumnName = 'NTC_TITLE';
-            regDateColumnName = 'NTC_REG_DATE';
-            break;
-        case 'review':
-            tableName = 'master_adopt_review_db';
-            noColumnName = 'adopt_post_no';
-            titleColumnName = 'ADOPT_POST_TITLE';
-            regDateColumnName = 'ADOPT_REG_YMD';
-            break;
-        // 추가적인 경우에 따라 필요한 테이블과 컬럼 설정
-        default:
-            res.status(400).send('해당 게시판의 정보는 불러올 수 없습니다.');
-            return;
-    }
-
-    const query = `SELECT ${noColumnName} as boardNo, ${titleColumnName} AS title, DATE_FORMAT(CAST(${regDateColumnName} AS date), '%Y-%m-%d') AS date FROM ${tableName} ORDER BY ${noColumnName} DESC LIMIT 0,6`;
-
-    db.query(query, (error, rows) =>{
+    db.query('CALL sheter_p_main_board_list(?,6)', board,(error, rows) =>{
         if (error) {
             console.error(`(server) ${board} 목록 조회 중 에러:`, error);
             res.status(500).send(`${board} 목록을 조회하는 도중 에러가 발생했습니다.`);
@@ -184,28 +201,37 @@ app.get("/data/main/:board/list",(req,res) =>{
     });
 })
 
-//공지사항 모든 게시글 수
-app.get("/data/notice/tcnt", (req, res) =>{
-    db.query('SELECT COUNT(*) AS cnt FROM master_notice_db', (error, tcnt) =>{
-        if (error) throw error;
-        res.send(tcnt);
-    })
-})
+// //공지사항 모든 게시글 수
+// app.get("/data/notice/tcnt", (req, res) =>{
+//     db.query('SELECT COUNT(*) AS cnt FROM master_notice_db', (error, tcnt) =>{
+//         if (error) throw error;
+//         res.send(tcnt);
+//     })
+// })
 
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",(req,res) => {
-    const isAdmin = true;
-    const pageNo =  req.query?.pageNo?? 1;
-    const queryNo = (pageNo-1)*10;
-    let sql = '';
-    if(isAdmin){
-        sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt, NTC_DISPLAY AS display FROM master_notice_db ORDER BY NTC_NO DESC limit ${queryNo},10`;
-    }else{
-        sql = `SELECT NTC_NO AS ntcNo, USER_ID AS userId, NTC_TITLE AS title, NTC_CONTENTS AS contents, DATE_FORMAT (CAST( NTC_REG_DATE AS date),'%Y-%m-%d') AS date, NTC_VCNT AS vcnt FROM master_notice_db WHERE NTC_DISPLAY='y' ORDER BY NTC_NO DESC limit ${queryNo},10`;
+    const token = req.headers.authorization?.split(' ')[1];
+    let isAdmin = 0;
+    if(token){
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+                isAdmin = 0;
+            }else{
+                isAdmin = decoded.userSt;
+            }
+        })
     }
-    db.query(sql, (error, rows, fields) =>{
-        if (error) throw error;
-        res.send(rows);
+
+    const rowMax = 10;
+    const pageNo =  req.query?.pageNo?? 1;
+    const queryNo = (pageNo-1)*rowMax;
+    db.query('CALL sheter_p_notice_list(?,?,?)',[isAdmin, queryNo, rowMax], (error, rows, fields) =>{
+        if (error) {
+            return res.status(500).send('공지사항 목록을 조회하는 중 오류가 발생했습니다.');
+        } else{
+            return res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
+        }
     });
 })
 
@@ -762,7 +788,7 @@ app.post("/data/adoption/review", (req,res) =>{
 //입양 후기 단일 뷰 조회
 app.get("/data/adoption/review/:id",(req,res) => {
     const id = req.params.id;
-    db.query('select adopt_post_no AS no, ADOPT_POST_TITLE AS title, ADOPT_POST_CONTENTS as contents, DATE_FORMAT (CAST( ADOPT_REG_YMD AS date),\'%Y-%m-%d\') AS regDate, DATE_FORMAT (CAST( ADOPT_UDT_YMD AS date),\'%Y-%m-%d\') AS udtDate, USER_ID AS userId from master_adopt_review_db where adopt_post_no=?',id, (error, rows) =>{
+    db.query('select ADOPT_POST_NO AS no, ADOPT_POST_TITLE AS title, ADOPT_POST_CONTENTS as contents, DATE_FORMAT (CAST( ADOPT_REG_YMD AS date),\'%Y-%m-%d\') AS regDate, DATE_FORMAT (CAST( ADOPT_UDT_YMD AS date),\'%Y-%m-%d\') AS udtDate, USER_ID AS userId from master_adopt_review_db where ADOPT_POST_NO=?',id, (error, rows) =>{
         if (error) throw error;
         res.send(rows);
     });
@@ -772,7 +798,7 @@ app.get("/data/adoption/review/:id",(req,res) => {
 app.put('/data/adoption/review/vcnt',(req,res) =>{
     const id = req.body.no;
     if(id) {
-        db.query('UPDATE master_adopt_review_db SET ADOPT_POST_VCNT = ADOPT_POST_VCNT+1 WHERE adopt_post_no=?',id,(err,rows) =>{
+        db.query('UPDATE master_adopt_review_db SET ADOPT_POST_VCNT = ADOPT_POST_VCNT+1 WHERE ADOPT_POST_NO=?',id,(err,rows) =>{
             if (err) {
                 console.error("(server)조회수 추가 중 에러:", err);
                 res.status(500).send("조회수 추가 중 에러가 발생했습니다.");
