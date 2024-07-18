@@ -55,9 +55,11 @@ const API = {
         } catch (error) {
             if(error.message === '"Network Error"'){
                 throw new Error('서버가 연결되지 않았습니다. 관리자에게 문의하세요.');
-            } else if (error.response) {
+            }
+            else if (error.response) {
                 if (error.response.status === 500 || error.response.status === 409) {
-                    throw new Error(error.response.data);
+                    // throw new Error(error.response.data);
+                    throw error
                 }
             }
         }
@@ -65,14 +67,15 @@ const API = {
     validToken:  async () =>{
         try {
             const res = await api.get(`validToken`);
-            return res.data;
+            return res;
         } catch (error) {
             if(error.message === '"Network Error"'){
                 throw new Error('서버가 연결되지 않았습니다. 관리자에게 문의하세요.');
-            } else if (error.response) {
-                if (error.response.status === 500 ||
-                    error.response.status === 401) {
-                    throw new Error(error.response.data);
+            }
+            if (error.response) {
+                const { status, data } = error.response;
+                if (status === 500 || status === 401) {
+                    throw new Error(data);
                 }
             }
         }

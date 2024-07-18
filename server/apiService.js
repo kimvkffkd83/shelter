@@ -740,10 +740,20 @@ app.post("/data/adoption", (req, res) =>{
 })
 
 //로그인한 회원이 신청한 입양 신청 리스트 보기
-app.get("/data/adoption/:no", (req, res) =>{
-    //보안상 문제가 생길텐뒤...
-    const no = req.params.no;
-    db.query('CALL shelter_p_adopt_list(?)',no, (error, rows) =>{
+app.get("/data/adoption", (req, res) =>{
+    const token = req.headers.authorization?.split(' ')[1];
+    let id = '';
+    if(token){
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+                //로그인 정보가 유효하지 않음
+                //어케 해줄거? 추가 조치 필요
+                res.send({"totalCount" : 0,"lists":[]});
+            }else{
+                id = decoded.userId;
+            }
+        })
+        db.query('CALL shelter_p_adopt_list(?)',id, (error, rows) =>{
             if (error) {
                 console.error("(server)입양 신청 리스트 조회 중 에러:", error);
                 res.status(500).send("입양 신청 리스트를 조회 중 에러가 발생했습니다.");
@@ -752,6 +762,9 @@ app.get("/data/adoption/:no", (req, res) =>{
                 res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
             }
         })
+    }else{
+        res.send({"totalCount" : 0,"lists":[]});
+    }
 })
 
 //입양 후기 리스트 조회

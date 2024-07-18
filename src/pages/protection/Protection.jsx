@@ -6,9 +6,14 @@ import api from "../../api/Protection.jsx";
 import View from "./View.jsx";
 import List from "./List.jsx";
 import {useLocation} from "react-router-dom";
+import ath from "../../js/authority.js";
 
 function Protection() {
-    const isAdmin = true;
+    const [isAdmin ,setIsAdmin]= useState(ath.isAdmin());
+
+    useEffect(()=>{
+        setIsAdmin(ath.isAdmin())
+    }, [localStorage.getItem('token')]);
 
     //type 0 : view, type 1 : write, type 2 : update
     const [isEditable, setIsEditable] = useState({editable : false, type : 0});
@@ -96,7 +101,9 @@ function Protection() {
 
     const [post, setPost] = useState([]);
     const getView = async (postNo)=>{
-        await api.vcnt(postNo);
+        if(!isAdmin){
+            await api.vcnt(postNo);
+        }
         const res = await api.view(postNo);
 
         if (res.length === 0) {

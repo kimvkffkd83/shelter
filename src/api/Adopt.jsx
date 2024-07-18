@@ -34,9 +34,9 @@ const API = {
             throw error;
         }
     },
-    list : async (no) =>{
+    list : async () =>{
         try {
-            const res = await api.get(`${no}`);
+            const res = await api.get(``);
             return res.data;
         } catch (error) {
             console.error("Error while view data:", error);

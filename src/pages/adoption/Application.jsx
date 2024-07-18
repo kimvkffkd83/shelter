@@ -124,7 +124,7 @@ const Application = ()=> {
     const [cnt, setCnt] = useState(0);
 
     const getList = async ()=>{
-        await adopt.list(1).then((res) =>{
+        await adopt.list().then((res) =>{
             setList(res.lists);
             setCnt(res.totalCount);
         });

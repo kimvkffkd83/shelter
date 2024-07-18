@@ -16,7 +16,6 @@ function Notice() {
     const [isAdmin ,setIsAdmin]= useState(ath.isAdmin());
 
     useEffect(()=>{
-        console.log(isAdmin);
         setIsAdmin(ath.isAdmin())
     }, [localStorage.getItem('token')]);
 

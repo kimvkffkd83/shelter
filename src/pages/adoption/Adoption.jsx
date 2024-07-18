@@ -3,8 +3,14 @@ import TabManager from "./TabManager.jsx";
 import Adopt from "../../api/Adopt.jsx";
 import dp from "dompurify";
 import fh from "../../api/FileHandler.jsx";
+import ath from "../../js/authority.js";
 function Adoption() {
-    const isAdmin = true;
+    const [isAdmin ,setIsAdmin]= useState(ath.isAdmin());
+
+    useEffect(()=>{
+        setIsAdmin(ath.isAdmin())
+    }, [localStorage.getItem('token')]);
+
 
     const [activeTab, setActiveTab] = useState(1);
 
