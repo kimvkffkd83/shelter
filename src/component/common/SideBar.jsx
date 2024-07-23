@@ -1,6 +1,5 @@
 import React from "react";
 import {Link, useLocation} from "react-router-dom";
-import MenuJson from "../../jsons/Menu.json"
 
 function SideBar(props){
     return (

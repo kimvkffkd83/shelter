@@ -212,14 +212,17 @@ app.get("/data/main/:board/list",(req,res) =>{
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",(req,res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    let isAdmin = 0;
+    let isAdmin = 1;
     if(token){
         jwt.verify(token, secretKey, (err, decoded) => {
             if (err) {
-                isAdmin = 0;
+                console.log("decoded",decoded.exp);
+                isAdmin = 1;
             }else{
+                console.log("decoded",decoded.exp);
                 isAdmin = decoded.userSt;
             }
+
         })
     }
 

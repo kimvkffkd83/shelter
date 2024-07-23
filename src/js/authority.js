@@ -1,4 +1,5 @@
 import {jwtDecode} from 'jwt-decode'
+import {useNavigate} from "react-router-dom";
 
 const ath = {
     isLoggedIn:()=>{
@@ -45,6 +46,15 @@ const ath = {
     },
     logout : ()=>{
         localStorage.removeItem('token');
+    },
+    confirmLogin: (movePage)=>{
+        if (!ath.isLoggedIn()) {
+            if (window.confirm("로그인이 필요한 기능입니다.\n로그인 하시겠습니까?")) {
+                movePage("/login")
+            } else {
+                movePage(-1)
+            }
+        }
     }
 }
 

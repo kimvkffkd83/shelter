@@ -42,9 +42,7 @@ const API = {
             if(error.message === '"Network Error"'){
                 throw new Error('서버가 연결되지 않았습니다. 관리자에게 문의하세요.');
             } else if (error.response) {
-                if (error.response.status === 500 || error.response.status === 409) {
-                    throw new Error(error.response.data);
-                }
+                throw new Error(error.response.data);
             }
         }
     },
@@ -57,10 +55,7 @@ const API = {
                 throw new Error('서버가 연결되지 않았습니다. 관리자에게 문의하세요.');
             }
             else if (error.response) {
-                if (error.response.status === 500 || error.response.status === 409) {
-                    // throw new Error(error.response.data);
-                    throw error
-                }
+                throw new Error(error.response.data);
             }
         }
     },

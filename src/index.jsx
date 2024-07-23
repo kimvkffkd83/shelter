@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (token) {
         // 토큰이 유효한지 확인하는 API 호출
         await User.validToken().catch( async (err)=>{
-            debugger;
             console.log(err);
             if (err.response.status === 401) {
                 await User.refreshToken(); // 토큰 갱신

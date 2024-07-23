@@ -5,10 +5,16 @@ import cvt from "../../js/converter.js";
 import adopt from "../../api/Adopt.jsx";
 import dp from "dompurify";
 import fh from "../../api/FileHandler.jsx";
-import api from "../../api/Adopt.jsx";
+import ath from "../../js/authority.js";
+import {useNavigate} from "react-router-dom";
+
 
 const Application = ()=> {
-    const isAdmin = true;
+    const movePage = useNavigate();
+    useEffect(()=> {
+        ath.confirmLogin(movePage);
+    },[])
+
 
     const radioRef = useRef();
     const titleRef = useRef();
