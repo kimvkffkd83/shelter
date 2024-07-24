@@ -101,8 +101,7 @@ const Application = ()=> {
                 });
 
                 const data = {
-                    "USER_NO" : 1,
-                    "USER_ID" : 'se6651',
+                    "USER_ID" : ath.getIdFromToken(),
                     "USER_NM" : nameRef.current.value,
                     "USER_CALL" : phoneRef.current.value.replaceAll('-',''),
                     "USER_MAIL" : mailRef.current.value,
@@ -116,7 +115,6 @@ const Application = ()=> {
                     "ANM_SERIAL_NO" : serialRef.current.value,
                 }
 
-                console.log(data);
                 adopt.write(data).then((res)=>{
                     alert("신청이 완료되었습니다.")
                     console.log(res);
@@ -131,6 +129,7 @@ const Application = ()=> {
 
     const getList = async ()=>{
         await adopt.list().then((res) =>{
+            console.log("?")
             setList(res.lists);
             setCnt(res.totalCount);
         });

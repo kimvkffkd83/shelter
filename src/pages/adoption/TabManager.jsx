@@ -5,6 +5,7 @@ import vdt from "../../js/validation.js";
 import Editor from "../../component/Editor.jsx";
 import dp from "dompurify";
 import cvt from "../../js/converter.js";
+import ath from "../../js/authority.js";
 const TabManager = ({setEditState})=>{
     const [list, setList] = useState([]);
     const [tempList, setTempList] = useState([]);
@@ -138,8 +139,7 @@ const TabManager = ({setEditState})=>{
             const data = {
                 title : titleRef.current.value,
                 contents : contentsRef.current.value,
-                userNo : 1,
-                userId : 'se6651',
+                userId : ath.getIdFromToken(),
                 regDate : newDate,
                 udtDate : newDate,
                 orderNo : list.length+1
@@ -253,7 +253,7 @@ const TabManager = ({setEditState})=>{
                             </div>
                             <div className="post__item">
                                 <span className="post__item__title">작성자</span>
-                                <div className="post__item__contents">{post.userId ?? 'se6651'}</div>
+                                <div className="post__item__contents">{post.userId ?? ''}</div>
                             </div>
                             <div className="post__item">
                                 <span className="post__item__title">{isPostEditable.type === 1 ? '등록일' : '수정일'}</span>

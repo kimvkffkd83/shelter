@@ -5,6 +5,7 @@ import vdt from "../../js/validation.js";
 import cvt from "../../js/converter.js";
 import ColorPicker from "../../component/ColorPicker.jsx";
 import Species from "../../jsons/Species.json"
+import ath from "../../js/authority.js";
 
 const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     console.log("post:",post);
@@ -144,8 +145,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             });
 
             const data = {
-                "USER_NO" : 1,
-                "USER_ID" : 'se6651',
+                "USER_ID" : ath.getIdFromToken(),
                 "POST_ST_SUB" : stSubSubRef.current.value,
                 "POST_PHOTO_THUMB" : thumbnail,
                 "POST_REG_YMD" : newDate,

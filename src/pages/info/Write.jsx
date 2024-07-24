@@ -3,6 +3,7 @@ import board from "../../api/Board.jsx";
 import Editor from "../../component/Editor.jsx";
 import vdt from "../../js/validation.js";
 import cvt from "../../js/converter.js";
+import ath from "../../js/authority.js";
 
 function Write(props){
     console.log("props:",props);
@@ -30,8 +31,7 @@ function Write(props){
 
         if(window.confirm(props.data.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
             const data = {
-                "USER_NO" : 1,
-                "USER_ID" : 'se6651',
+                "USER_ID" : ath.getIdFromToken(),
                 "NTC_TITLE" : titleRef.current.value,
                 "NTC_CONTENTS" : contentsRef.current.value,
                 "NTC_REG_DATE" : props.data.type === 1 ? newDate : props.post?.date.replaceAll('-',''),

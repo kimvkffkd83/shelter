@@ -168,6 +168,20 @@ const cvt = {
     phoneStarCvt:(phone)=> {
         const temp = cvt.phoneCvt(phone)
         return temp.substring(0, temp.length - 4) + "****";
+    },
+    weightStrCvt:(weight) =>{
+        if(weight === 0 ){
+            return '체중미상'
+        }else{
+            return `${weight}Kg`
+        }
+    },
+    ageStrCvt:(year, month) =>{
+        if(year === 0){
+            return '생년미상'
+        }else{
+            return `${year}년생(추정)`
+        }
     }
 }
 export default cvt;

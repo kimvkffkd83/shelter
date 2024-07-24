@@ -3,6 +3,7 @@ import adopt from "../../api/Adopt.jsx";
 import Editor from "../../component/Editor.jsx";
 import vdt from "../../js/validation.js";
 import cvt from "../../js/converter.js";
+import ath from "../../js/authority.js";
 
 function Write({post,isEditable,changeEditable}){
 
@@ -27,10 +28,9 @@ function Write({post,isEditable,changeEditable}){
         }
 
 
-        if(window.confirm(isEditable.type === 1 ? '공지사항을 게시하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
+        if(window.confirm(isEditable.type === 1 ? '게시글을 등록하시겠습니까?' : '공지사항을 수정하시겠습니까?')){
             const data = {
-                "USER_NO" : 1,
-                "USER_ID" : 'se6651',
+                "USER_ID" : ath.getIdFromToken(),
                 "POST_TITLE" : titleRef.current.value,
                 "POST_CONTENTS" : contentsRef.current.value,
                 "POST_REG_DATE" : isEditable.type === 1 ? newDate : post?.date.replaceAll('-',''),
@@ -42,7 +42,7 @@ function Write({post,isEditable,changeEditable}){
                     if(res.status === 500){
                         alert(res.data);
                     }else {
-                        alert('공지사항이 등록되었습니다');
+                        alert('게시글이 등록되었습니다');
                         changeEditable({"editable": false, "type": 0});
                     }
                 })

@@ -1,7 +1,11 @@
 import React, {forwardRef} from "react";
 import Filter from "../../component/Filter.jsx";
+import ath from "../../js/authority.js";
+import {useNavigate} from "react-router-dom";
 
 const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataSearchAction, view, write, update, remove, isAdmin}, ref)=>{
+    const movePage = useNavigate();
+
     return (
         <>
             <div className="filter__content">
@@ -21,15 +25,15 @@ const List = forwardRef(({ totalCnt, pageNo, board, dataSelectAction, dataSearch
                     </div>
                 </div>
                 <div className="filter__box">
-                    {isAdmin &&
-                        <div className="box__adm">
-                            <div className="box__adm__btns">
-                                <button className="btn__adm__icon btn__adm__write" onClick={write}>
-                                    <span className="material-symbols-outlined">edit_square</span>
-                                </button>
-                            </div>
+                    <div className="filter__item">
+                        <div className="box__btns">
+                            <button className="btn__user btn__user__positive"
+                                    onClick={() => {
+                                        ath.confirmLoginV2(movePage, write)
+                                    }}>글쓰기
+                            </button>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
             <div className="gallery__content">

@@ -163,6 +163,19 @@ app.post('/token', (req, res) =>{
     });
 })
 
+const getNoFromId = (id)=>{
+    db.query('select USER_NO FROM master_user_db where USER_ID = ?',id, (error, rows) => {
+        if (error) {
+            return -1;
+        }else{
+            console.log(rows[0].USER_NO)
+            return rows[0].USER_NO
+        }
+    });
+}
+
+
+
 app.use('/authorized', expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
 
 //서버 개시
@@ -216,10 +229,8 @@ app.get("/data/notice",(req,res) => {
     if(token){
         jwt.verify(token, secretKey, (err, decoded) => {
             if (err) {
-                console.log("decoded",decoded.exp);
                 isAdmin = 1;
             }else{
-                console.log("decoded",decoded.exp);
                 isAdmin = decoded.userSt;
             }
 
@@ -240,7 +251,14 @@ app.get("/data/notice",(req,res) => {
 
 //공지사항 게시글 등록
 app.post("/data/notice", (req,res) =>{
-    const {USER_NO, USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
+    const {USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
+    const USER_NO = getNoFromId(USER_ID);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [USER_NO,USER_ID,NTC_TITLE,NTC_CONTENTS,NTC_REG_DATE,NTC_UDT_DATE];
     db.query('INSERT INTO master_notice_db(user_no, user_id, ntc_title, ntc_contents, ntc_reg_date, ntc_udt_date) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
         if (error) {
@@ -520,9 +538,16 @@ app.put('/data/protection/vcnt',(req,res) =>{
 //보호 게시글 등록
 app.put("/data/protection", (req,res) =>{
     const {
-        USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
+        USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
         ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+    const USER_NO = getNoFromId(USER_ID);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [
         USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
@@ -674,9 +699,16 @@ app.put('/data/missing/vcnt',(req,res) =>{
 //실종 게시글 등록
 app.put("/data/missing", (req,res) =>{
     const {
-        USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
+        USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
         ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_WEIGHT_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
+    const USER_NO = getNoFromId(USER_ID);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [
         USER_NO,USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
@@ -728,7 +760,14 @@ app.put("/data/missing/:id", (req,res) =>{
 
 //입양 신청 하기
 app.post("/data/adoption", (req, res) =>{
-    const {USER_NO,USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO} = req.body;
+    const {USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO} = req.body;
+    const USER_NO = getNoFromId(USER_ID);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const APP_ST = 'a';
     const values = [USER_NO,USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO,APP_ST];
     db.query(
@@ -752,17 +791,18 @@ app.get("/data/adoption", (req, res) =>{
                 //로그인 정보가 유효하지 않음
                 //어케 해줄거? 추가 조치 필요
                 res.send({"totalCount" : 0,"lists":[]});
+                return;
             }else{
                 id = decoded.userId;
-            }
-        })
-        db.query('CALL shelter_p_adopt_list(?)',id, (error, rows) =>{
-            if (error) {
-                console.error("(server)입양 신청 리스트 조회 중 에러:", error);
-                res.status(500).send("입양 신청 리스트를 조회 중 에러가 발생했습니다.");
-            }else{
-                console.log(rows);
-                res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
+                db.query('CALL shelter_p_adopt_list(?)',id, (error, rows) =>{
+                    if (error) {
+                        console.error("(server)입양 신청 리스트 조회 중 에러:", error);
+                        res.status(500).send("입양 신청 리스트를 조회 중 에러가 발생했습니다.");
+                    }else{
+                        console.log(rows);
+                        res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
+                    }
+                })
             }
         })
     }else{
@@ -788,7 +828,14 @@ app.post("/data/adoption/review/list", (req,res) =>{
 
 //입양 후기 작성
 app.post("/data/adoption/review", (req,res) =>{
-    const {USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE} = req.body;
+    const {USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE} = req.body;
+    const USER_NO = getNoFromId(USER_ID);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE];
     db.query(
         'INSERT INTO master_adopt_review_db(USER_NO,USER_ID,ADOPT_POST_TITLE,ADOPT_POST_CONTENTS,ADOPT_REG_YMD,ADOPT_UDT_YMD) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
@@ -848,7 +895,14 @@ app.put('/data/adoption/tab/order/:id',(req, res)=>{
 //입양 탭 등록
 app.post('/data/adoption/tab', (req, res) =>{
     const id = req.params.id;
-    const {title, contents, userNo, userId, regDate, udtDate, orderNo} = req.body;
+    const {title, contents, userId, regDate, udtDate, orderNo} = req.body;
+    const userNo = getNoFromId(USER_ID);
+
+    if(userNo < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [title, contents, userNo, userId, regDate, udtDate, orderNo];
     db.query('INSERT INTO master_adopt_tab_db(ADOPT_TITLE, ADOPT_CONTENTS, USER_NO, USER_ID, ADOPT_REG_YMD, ADOPT_UDT_YMD, ADOPT_TAB_ORDER) values (?,?,?,?,?,?,?);',
         values, (error, rows) =>{

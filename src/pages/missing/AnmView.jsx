@@ -27,7 +27,7 @@ function AnmView({ board, view, update,remove, isAdmin }) {
                         <span className="gallery__info__text">
                             {cvt.spcCvt(data.spc)} / {cvt.regionCvt(data.region)} / {cvt.sexCvt(data.sex)} </span><br/>
                         <span className="gallery__info__text">
-                            {data.weight}kg / {data.bYear}년 {data.bMonth ? data.bMonth + '월' : ''}(추정)
+                            {cvt.weightStrCvt(data.weight)} / {cvt.ageStrCvt(data.bYear)}
                         </span>
                     </div>
                 </article>

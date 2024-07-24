@@ -5,6 +5,8 @@ import vdt from "../../js/validation.js";
 import ColorPicker from "../../component/ColorPicker.jsx";
 import Species from "../../jsons/Species.json"
 import cvt from "../../js/converter.js";
+import ath from "../../js/authority.js";
+import {useNavigate} from "react-router-dom";
 
 const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     console.log("post:",post);
@@ -29,6 +31,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
     const newDate = cvt.dateYmdCvt(date);
     const newDateStr = cvt.dateYmdDashCvt(date);
 
+    const movePage = useNavigate();
 
     const [spanName, setSpanName] = useState('실종')
     const changeSpanName = (e) =>{
@@ -141,9 +144,13 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                 selectedValues[input.name] = input.value;
             });
 
+            if(!ath.getIdFromToken()){
+                alert('로그인 정보가 유효하지 않습니다.\n다시 로그인해주세요')
+                movePage("/")
+            }
+
             const data = {
-                "USER_NO" : 1,
-                "USER_ID" : 'se6651',
+                "USER_ID" : ath.getIdFromToken(),
                 "POST_ST_SUB" : selectedValues.stSub,
                 "POST_PHOTO_THUMB" : thumbnail,
                 "POST_REG_YMD" : newDate,

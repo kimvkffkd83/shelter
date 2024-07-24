@@ -705,6 +705,26 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
     /*margin-top: 24px;*/
 }
+
+.btn__user{
+    font-size: 100%;
+    padding: 4px 40px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn__user__positive{
+    color: var(--bright-color);
+    background-color: #fff;
+    border: 1px solid var(--bright-color);
+}
+
+.btn__user__positive:hover{
+    color: #fff;
+    background-color:var(--bright-color);
+    border: 1px solid var(--bright-color);
+
+}
 /* //board */
 
 /* info */

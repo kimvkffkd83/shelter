@@ -65,8 +65,12 @@ const API = {
             const res = await api.put(``, data);
             return res;
         } catch (error) {
-            console.error("Error while writing data:", error);
-            throw error;
+            if(error.message === '"Network Error"'){
+                throw new Error('서버가 연결되지 않았습니다. 관리자에게 문의하세요.');
+            } else if (error.response) {
+                throw new Error(error.response.data);
+            }
+            throw new Error('알 수 없는 오류가 발생했습니다.');
         }
     },
     update: async (postNo, data) => {

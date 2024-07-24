@@ -28,6 +28,13 @@ const ath = {
         }
         return jwtDecode(token).userNm;
     },
+    getIdFromToken:() =>{
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return false;
+        }
+        return jwtDecode(token).userId;
+    },
     isAdmin:()=>{
         const token = localStorage.getItem('token');
         if (!token) {
@@ -55,7 +62,16 @@ const ath = {
                 movePage(-1)
             }
         }
-    }
+    },
+    confirmLoginV2: (movePage, func)=>{
+        if (!ath.isLoggedIn()) {
+            if (window.confirm("로그인이 필요한 기능입니다.\n로그인 하시겠습니까?")) {
+                movePage("/login")
+            }
+        } else {
+            func();
+        }
+    },
 }
 
 export default ath;
