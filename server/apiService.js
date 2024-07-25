@@ -181,18 +181,15 @@ const getNoFromId = (id)=>{
 
 const getUserSt = (token) =>{
     // 0이면 어드민, 1이면 정회원
-    if(token){
+    return new Promise((resolve, reject) => {
         jwt.verify(token, secretKey, (err, decoded) => {
             if (err) {
-                return 1;
+                resolve(1);
             }else{
-                console.log(decoded.userSt)
-                return decoded.userSt;
+                resolve(decoded.userSt);
             }
         })
-    } else {
-        return 1;
-    }
+    });
 }
 
 
@@ -245,12 +242,12 @@ app.get("/data/main/:board/list",(req,res) =>{
 //공지사항 최신 1페이지 조회
 app.get("/data/notice",async (req,res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    let userSt = 1;
+    let userSt = -1;
 
     if(token){
         userSt = await getUserSt(token);
     }
-    // const userSt = await getUserSt(token);
+
     console.log("userSt",userSt);
 
     const rowMax = 10;
@@ -910,10 +907,9 @@ app.put('/data/adoption/tab/order/:id',(req, res)=>{
 })
 
 //입양 탭 등록
-app.post('/data/adoption/tab', async(req, res) =>{
-    const id = req.params.id;
+app.post('/data/adoption/tab', async (req, res) =>{
     const {title, contents, userId, regDate, udtDate, orderNo} = req.body;
-    const userNo = await getNoFromId(USER_ID);
+    const userNo = await getNoFromId(userId);
 
     if(userNo < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
