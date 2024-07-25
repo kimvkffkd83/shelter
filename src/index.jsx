@@ -9,16 +9,26 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     if (token) {
-        // 토큰이 유효한지 확인하는 API 호출
-        await User.validToken().catch( async (err)=>{
+        try{
+            await User.validToken()
+        } catch (err) {
             console.log(err);
-            if (err.response.status === 401) {
-                await User.refreshToken(); // 토큰 갱신
-            }else{
-                localStorage.removeItem('token')
-                alert('유효하지 않은 접근으로 로그아웃되었습니다.')
+            if (err.response && err.response.status === 401) {
+                try {
+                    // 토큰 갱신
+                    const newToken = await User.refreshToken();
+                    console.log('토큰이 갱신되었습니다:', newToken);
+                } catch (refreshErr) {
+                    console.log('리프레시 토큰 갱신 실패:', refreshErr);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('refreshToken');
+                    alert('유효하지 않은 접근으로 로그아웃되었습니다.');
+                }
+            } else {
+                localStorage.removeItem('token');
+                alert('유효하지 않은 접근으로 로그아웃되었습니다.');
             }
-        })
+        }
     }
 });
 

@@ -69,7 +69,7 @@ const API = {
             }
             if (error.response) {
                 const { status, data } = error.response;
-                if (status === 500 || status === 401) {
+                if (status) {
                     throw new Error(data);
                 }
             }
@@ -77,7 +77,7 @@ const API = {
     },
     refreshToken: async ()=> {
         const refreshToken = localStorage.getItem('refreshToken');
-        const response = await axios.post(`token`, { token: refreshToken });
+        const response = await api.post(`token`, { token: refreshToken });
         const newToken = response.data.token;
         localStorage.setItem('token', newToken);
         return newToken;

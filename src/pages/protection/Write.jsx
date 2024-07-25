@@ -34,13 +34,13 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
 
     const isEmpty = ()=>{
         let flag  = {pass : true, comment : ''};
-        flag = vdt.chkInputIsEmpty(flag, spcSubRef,'세부 종을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, spcSubRef,'세부 종을 입력해주세요.');
         if(!ageUnknownRef.current.checked) {
-            flag = vdt.chkInputIsEmpty(flag, bYearRef,'생년을 작성해주세요.');
+            flag = vdt.chkInputIsEmpty(flag, bYearRef,'생년을 입력해주세요.');
         }
-        flag = vdt.chkInputIsEmpty(flag, weightRef,'체중을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, weightRef,'체중을 입력해주세요.');
         flag = vdt.chkSelectIsEmpty(flag, reagionRef,'구조 지역을 선택해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, reagionSubRef,'지역상세를 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, reagionSubRef,'지역상세를 입력해주세요.');
         flag = vdt.chkSelectIsEmpty(flag, stSubSubRef,'공고상태를 선택해주세요.');
         flag = vdt.chkInputIsEmpty(flag, cDateRef,'구조일을 선택해주세요.');
         flag = vdt.chkInputIsEmpty(flag, sDateRef,'공고기간을 선택해주세요.');

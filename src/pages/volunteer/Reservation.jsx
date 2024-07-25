@@ -4,6 +4,8 @@ import Volunteer from "../../api/Volunteer.jsx";
 import cvt from "../../js/converter.js";
 import vdt from "../../js/validation.js";
 import {logDOM} from "@testing-library/react";
+import ath from "../../js/authority.js";
+import {useNavigate} from "react-router-dom";
 
 const Reservation = ()=>{
     const today = new Date();
@@ -12,6 +14,7 @@ const Reservation = ()=>{
     const nameRef = useRef();
     const phoneRef = useRef();
 
+    const movePage = useNavigate();
     const chkWhenBlur = (func, ref, id)=>{
         if(!func(ref.current.value)){
             document.querySelector(`div[id=${id}]`).style.display = 'flex';
@@ -100,12 +103,24 @@ const Reservation = ()=>{
         setSelectedDate(null);
         getList();
     }
+    const validatation = ()=>{
+        let flag  = {pass : true, comment : ''};
+        flag = vdt.chkInputIsEmpty(flag, nameRef,'성명을 입력해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, phoneRef,'연락처를 입력해주세요.');
+        return flag;
+    }
 
     const apply = ()=>{
+        const check = validatation();
+        if(!check.pass){
+            alert(check.comment)
+            return;
+        }
+
         if(window.confirm('신청하시겠습니까?')){
             const data = {
-                "USER_NO": 4,
-                "USER_ID": 'normal1',
+                // "USER_NO": 4,
+                "USER_ID" : ath.getIdFromToken(),
                 "TIME_NO": selectedTimeNo,
                 "SSN_NO": selectedSsnNo,
                 "USER_NM": nameRef.current.value,
@@ -230,7 +245,8 @@ const Reservation = ()=>{
                                                     </div>
                                                 </div>
                                                 <div className="post__item">
-                                                    <button onClick={apply}>신청하기</button>
+                                                    <button className="btn__user btn__user__positive"
+                                                            onClick={()=>ath.confirmLoginV2(movePage,apply)}>신청하기</button>
                                                 </div>
                                             </>
                                     }

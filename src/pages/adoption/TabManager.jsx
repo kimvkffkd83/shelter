@@ -123,8 +123,8 @@ const TabManager = ({setEditState})=>{
 
     const validatation = ()=>{
         let flag  = {pass : true, comment : ''};
-        flag = vdt.chkInputIsEmpty(flag, titleRef,'제목을 작성해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, contentsRef,'내용을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, titleRef,'제목을 입력해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, contentsRef,'내용을 입력해주세요.');
         return flag;
     }
 

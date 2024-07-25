@@ -30,12 +30,12 @@ const SignUp = () =>{
 
     const validatation = ()=>{
         let flag  = {pass : true, comment : ''};
-        flag = vdt.chkInputIsEmpty(flag, nameRef,'성명을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, nameRef,'성명을 입력해주세요.');
         flag = vdt.chkInputIsEmpty(flag, idRef,'아이디를 입력해주세요.');
         flag = vdt.chkInputIsEmpty(flag, pwRef,'비밀번호를 입력해주세요.');
         flag = vdt.chkInputIsEmpty(flag, pwConfirmRef,'비밀번호 확인을 입력해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, phoneRef,'연락처를 작성해주세요.');
-        flag = vdt.chkInputIsEmpty(flag, mailRef,'이메일을 작성해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, phoneRef,'연락처를 입력해주세요.');
+        flag = vdt.chkInputIsEmpty(flag, mailRef,'이메일을 입력해주세요.');
         return flag;
     }
 

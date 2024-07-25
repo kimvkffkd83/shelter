@@ -154,7 +154,7 @@ app.post('/token', (req, res) =>{
         if (err) {
             return res.sendStatus(403);
         }
-        const newToken = jwt.sign({ 
+        const newToken = jwt.sign({
             userId: user.userId,
             userSt: user.USER_ST,
             userNm: user.USER_NM
@@ -164,16 +164,36 @@ app.post('/token', (req, res) =>{
 })
 
 const getNoFromId = (id)=>{
-    db.query('select USER_NO FROM master_user_db where USER_ID = ?',id, (error, rows) => {
-        if (error) {
-            return -1;
-        }else{
-            console.log(rows[0].USER_NO)
-            return rows[0].USER_NO
-        }
+    return new Promise((resolve, reject) => {
+        db.query('SELECT USER_NO FROM master_user_db WHERE USER_ID = ?', [id], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    resolve(results[0].USER_NO);
+                } else {
+                    resolve(-1);
+                }
+            }
+        });
     });
 }
 
+const getUserSt = (token) =>{
+    // 0이면 어드민, 1이면 정회원
+    if(token){
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+                return 1;
+            }else{
+                console.log(decoded.userSt)
+                return decoded.userSt;
+            }
+        })
+    } else {
+        return 1;
+    }
+}
 
 
 app.use('/authorized', expressjwt({ secret: secretKey, algorithms: ['HS256'] }));
@@ -223,24 +243,20 @@ app.get("/data/main/:board/list",(req,res) =>{
 // })
 
 //공지사항 최신 1페이지 조회
-app.get("/data/notice",(req,res) => {
+app.get("/data/notice",async (req,res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    let isAdmin = 1;
-    if(token){
-        jwt.verify(token, secretKey, (err, decoded) => {
-            if (err) {
-                isAdmin = 1;
-            }else{
-                isAdmin = decoded.userSt;
-            }
+    let userSt = 1;
 
-        })
+    if(token){
+        userSt = await getUserSt(token);
     }
+    // const userSt = await getUserSt(token);
+    console.log("userSt",userSt);
 
     const rowMax = 10;
     const pageNo =  req.query?.pageNo?? 1;
     const queryNo = (pageNo-1)*rowMax;
-    db.query('CALL sheter_p_notice_list(?,?,?)',[isAdmin, queryNo, rowMax], (error, rows, fields) =>{
+    db.query('CALL sheter_p_notice_list(?,?,?)',[userSt, queryNo, rowMax], (error, rows, fields) =>{
         if (error) {
             return res.status(500).send('공지사항 목록을 조회하는 중 오류가 발생했습니다.');
         } else{
@@ -250,9 +266,9 @@ app.get("/data/notice",(req,res) => {
 })
 
 //공지사항 게시글 등록
-app.post("/data/notice", (req,res) =>{
+app.post("/data/notice", async (req,res) =>{
     const {USER_ID, NTC_TITLE, NTC_CONTENTS, NTC_REG_DATE, NTC_UDT_DATE} = req.body;
-    const USER_NO = getNoFromId(USER_ID);
+    const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
@@ -536,12 +552,12 @@ app.put('/data/protection/vcnt',(req,res) =>{
 })
 
 //보호 게시글 등록
-app.put("/data/protection", (req,res) =>{
+app.put("/data/protection", async (req,res) =>{
     const {
         USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
         ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
-    const USER_NO = getNoFromId(USER_ID);
+    const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
@@ -697,12 +713,12 @@ app.put('/data/missing/vcnt',(req,res) =>{
 })
 
 //실종 게시글 등록
-app.put("/data/missing", (req,res) =>{
+app.put("/data/missing", async (req,res) =>{
     const {
         USER_ID,POST_ST_SUB,POST_MEMO,POST_PHOTO_URL,POST_PHOTO_THUMB,POST_REG_YMD,POST_UDT_YMD,ANM_RSC_YMD,
         ANM_STAY_YMD,ANM_SPC,ANM_SPC_SUB,ANM_REGION,ANM_REGION_SUB,ANM_SEX,ANM_NEUTERING_ST,ANM_CHIP_ST,ANM_WEIGHT,
         ANM_BIRTH_YEAR,ANM_BIRTH_MONTH,ANM_AGE_UNKNOWN,ANM_WEIGHT_UNKNOWN,ANM_NM,ANM_COLOR,ANM_FEATURE} = req.body;
-    const USER_NO = getNoFromId(USER_ID);
+    const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
@@ -759,9 +775,9 @@ app.put("/data/missing/:id", (req,res) =>{
 })
 
 //입양 신청 하기
-app.post("/data/adoption", (req, res) =>{
+app.post("/data/adoption", async (req, res) =>{
     const {USER_ID,USER_NM,USER_CALL,USER_MAIL,APP_TITLE,APP_CONTENTS,APP_REG_YMD,APP_UDT_YMD,APP_ATTACH,APP_TYPE,ANM_SPC,ANM_SERIAL_NO} = req.body;
-    const USER_NO = getNoFromId(USER_ID);
+    const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
@@ -827,15 +843,16 @@ app.post("/data/adoption/review/list", (req,res) =>{
 })
 
 //입양 후기 작성
-app.post("/data/adoption/review", (req,res) =>{
+app.post("/data/adoption/review", async (req,res) =>{
     const {USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE} = req.body;
-    const USER_NO = getNoFromId(USER_ID);
+    const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
         return;
     }
 
+    console.log("??",USER_NO)
     const values = [USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE];
     db.query(
         'INSERT INTO master_adopt_review_db(USER_NO,USER_ID,ADOPT_POST_TITLE,ADOPT_POST_CONTENTS,ADOPT_REG_YMD,ADOPT_UDT_YMD) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
@@ -893,10 +910,10 @@ app.put('/data/adoption/tab/order/:id',(req, res)=>{
 })
 
 //입양 탭 등록
-app.post('/data/adoption/tab', (req, res) =>{
+app.post('/data/adoption/tab', async(req, res) =>{
     const id = req.params.id;
     const {title, contents, userId, regDate, udtDate, orderNo} = req.body;
-    const userNo = getNoFromId(USER_ID);
+    const userNo = await getNoFromId(USER_ID);
 
     if(userNo < 0){
         res.status(401).send(`등록되지 않은 회원입니다.`);
@@ -966,8 +983,17 @@ app.get("/data/volunteer/:date",(req,res) => {
 })
 
 //봉사 특정날짜 봉사 신청하기
-app.post("/data/volunteer/apply",(req,res) =>{
-    const {USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD} = req.body;
+app.post("/data/volunteer/apply", async (req,res) =>{
+    const {USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD} = req.body;
+    const USER_NO = await getNoFromId(USER_ID);
+
+    console.log("USER_NO",USER_NO);
+
+    if(USER_NO < 0){
+        res.status(401).send(`등록되지 않은 회원입니다.`);
+        return;
+    }
+
     const values = [USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD];
     db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?,?,?)',values,(error, rows) =>{
         if (error) {
