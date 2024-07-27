@@ -841,7 +841,7 @@ app.post("/data/adoption/review/list", (req,res) =>{
 
 //입양 후기 작성
 app.post("/data/adoption/review", async (req,res) =>{
-    const {USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE} = req.body;
+    const {USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE,ADOPT_POST_ST} = req.body;
     const USER_NO = await getNoFromId(USER_ID);
 
     if(USER_NO < 0){
@@ -850,9 +850,9 @@ app.post("/data/adoption/review", async (req,res) =>{
     }
 
     console.log("??",USER_NO)
-    const values = [USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE];
+    const values = [USER_NO,USER_ID,POST_TITLE,POST_CONTENTS,POST_REG_DATE,POST_UDT_DATE,ADOPT_POST_ST];
     db.query(
-        'INSERT INTO master_adopt_review_db(USER_NO,USER_ID,ADOPT_POST_TITLE,ADOPT_POST_CONTENTS,ADOPT_REG_YMD,ADOPT_UDT_YMD) values (?,?,?,?,?,?)',values, (error, rows, fields) =>{
+        'INSERT INTO master_adopt_review_db(USER_NO,USER_ID,ADOPT_POST_TITLE,ADOPT_POST_CONTENTS,ADOPT_REG_YMD,ADOPT_UDT_YMD,ADOPT_POST_ST) values (?,?,?,?,?,?,?)',values, (error, rows, fields) =>{
             if (error) {
                 console.error("(server)입양 후기 글 등록 중 에러:", error);
                 res.status(500).send("입양 후기 글을 등록하는 도중 에러가 발생했습니다.");

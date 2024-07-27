@@ -344,7 +344,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
             <div className="box__content__gallery">
                 <div className="gallery__form-editable w40" ref={radioRef}>
                     <div className="gallery__form__title">필수 입력 정보</div>
-                    <div className="gallerty__form__contents">
+                    <div className="gallery__form__contents">
                         <div className="post__item">
                             <span className="post__item__title">종</span>
                             <div className="post__item__contents">
@@ -591,7 +591,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                 <div className="gallery__form-editable w60">
                     <div className="form__photo">
                         <div className="gallery__form__title">대표사진 업로드(필수)</div>
-                        <div className="gallerty__form__contents">
+                        <div className="gallery__form__contents">
                             <div className="warning__box">
                             <span className="warning__text">※ 등록 이후에는 사진 삭제, 대표사진 변경만 가능합니다.</span>
                             </div>
@@ -629,7 +629,7 @@ const Write = ({post,isEditable,changeEditable,getView,getList})=>{
                     </div>
                     <div className="nReqInfo">
                         <div className="gallery__form__title">선택 입력 정보</div>
-                        <div className="gallerty__form__contents">
+                        <div className="gallery__form__contents">
                             <div className="tag__box">
                                 <TagItem label="이름" isSelected={selectedTags[1]} onToggle={() => handleSelectToggle(1)} />
                                 <TagItem label="비고(기관용)" isSelected={selectedTags[2]} onToggle={() => handleSelectToggle(2)} />

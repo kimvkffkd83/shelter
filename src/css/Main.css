@@ -234,13 +234,66 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
 }
 
-/* Main fast search */
-.main__box__fast-search{
-    width: 320px;
+/* Main rapid search */
+.main__box__rapid {
+    width: 400px;
     height: 100%;
-    background-color: #999;
 }
-/* //Main fast search  */
+
+.main__rapid__container{
+    flex: 1;
+    padding: 30px;
+}
+
+.main__rapid__title{
+    font-size: 150%;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.main__rapid__line{
+    margin: 8px 0px 10px 0px;
+}
+
+.main__rapid__contents{
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.rapid__form__contents{
+    margin-bottom: 20px;
+}
+
+.rapid__item{
+    display: flex;
+    margin: 4px 0;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rapid__item__title {
+    flex: 0.2;
+    padding: 8px 0;
+}
+
+.rapid__item__contents{
+    flex: 0.8;
+    display: flex;
+
+    padding: 0 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rapid__item__date{
+    width: 100%;
+    height: 100%;
+    font-size: 100%;
+    padding: 4px 0;
+}
+
+/* //Main rapid search  */
 
 /* Main board */
 .main__box__board{
@@ -996,7 +1049,7 @@ input[type=number]::-webkit-inner-spin-button {
     margin-bottom: 8px;
 }
 
-.gallerty__form__contents{
+.gallery__form__contents{
     margin-bottom: 20px;
 }
 .gallery__form-editable{

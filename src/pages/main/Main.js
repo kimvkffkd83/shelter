@@ -2,13 +2,14 @@ import '../../css/Main.css';
 import React from "react";
 import MainSlideBox from "./MainSlideBox.jsx";
 import MainBoard from "./MainBoard.jsx";
+import RapidSearch from "./RapidSearch.jsx";
 function Main(){
     return (
         <div>
             <MainSlideBox/>
             <div className="main__contents">
-                <div className="main__box__fast-search">
-                    <h1> 빠른 조건 검색 </h1>
+                <div className="main__box__rapid">
+                    <RapidSearch />
                 </div>
                 <div className="main__box__board">
                     <MainBoard title="notice"/>
