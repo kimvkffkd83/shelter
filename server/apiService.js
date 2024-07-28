@@ -66,7 +66,7 @@ app.post('/nSignUp',async (req, res) =>{
     const values = [id, hashedPw, name, phone, mail];
 
     db.query(
-        'CALL sheter_p_user_normal_sign_up(?,?,?,?,?)',values,(error, rows) =>{
+        'CALL shelter_p_user_normal_sign_up(?,?,?,?,?)',values,(error, rows) =>{
             if (error) {
                 if(error.sqlState === '23000'){
                     res.status(409).send(`아이디 혹은 이메일에 중복이 발생했습니다.`);
@@ -199,7 +199,8 @@ app.use('/authorized', expressjwt({ secret: secretKey, algorithms: ['HS256'] }))
 app.listen(port, ()=>{
     console.log("api 서버 개시 완료")
 })
-//메인페이지에서 슬라이드 조회
+
+//메인 슬라이드 조회
 app.get("/data/main/slide",(req,res)=>{
     const query = `SELECT POST_NO AS postNo, USER_ID AS userId, USER_PHONE AS userPhone, POST_ST_SUB AS stSub, 
        DATE_FORMAT (CAST( POST_REG_YMD AS date),'%Y-%m-%d') AS rDate, DATE_FORMAT (CAST( ANM_RSC_YMD AS date),'%Y-%m-%d') AS cDate, 
@@ -219,15 +220,32 @@ app.get("/data/main/slide",(req,res)=>{
     });
 })
 
+//메인 게시판 조회
 app.get("/data/main/:board/list",(req,res) =>{
     const board = req.params.board;
-    db.query('CALL sheter_p_main_board_list(?,6)', board,(error, rows) =>{
+    db.query('CALL shelter_p_main_board_list(?,6)', board,(error, rows) =>{
         if (error) {
             console.error(`(server) ${board} 목록 조회 중 에러:`, error);
             res.status(500).send(`${board} 목록을 조회하는 도중 에러가 발생했습니다.`);
             return;
         }
         res.send(rows);
+    });
+})
+
+//메인 빠른 조건 검색
+app.post('/data/main/rapid',(req,res) =>{
+    const rowMax = Number(req.body.rowMax) > 0 ? Number(req.body.rowMax) : 10;
+    const pageNo = Number(req.body.pageNo) > 0 ? Number(req.body.pageNo) : 1;
+    const queryNo = (pageNo-1)*rowMax;
+
+    const {spc,region,sex,ntr,preDate,aftDate} = req.body;
+
+    const values = [spc,region,sex,ntr,preDate,aftDate,queryNo,rowMax]
+
+    db.query('CALL shelter_p_main_rapid_lists(?,?,?,?,?,?,?,?);',values, (error, rows) =>{
+        if (error) throw error;
+        res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
 })
 
@@ -253,7 +271,7 @@ app.get("/data/notice",async (req,res) => {
     const rowMax = 10;
     const pageNo =  req.query?.pageNo?? 1;
     const queryNo = (pageNo-1)*rowMax;
-    db.query('CALL sheter_p_notice_list(?,?,?)',[userSt, queryNo, rowMax], (error, rows, fields) =>{
+    db.query('CALL shelter_p_notice_list(?,?,?)',[userSt, queryNo, rowMax], (error, rows, fields) =>{
         if (error) {
             return res.status(500).send('공지사항 목록을 조회하는 중 오류가 발생했습니다.');
         } else{
@@ -481,7 +499,7 @@ app.post('/data/protection',(req,res) =>{
     let target = req.body.query?.target?? '';
     let text = req.body.query?.text?? '';
 
-    db.query(`CALL sheter_p_anm_prtc_lists('${spc}',${region},'${st}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
+    db.query(`CALL shelter_p_anm_prtc_lists('${spc}',${region},'${st}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
         if (error) throw error;
         res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
@@ -642,7 +660,7 @@ app.post('/data/missing',(req,res) =>{
     let target = req.body.query?.target?? '';
     let text = req.body.query?.text?? '';
 
-    db.query(`CALL sheter_p_anm_miss_lists('${spc}','${region}','${stSub}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
+    db.query(`CALL shelter_p_anm_miss_lists('${spc}','${region}','${stSub}','${sex}','${ntr}','${chip}','${preDate}','${aftDate}','${target}','${text}',${queryNo},${rowMax});`, (error, rows, fields) =>{
         if (error) throw error;
         res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
@@ -833,7 +851,7 @@ app.post("/data/adoption/review/list", (req,res) =>{
     let target = req.body.query?.target?? '';
     let text = req.body.query?.text?? '';
 
-    db.query(`CALL sheter_p_adopt_review_list('${st}','${target}','${text}',${queryNo},${rowMax})`,  (error, rows) =>{
+    db.query(`CALL shelter_p_adopt_review_list('${st}','${target}','${text}',${queryNo},${rowMax})`,  (error, rows) =>{
         if (error) throw error;
         res.send({"totalCount" : rows[0][0].totalCount,"lists":rows[1]});
     });
@@ -972,7 +990,7 @@ app.get("/data/volunteer",(req,res) => {
 //추후 프로시저로 변경해서 지원자 목록까지 추가할 것
 app.get("/data/volunteer/:date",(req,res) => {
     const date = req.params.date;
-    db.query('CALL sheter_p_volunteer_list(?)',date,(error, rows) =>{
+    db.query('CALL shelter_p_volunteer_list(?)',date,(error, rows) =>{
         if (error) throw error;
         res.send({"ableList":rows[0],"regList":rows[1]});
     });
@@ -991,7 +1009,7 @@ app.post("/data/volunteer/apply", async (req,res) =>{
     }
 
     const values = [USER_NO,USER_ID,TIME_NO,SSN_NO,USER_NM,USER_CALL,RSV_YMD,REG_YMD];
-    db.query('CALL sheter_p_volunteer_apply(?,?,?,?,?,?,?,?)',values,(error, rows) =>{
+    db.query('CALL shelter_p_volunteer_apply(?,?,?,?,?,?,?,?)',values,(error, rows) =>{
         if (error) {
             if(error.sqlState === '45000'){
                 res.status(409).send(`해당 날짜에 더 이상 신청할 수 있는 봉사활동이 없습니다.`);

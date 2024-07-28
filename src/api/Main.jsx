@@ -24,7 +24,7 @@ api.interceptors.request.use(config => {
 });
 
 const API = {
-    slideList: async (board) =>{
+    slideList: async () =>{
         try {
             const res = await api.get(`slide`);
             return res.data;
@@ -44,7 +44,17 @@ const API = {
             throw error;
         }
     },
-
+    rapidList : async (data) =>{
+        try {
+            const res = await api.post(`rapid`,data);
+            console.log(res);
+            console.log(res.data);
+            return res.data;
+        } catch (error) {
+            console.error("Error while fetching notice list data:", error);
+            throw error;
+        }
+    }
 };
 
 export default API;
