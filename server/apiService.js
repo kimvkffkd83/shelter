@@ -249,6 +249,17 @@ app.post('/data/main/rapid',(req,res) =>{
     });
 })
 
+//메인 통계
+app.get('/data/main/stat',(req, res)=>{
+    const date = new Date();
+    const today = date.getFullYear()+(date.getMonth() + 1).toString().padStart(2, '0')+date.getDate().toString().padStart(2, '0')
+    console.log('today',today);
+    db.query('call shelter_p_main_statistics_lists(?)',today, (error, rows) =>{
+        if (error) throw error;
+        res.send(rows[0][0]);
+    });
+})
+
 // //공지사항 모든 게시글 수
 // app.get("/data/notice/tcnt", (req, res) =>{
 //     db.query('SELECT COUNT(*) AS cnt FROM master_notice_db', (error, tcnt) =>{

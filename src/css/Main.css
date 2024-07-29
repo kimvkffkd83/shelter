@@ -396,8 +396,17 @@ input[type=number]::-webkit-inner-spin-button {
 
 .main__box__statistics{
     height: 120px;
-    background-color: #444;
+    /*background-color: #444;*/
 }
+
+.stat__item__ul{
+    display: flex;
+    justify-content:space-evenly;
+}
+
+.stat__item__li{
+}
+
 /* //Main */
 
 /* WideLayout*/

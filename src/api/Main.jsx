@@ -36,8 +36,6 @@ const API = {
     boardList: async (board) =>{
         try {
             const res = await api.get(`${board}/list`);
-            console.log(res);
-            console.log(res.data);
             return res.data;
         } catch (error) {
             console.error("Error while fetching notice list data:", error);
@@ -47,14 +45,21 @@ const API = {
     rapidList : async (data) =>{
         try {
             const res = await api.post(`rapid`,data);
-            console.log(res);
-            console.log(res.data);
             return res.data;
         } catch (error) {
             console.error("Error while fetching notice list data:", error);
             throw error;
         }
-    }
+    },
+    statList : async () => {
+        try {
+            const res = await api.get(`stat`);
+            return res.data;
+        } catch (error) {
+            console.error("Error while fetching notice list data:", error);
+            throw error;
+        }
+    },
 };
 
 export default API;

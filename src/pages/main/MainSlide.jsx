@@ -7,8 +7,7 @@ function MainSlide(){
     const location = useLocation();
     const [list, setList] = useState();
     useEffect(() => {
-        Main.slideList()
-            .then((res) => {
+        Main.slideList().then((res) => {
                 setList(res)
             });
     }, [location]);

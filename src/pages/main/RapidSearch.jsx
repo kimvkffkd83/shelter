@@ -165,9 +165,9 @@ const RapidSearch = ()=>{
                             {
                                 <div className="rapid__res__item">
                                     <div className="res__summary">
-                                        <span>상위 <strong className="res__summary-emphasis">6개</strong>까지의 게시글만 표시됩니다.</span>
-                                        <br/>
                                         <span>현재 <strong className="res__summary-emphasis">{totalCnt}건</strong>의 검색 결과가 있습니다.</span>
+                                        <br/>
+                                        <span>상위 <strong className="res__summary-emphasis">6개</strong>까지의 게시글만 표시됩니다.</span>
                                     </div>
                                     <div className="res__contents">
                                         {
