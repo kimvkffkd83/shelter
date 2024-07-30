@@ -16,8 +16,6 @@ const Statistics = () =>{
 
     return(
         <>
-            <div className="stat__title"></div>
-            <hr />
             <div className="stat__contents">
                 <div className="stat__item">
                     <div className="stat__item__title"></div>

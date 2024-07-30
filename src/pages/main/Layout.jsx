@@ -3,6 +3,7 @@ import Header from "../../component/common/Header.jsx";
 import "../../css/Main.css"
 import {Outlet} from "react-router-dom";
 import useRefFocusEffect from "../../js/useRefFocusEffect.js";
+import Footer from "../../component/common/Footer.jsx";
 
 function Layout() {
     return (
@@ -11,9 +12,7 @@ function Layout() {
             <div id="container">
                 <Outlet/>
             </div>
-            <footer id="footer">
-                <h1>푸터</h1>
-            </footer>
+            <Footer/>
         </div>
     )
 }

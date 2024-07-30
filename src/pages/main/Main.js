@@ -17,9 +17,6 @@ function Main(){
                     <MainBoard title="review"/>
                 </div>
             </div>
-            <div className="main__box__statistics">
-                <Statistics />
-            </div>
         </div>
     );
 }
