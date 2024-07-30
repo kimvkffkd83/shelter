@@ -56,7 +56,7 @@ const TabManager = ({setEditState})=>{
             <ReactSortable list={list} setList={setList}>
                 {
                     list.map((item,idx) => (
-                        <div key={idx} className="tab__block__dynimic">
+                        <div key={idx} className="tab__block__dynamic">
                             <span className="material-symbols-outlined">drag_pan</span>{item.title}</div>
                     ))
                 }
